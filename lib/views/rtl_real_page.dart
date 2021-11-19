@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:simpel/blocs/rtl_bloc.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
 import 'package:simpel/models/rtl_real_model.dart';
+import 'package:simpel/utils/af_combobox.dart';
 import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_sliver_subheader.dart';
 import 'package:simpel/utils/af_widget.dart';
+import 'package:simpel/utils/font_awesome5.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RTLrealPage extends StatefulWidget {
@@ -296,6 +300,7 @@ class _RTLrealPageState extends State<RTLrealPage> {
               }
             },
           ),
+          SliverPadding(padding: EdgeInsets.all(25)),
         ],
       ),
     );
@@ -320,37 +325,79 @@ class RealForm extends StatefulWidget {
 
 class _RealFormState extends State<RealForm> {
   final RTLBloc _rtlBloc = RTLBloc();
+  final TextEditingController _txtTarget = TextEditingController();
   final TextEditingController _txtTanggal = TextEditingController();
   final TextEditingController _txtKendala = TextEditingController();
   final TextEditingController _txtKeterangan = TextEditingController();
+  final TextEditingController _txtCapaian = TextEditingController();
+  final TextEditingController _txtFile = TextEditingController();
+  late FocusNode _focTarget;
   late FocusNode _focTanggal;
   late FocusNode _focKendala;
   late FocusNode _focKeterangan;
+  late FocusNode _focCapaian;
+  late FocusNode _focFile;
   DateTime? _tanggal;
+  int _targetId = 0;
+  String _pathFile = '';
+
+  List<Opsi> _listOpsiTarget = [];
 
   void fetchTanggal(DateTime nilai) {
     _tanggal = nilai;
     _rtlBloc.fetchTanggal(nilai);
   }
 
+  void fetchRencanaLabel(int id, String label) {
+    _targetId = id;
+    _rtlBloc.fetchRencanaLabel(label);
+  }
+
+  void fetchFile(String path, String label) {
+    _pathFile = path;
+    _rtlBloc.fetchFile(label);
+  }
+
   @override
   void initState() {
     super.initState();
     if (widget.real != null) {
+      _targetId = widget.real!.targetId;
+      _txtTarget.text = widget.real!.targetRencana;
       fetchTanggal(widget.real!.tanggal!);
       _txtKendala.text = widget.real!.kendala;
       _txtKeterangan.text = widget.real!.keterangan;
+      _txtCapaian.text = widget.real!.capaian.toString();
     }
+    _focTarget = FocusNode();
     _focTanggal = FocusNode();
     _focKendala = FocusNode();
     _focKeterangan = FocusNode();
+    _focCapaian = FocusNode();
+    _focFile = FocusNode();
+    if (_listOpsiTarget.isEmpty) {
+      _rtlBloc
+          .getTargets(widget.member.nik, widget.pelatihan.kode)
+          .then((value) {
+        for (var item in value) {
+          var a = Opsi(
+            id: item.id.toString(),
+            label: item.rencana,
+          );
+          _listOpsiTarget.add(a);
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
+    _focTarget.dispose();
     _focTanggal.dispose();
     _focKendala.dispose();
     _focKeterangan.dispose();
+    _focCapaian.dispose();
+    _focFile.dispose();
     _rtlBloc.dispose();
     super.dispose();
   }
@@ -359,12 +406,46 @@ class _RealFormState extends State<RealForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit RTL Real'),
+        title: Text(widget.real != null
+            ? 'Ubah RTL Realisasi'
+            : 'Tambah RTL Realisasi'),
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
+            StreamBuilder<String>(
+              stream: _rtlBloc.streamRencanaLabel,
+              builder: (context, snap) {
+                if (snap.hasData) {
+                  _txtTarget.text = snap.data!;
+                }
+                return AFwidget.textField(
+                  context: context,
+                  kontroler: _txtTarget,
+                  focusNode: _focTarget,
+                  label: 'Rencana Aksi',
+                  readonly: true,
+                  suffix: const Icon(
+                    Icons.expand_more,
+                    size: 20,
+                  ),
+                  ontap: () async {
+                    if (widget.real == null) {
+                      var a = await AFcombobox.modalBottom(
+                        context: context,
+                        listOpsi: _listOpsiTarget,
+                        idSelected: _targetId.toString(),
+                        judul: 'Rencana Aksi',
+                      );
+                      if (a != null) {
+                        fetchRencanaLabel(int.parse(a.id), a.label);
+                      }
+                    }
+                  },
+                );
+              },
+            ),
             StreamBuilder<DateTime>(
               stream: _rtlBloc.streamTanggal,
               builder: (context, snap) {
@@ -384,7 +465,7 @@ class _RealFormState extends State<RealForm> {
                   context: context,
                   kontroler: _txtTanggal,
                   focusNode: _focTanggal,
-                  label: 'Tanggal',
+                  label: 'Tanggal Realisasi',
                   readonly: true,
                   prefix: const Icon(
                     Icons.calendar_today,
@@ -406,19 +487,127 @@ class _RealFormState extends State<RealForm> {
             ),
             AFwidget.textField(
               context: context,
-              kontroler: _txtKendala,
-              focusNode: _focKendala,
-              label: 'Kendala Aksi',
+              kontroler: _txtKeterangan,
+              focusNode: _focKeterangan,
+              label: 'Realisasi Aksi',
+              maxLines: 3,
             ),
             AFwidget.textField(
               context: context,
-              kontroler: _txtKeterangan,
-              focusNode: _focKeterangan,
-              label: 'Pelaksana/Koordinasi',
-              maxLines: 5,
+              kontroler: _txtKendala,
+              focusNode: _focKendala,
+              label: 'Kendala',
+              maxLines: 2,
+            ),
+            AFwidget.textField(
+              context: context,
+              kontroler: _txtCapaian,
+              focusNode: _focCapaian,
+              label: 'Capaian',
+              keyboard: TextInputType.number,
+              suffix: Icon(
+                FontAwesome5.percent,
+                size: 12,
+              ),
+            ),
+            StreamBuilder<String>(
+              stream: _rtlBloc.streamFile,
+              builder: (context, snap) {
+                if (snap.hasData) {
+                  _txtFile.text = snap.data!;
+                } else {
+                  if (widget.real != null) {
+                    fetchFile('', widget.real!.file);
+                  }
+                }
+                return AFwidget.textField(
+                  context: context,
+                  kontroler: _txtFile,
+                  focusNode: _focFile,
+                  label: 'File',
+                  readonly: true,
+                  prefix: const Icon(
+                    Icons.upload_file,
+                    size: 20,
+                  ),
+                  ontap: () {
+                    AFwidget.modalBottom(
+                      context: context,
+                      isScrollControlled: false,
+                      judul: 'Upload File',
+                      konten: Column(
+                        children: [
+                          ListTile(
+                            dense: true,
+                            leading: const Icon(Icons.add_chart),
+                            title: const Text('Ambil File dari storage'),
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 15,
+                              color: Colors.red,
+                            ),
+                            onTap: () async {
+                              var a = await FilePicker.platform.pickFiles();
+                              if (a != null) {
+                                var path = a.files.single.path;
+                                if (path != null) {
+                                  fetchFile(path, a.files.single.name);
+                                  Navigator.of(context).pop();
+                                }
+                              }
+                            },
+                          ),
+                          const Divider(),
+                          ListTile(
+                            dense: true,
+                            leading: const Icon(Icons.add_a_photo_outlined),
+                            title: const Text('Ambil Foto dari Kamera'),
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 15,
+                              color: Colors.red,
+                            ),
+                            onTap: () async {
+                              var a = await ImagePicker().pickImage(
+                                source: ImageSource.camera,
+                              );
+                              if (a != null) {
+                                fetchFile(a.path, a.name);
+                                Navigator.of(context).pop();
+                              }
+                            },
+                          ),
+                          const Divider(),
+                          ListTile(
+                            dense: true,
+                            leading:
+                                const Icon(Icons.add_photo_alternate_outlined),
+                            title: const Text('Ambil Foto dari Galeri'),
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 15,
+                              color: Colors.red,
+                            ),
+                            onTap: () async {
+                              var a = await ImagePicker().pickImage(
+                                source: ImageSource.gallery,
+                              );
+                              if (a != null) {
+                                fetchFile(a.path, a.name);
+                                Navigator.of(context).pop();
+                              }
+                            },
+                          ),
+                          const Divider(),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(15, 25, 15, 15),
+              padding: const EdgeInsets.fromLTRB(15, 35, 15, 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -464,7 +653,7 @@ class _RealFormState extends State<RealForm> {
                                         Navigator.of(context).pop();
                                         String pesan = a['status'].toString() ==
                                                 '1'
-                                            ? 'Data RTL Real berhasil dihapus.'
+                                            ? 'Data RTL Realisasi berhasil dihapus.'
                                             : a['message'].toString();
                                         await AFwidget.alertDialog(
                                           context,
@@ -477,7 +666,7 @@ class _RealFormState extends State<RealForm> {
                                   ],
                                 ),
                               ],
-                              judul: Text('Konfirmasi Hapus RTL Real'),
+                              judul: Text('Konfirmasi Hapus RTL Realisasi'),
                             );
                           },
                         )
@@ -485,51 +674,62 @@ class _RealFormState extends State<RealForm> {
                   ElevatedButton(
                     child: Text('Simpan'),
                     onPressed: () async {
+                      if (_targetId == 0) {
+                        AFwidget.snack(context, 'Rencana Aksi harus diisi.');
+                        _focTarget.requestFocus();
+                        return;
+                      }
                       if (_tanggal == null) {
                         AFwidget.snack(context, 'Tanggal harus diisi.');
                         _focTanggal.requestFocus();
                         return;
                       }
-                      if (_txtKendala.text.isEmpty) {
-                        AFwidget.snack(context, 'Kendala Aksi harus diisi.');
-                        _focKendala.requestFocus();
-                        return;
-                      }
                       if (_txtKeterangan.text.isEmpty) {
-                        AFwidget.snack(context, 'Pelaksana/Koordinasi.');
+                        AFwidget.snack(context, 'Realisasi Aksi harus diisi.');
                         _focKeterangan.requestFocus();
                         return;
                       }
+                      if (_txtCapaian.text.isEmpty) {
+                        AFwidget.snack(context, 'Capaian harus diisi.');
+                        _focCapaian.requestFocus();
+                        return;
+                      }
+                      if (int.parse(_txtCapaian.text) > 100) {
+                        AFwidget.snack(context,
+                            'Nilai Capaian tidak boleh lebih dari 100');
+                        _focCapaian.requestFocus();
+                        return;
+                      }
 
-                      // RTLrealModel hasil = RTLrealModel(
-                      //   id: widget.real != null ? widget.real!.id : 0,
-                      //   nik: widget.real != null
-                      //       ? widget.real!.nik
-                      //       : widget.member.nik,
-                      //   root: widget.real != null
-                      //       ? widget.real!.root
-                      //       : '${widget.pelatihan.giatKode}${widget.pelatihan.tahun}${widget.pelatihan.angkatan}',
-                      //   tanggal: _tanggal,
-                      //   kendala: _txtKendala.text,
-                      //   keterangan: _txtKeterangan.text,
-                      // );
+                      RTLrealModel hasil = RTLrealModel(
+                        id: widget.real != null ? widget.real!.id : 0,
+                        targetId: _targetId,
+                        targetRencana: _txtTarget.text,
+                        tanggal: _tanggal,
+                        keterangan: _txtKeterangan.text,
+                        kendala: _txtKendala.text,
+                        capaian: int.parse(_txtCapaian.text),
+                        file: _pathFile,
+                      );
 
-                      // AFwidget.circularDialog(context);
-                      // Map<String, dynamic> a = {};
-                      // if (widget.real != null) {
-                      //   a = await _rtlBloc.ediReal(hasil);
-                      // } else {
-                      //   a = await _rtlBloc.addReal(hasil);
-                      // }
-                      // Navigator.of(context).pop();
-                      // if (a['status'].toString() == '1') {
-                      //   await AFwidget.alertDialog(context,
-                      //       const Text('Data RTL Real berhasil disimpan.'));
-                      //   Navigator.of(context).pop(hasil);
-                      // } else {
-                      //   AFwidget.alertDialog(
-                      //       context, Text(a['message'].toString()));
-                      // }
+                      AFwidget.circularDialog(context);
+                      Map<String, dynamic> a = {};
+                      if (widget.real != null) {
+                        a = await _rtlBloc.ediReal(hasil);
+                      } else {
+                        a = await _rtlBloc.addReal(hasil);
+                      }
+                      Navigator.of(context).pop();
+                      if (a['status'].toString() == '1') {
+                        await AFwidget.alertDialog(
+                            context,
+                            const Text(
+                                'Data RTL Realisasi berhasil disimpan.'));
+                        Navigator.of(context).pop(hasil);
+                      } else {
+                        AFwidget.alertDialog(
+                            context, Text(a['message'].toString()));
+                      }
                     },
                   ),
                 ],

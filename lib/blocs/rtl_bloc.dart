@@ -128,21 +128,43 @@ class RTLBloc {
 
   Future<Map<String, dynamic>> addReal(RTLrealModel model) async {
     var map = model.keMap();
-    var a = await DBHelper.setData(
-      rute: 'rtl',
-      mode: 'addreal',
-      body: map,
-    );
+    Map<String, dynamic> a = {};
+    if (map['real_file'] != null && map['real_file'] != '') {
+      a = await DBHelper.setData(
+        methodeRequest: MethodeRequest.multipartRequest,
+        rute: 'rtl',
+        mode: 'addreal',
+        body: map,
+        filePath: {'lampiran': map['real_file']!},
+      );
+    } else {
+      a = await DBHelper.setData(
+        rute: 'rtl',
+        mode: 'addreal',
+        body: map,
+      );
+    }
     return a;
   }
 
   Future<Map<String, dynamic>> ediReal(RTLrealModel model) async {
     var map = model.keMap();
-    var a = await DBHelper.setData(
-      rute: 'rtl',
-      mode: 'editreal',
-      body: map,
-    );
+    Map<String, dynamic> a = {};
+    if (map['real_file'] != null && map['real_file'] != '') {
+      a = await DBHelper.setData(
+        methodeRequest: MethodeRequest.multipartRequest,
+        rute: 'rtl',
+        mode: 'editreal',
+        body: map,
+        filePath: {'lampiran': map['real_file']!},
+      );
+    } else {
+      a = await DBHelper.setData(
+        rute: 'rtl',
+        mode: 'editreal',
+        body: map,
+      );
+    }
     return a;
   }
 
@@ -169,9 +191,23 @@ class RTLBloc {
     _strTanggal.sink.add(nilai);
   }
 
+  final _strRencanaLabel = StreamController<String>.broadcast();
+  Stream<String> get streamRencanaLabel => _strRencanaLabel.stream;
+  void fetchRencanaLabel(String nilai) async {
+    _strRencanaLabel.sink.add(nilai);
+  }
+
+  final _strFile = StreamController<String>.broadcast();
+  Stream<String> get streamFile => _strFile.stream;
+  void fetchFile(String nilai) async {
+    _strFile.sink.add(nilai);
+  }
+
   void dispose() {
     _strTarget.close();
     _strReal.close();
     _strTanggal.close();
+    _strRencanaLabel.close();
+    _strFile.close();
   }
 }

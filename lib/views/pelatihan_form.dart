@@ -60,6 +60,7 @@ class _PelatihanFormState extends State<PelatihanForm> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        elevation: 0.5,
         flexibleSpace: Container(
           padding: EdgeInsets.fromLTRB(50, 19, 10, 5),
           child: FutureBuilder<GiatModel>(
@@ -233,6 +234,9 @@ class _PelatihanFormState extends State<PelatihanForm> {
                   return BottomAppBar(
                     elevation: 1,
                     child: BottomNavigationBar(
+                      backgroundColor: Colors.green,
+                      unselectedItemColor: Colors.white,
+                      selectedItemColor: Colors.black87,
                       currentIndex: snapMenu.data!,
                       elevation: 1,
                       type: BottomNavigationBarType.fixed,

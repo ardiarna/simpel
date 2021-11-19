@@ -31,6 +31,7 @@ dependencies:
   carousel_slider: ^4.0.0
   cupertino_icons: ^1.0.2
   equatable: ^2.0.3
+  file_picker: ^4.2.3
   firebase_core: ^1.8.0
   firebase_messaging: ^11.1.0
   flutter:

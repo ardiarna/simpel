@@ -360,7 +360,7 @@ abstract class AFwidget {
       width: width,
       height: height,
       progressIndicatorBuilder: (context, url, downloadProgress) =>
-          CircularProgressIndicator(value: downloadProgress.progress),
+          AFwidget.circularProgress(nilai: downloadProgress.progress),
       errorWidget: (context, url, error) => Icon(Icons.error),
     );
   }

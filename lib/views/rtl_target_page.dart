@@ -240,7 +240,8 @@ class _TargetFormState extends State<TargetForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit RTL Target'),
+        title: Text(
+            widget.target != null ? 'Ubah RTL Target' : 'Tambah RTL Target'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -299,7 +300,7 @@ class _TargetFormState extends State<TargetForm> {
               maxLines: 5,
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(15, 25, 15, 15),
+              padding: const EdgeInsets.fromLTRB(15, 35, 15, 15),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

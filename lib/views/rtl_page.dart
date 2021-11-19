@@ -25,51 +25,52 @@ class _RTLTabState extends State<RTLTab> {
       length: 2,
       child: Stack(
         children: [
-          Column(
-            children: [
-              Container(
-                height: 35,
-                width: double.infinity,
-                alignment: Alignment.center,
-                color: Colors.green.shade100,
-                child: Text(
-                  'Rencana Tindak Lanjut (RTL)',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+          Container(
+            color: Colors.green.shade200,
+            child: Column(
+              children: [
+                Container(
+                  height: 35,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  child: Text(
+                    'Rencana Tindak Lanjut (RTL)',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                height: 30,
-                color: Colors.green.shade100,
-                child: TabBar(
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.black54,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicator: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25),
+                Container(
+                  height: 30,
+                  child: TabBar(
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.black54,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                      ),
+                      color: Colors.white,
                     ),
-                    color: Colors.white,
+                    tabs: [
+                      Tab(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text("Target"),
+                        ),
+                      ),
+                      Tab(
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text("Realisasi"),
+                        ),
+                      ),
+                    ],
                   ),
-                  tabs: [
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text("Target"),
-                      ),
-                    ),
-                    Tab(
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text("Realisasi"),
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Container(
             margin: EdgeInsets.only(top: 65),
