@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 abstract class AFwidget {
   static Widget circularProgress({
@@ -344,6 +345,23 @@ abstract class AFwidget {
       errorBuilder: (_, obj, stacktrace) {
         return const Text('broken image');
       },
+    );
+  }
+
+  static Widget cachedNetworkImage(
+    String url, {
+    BoxFit? fit,
+    double? width,
+    double? height,
+  }) {
+    return CachedNetworkImage(
+      imageUrl: url,
+      fit: fit,
+      width: width,
+      height: height,
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          CircularProgressIndicator(value: downloadProgress.progress),
+      errorWidget: (context, url, error) => Icon(Icons.error),
     );
   }
 

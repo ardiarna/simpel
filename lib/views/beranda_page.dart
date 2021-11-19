@@ -76,7 +76,7 @@ class _BerandaPageState extends State<BerandaPage> {
                           children: [
                             CarouselSlider(
                               items: snapSlid.data!.map((el) {
-                                return AFwidget.networkImageNonLoading(
+                                return AFwidget.cachedNetworkImage(
                                   _berandaBloc.dirImageSlid + el.image,
                                   fit: BoxFit.fill,
                                 );
@@ -210,7 +210,7 @@ class _BerandaPageState extends State<BerandaPage> {
                                   topRight: Radius.circular(10),
                                   topLeft: Radius.circular(10),
                                 ),
-                                child: AFwidget.networkImageNonLoading(
+                                child: AFwidget.cachedNetworkImage(
                                   _berandaBloc.dirImageGiat +
                                       snap.data![i].image,
                                   fit: BoxFit.fill,

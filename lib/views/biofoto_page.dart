@@ -41,7 +41,7 @@ class _BiofotoPageState extends State<BiofotoPage> {
               children: [
                 widget.member.foto != ''
                     ? InteractiveViewer(
-                        child: AFwidget.networkImage(
+                        child: AFwidget.cachedNetworkImage(
                           DBHelper.dirImage + 'member/' + widget.member.foto,
                           fit: BoxFit.fitWidth,
                         ),

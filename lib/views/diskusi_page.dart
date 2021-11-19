@@ -50,7 +50,7 @@ class _DiskusiPageState extends State<DiskusiPage> {
                                     borderRadius: const BorderRadius.all(
                                       Radius.circular(25),
                                     ),
-                                    child: AFwidget.networkImage(
+                                    child: AFwidget.cachedNetworkImage(
                                       _diskusiBloc.dirImageGiat +
                                           snapGiat.data!.image,
                                       fit: BoxFit.fill,

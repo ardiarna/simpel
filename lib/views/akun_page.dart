@@ -49,7 +49,7 @@ class _AkunPageState extends State<AkunPage> {
                             borderRadius: const BorderRadius.all(
                               Radius.circular(55),
                             ),
-                            child: AFwidget.networkImage(
+                            child: AFwidget.cachedNetworkImage(
                               DBHelper.dirImage +
                                   'member/' +
                                   widget.member.foto,
