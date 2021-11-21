@@ -8,6 +8,7 @@ class BumdesModel {
   String omset;
   String jabatan;
   String jabperiode;
+  String kendala;
   DateTime? createdOn;
   DateTime? modifiedOn;
 
@@ -19,8 +20,9 @@ class BumdesModel {
     this.omset = '',
     this.jabatan = '',
     this.jabperiode = '',
-    DateTime? createdOn,
-    DateTime? modifiedOn,
+    this.kendala = '',
+    this.createdOn,
+    this.modifiedOn,
   });
 
   factory BumdesModel.dariMap(Map<String, dynamic> map) {
@@ -32,6 +34,7 @@ class BumdesModel {
       omset: AFconvert.keString(map['bumdes_omset']),
       jabatan: AFconvert.keString(map['bumdes_jabatan']),
       jabperiode: AFconvert.keString(map['bumdes_jabperiode']),
+      kendala: AFconvert.keString(map['bumdes_kendala']),
       createdOn: AFconvert.keTanggal(map['created_on']),
       modifiedOn: AFconvert.keTanggal(map['modified_on']),
     );
@@ -46,6 +49,7 @@ class BumdesModel {
       'bumdes_omset': omset,
       'bumdes_jabatan': jabatan,
       'bumdes_jabperiode': jabperiode,
+      'bumdes_kendala': kendala,
       'created_on': AFconvert.keString(createdOn),
       'modified_on': AFconvert.keString(modifiedOn),
     };

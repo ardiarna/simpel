@@ -693,7 +693,7 @@ class _LoginStep1State extends State<LoginStep1> {
                     const Spacer(),
                     ElevatedButton(
                       child: const Text('Selanjutnya'),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_txtNIK.text.isEmpty) {
                           AFwidget.snack(context, 'NIK harus diisi.');
                           _focNIK.requestFocus();
@@ -758,13 +758,28 @@ class _LoginStep1State extends State<LoginStep1> {
                           kelLabel: widget.member.kelLabel,
                           dusun: widget.member.dusun,
                         );
-                        Navigator.of(context).pushReplacement(
-                          AFpageTransisi.slide(
-                            page: LoginStep2(member: hasilMember),
-                            dx: 1,
-                            dy: 0,
-                          ),
+
+                        AFwidget.circularDialog(context);
+                        var a = await _memberBloc.cekDuplikasi(
+                          nik: _txtNIK.text,
+                          email: _txtEmail.text,
                         );
+                        Navigator.of(context).pop();
+
+                        if (a['status'].toString() == '1') {
+                          Navigator.of(context).pushReplacement(
+                            AFpageTransisi.slide(
+                              page: LoginStep2(member: hasilMember),
+                              dx: 1,
+                              dy: 0,
+                            ),
+                          );
+                        } else {
+                          AFwidget.alertDialog(
+                            context,
+                            Text(a['message'].toString()),
+                          );
+                        }
                       },
                     ),
                   ],

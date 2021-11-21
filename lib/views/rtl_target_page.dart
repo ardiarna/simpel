@@ -266,7 +266,7 @@ class _TargetFormState extends State<TargetForm> {
                   context: context,
                   kontroler: _txtTanggal,
                   focusNode: _focTanggal,
-                  label: 'Tanggal',
+                  label: 'Tanggal Rencana',
                   readonly: true,
                   prefix: const Icon(
                     Icons.calendar_today,
@@ -296,7 +296,7 @@ class _TargetFormState extends State<TargetForm> {
               context: context,
               kontroler: _txtKeterangan,
               focusNode: _focKeterangan,
-              label: 'Pelaksana/Koordinasi',
+              label: 'Keterangan',
               maxLines: 5,
             ),
             Padding(

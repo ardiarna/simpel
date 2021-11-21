@@ -21,6 +21,7 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
   final RekrutmenBloc _rekrutmenBloc = RekrutmenBloc();
   final BumdesBloc _bumdesBloc = BumdesBloc();
   late BumdesModel _bumdesModel;
+  late KedudukanModel _kedudukanModel;
 
   cekBumdes() {
     _bumdesBloc.get(widget.member.nik).then((bumdes) {
@@ -77,6 +78,9 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
         );
       } else {
         _bumdesModel = bumdes;
+        _bumdesBloc
+            .getKedudukan(widget.member.nik)
+            .then((value) => _kedudukanModel = value);
       }
     });
   }
@@ -245,6 +249,7 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
                                                   RekrutmenForm(
                                                 member: widget.member,
                                                 bumdes: _bumdesModel,
+                                                kedudukan: _kedudukanModel,
                                                 rekrutmen: snap.data![i],
                                               ),
                                             ),
@@ -275,11 +280,13 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
 class RekrutmenForm extends StatefulWidget {
   final MemberModel member;
   final BumdesModel bumdes;
+  final KedudukanModel kedudukan;
   final RekrutmenModel rekrutmen;
 
   const RekrutmenForm({
     required this.member,
     required this.bumdes,
+    required this.kedudukan,
     required this.rekrutmen,
     Key? key,
   }) : super(key: key);
@@ -290,7 +297,7 @@ class RekrutmenForm extends StatefulWidget {
 
 class _RekrutmenFormState extends State<RekrutmenForm> {
   final RekrutmenBloc _rekrutmenBloc = RekrutmenBloc();
-  final TextEditingController _txtKendala = TextEditingController();
+  // final TextEditingController _txtKendala = TextEditingController();
   late FocusNode _focKendala;
 
   @override
@@ -444,120 +451,180 @@ class _RekrutmenFormState extends State<RekrutmenForm> {
                   ],
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.fromLTRB(5, 3, 5, 0),
-                padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
-                color: Colors.white,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(
-                            width: lebarA, child: const Text('Nama Bumdes')),
-                        const Text(' : '),
-                        Text(
-                          widget.bumdes.nama,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+              (widget.rekrutmen.kdgiat == '001' ||
+                      widget.rekrutmen.kdgiat == '01')
+                  ? Container(
+                      margin: const EdgeInsets.fromLTRB(5, 3, 5, 0),
+                      padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Nama Bumdes')),
+                              const Text(' : '),
+                              Text(
+                                widget.bumdes.nama,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const Padding(padding: EdgeInsets.only(bottom: 15)),
-                    Row(
-                      children: [
-                        SizedBox(
-                            width: lebarA, child: const Text('Tahun Berdiri')),
-                        const Text(' : '),
-                        Text(
-                          widget.bumdes.tahun.toString(),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Tahun Berdiri')),
+                              const Text(' : '),
+                              Text(
+                                widget.bumdes.tahun.toString(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const Padding(padding: EdgeInsets.only(bottom: 15)),
-                    Row(
-                      children: [
-                        SizedBox(
-                            width: lebarA, child: const Text('Unit Usaha')),
-                        const Text(' : '),
-                        Text(
-                          widget.bumdes.unitusaha,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Unit Usaha')),
+                              const Text(' : '),
+                              Text(
+                                widget.bumdes.unitusaha,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const Padding(padding: EdgeInsets.only(bottom: 15)),
-                    Row(
-                      children: [
-                        SizedBox(
-                            width: lebarA,
-                            child: const Text('Omzet per tahun')),
-                        const Text(' : '),
-                        Text(
-                          widget.bumdes.omset,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Omzet per tahun')),
+                              const Text(' : '),
+                              Text(
+                                widget.bumdes.omset,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const Padding(padding: EdgeInsets.only(bottom: 15)),
-                    Row(
-                      children: [
-                        SizedBox(
-                            width: lebarA,
-                            child: const Text('Jabatan dalam Bumdes')),
-                        const Text(' : '),
-                        Text(
-                          widget.bumdes.jabatan,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Jabatan dalam Bumdes')),
+                              const Text(' : '),
+                              Text(
+                                widget.bumdes.jabatan,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const Padding(padding: EdgeInsets.only(bottom: 15)),
-                    Row(
-                      children: [
-                        SizedBox(
-                            width: lebarA,
-                            child: const Text('Periode Jabatan')),
-                        const Text(' : '),
-                        Text(
-                          widget.bumdes.jabperiode,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Periode Jabatan')),
+                              const Text(' : '),
+                              Text(
+                                widget.bumdes.jabperiode,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Kendala / Permasalahan')),
+                              const Text(' : '),
+                              Text(
+                                widget.bumdes.kendala,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(
+                      margin: const EdgeInsets.fromLTRB(5, 3, 5, 0),
+                      padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text(
+                                      'Jabatan / Kedudukan di Desa')),
+                              const Text(' : '),
+                              Text(
+                                widget.kedudukan.jabatan,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Periode Jabatan')),
+                              const Text(' : '),
+                              Text(
+                                widget.kedudukan.periode,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                color: Colors.white,
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: AFwidget.textField(
-                  context: context,
-                  kontroler: _txtKendala,
-                  focusNode: _focKendala,
-                  label: 'Kendala / Permasalahan',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(7)),
-                  suffix: const Icon(
-                    Icons.person,
-                    size: 20,
-                    color: Colors.transparent,
-                  ),
-                ),
-              ),
+              // Container(
+              //   color: Colors.white,
+              //   padding: EdgeInsets.only(
+              //       bottom: MediaQuery.of(context).viewInsets.bottom),
+              //   child: AFwidget.textField(
+              //     context: context,
+              //     kontroler: _txtKendala,
+              //     focusNode: _focKendala,
+              //     label: 'Kendala / Permasalahan',
+              //     border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(7)),
+              //     suffix: const Icon(
+              //       Icons.person,
+              //       size: 20,
+              //       color: Colors.transparent,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -565,18 +632,11 @@ class _RekrutmenFormState extends State<RekrutmenForm> {
       floatingActionButton: ElevatedButton(
         child: const Text('Daftar'),
         onPressed: () async {
-          if (_txtKendala.text.isEmpty) {
-            AFwidget.snack(context, 'Kendala / Permasalahan harus diisi.');
-            _focKendala.requestFocus();
-            return;
-          }
-
           AFwidget.circularDialog(context);
           var a = await _rekrutmenBloc.add(
             member: widget.member,
             bumdes: widget.bumdes,
             rekrutmen: widget.rekrutmen,
-            kendala: _txtKendala.text,
           );
           Navigator.of(context).pop();
 

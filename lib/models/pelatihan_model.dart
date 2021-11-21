@@ -5,6 +5,7 @@ class PelatihanModel {
   String nama;
   int tahun;
   int angkatan;
+  String fstatus;
   String fevaluasi;
   String fsurvey;
   String fileSertifikat;
@@ -15,6 +16,7 @@ class PelatihanModel {
     this.nama = '',
     this.tahun = 0,
     this.angkatan = 0,
+    this.fstatus = '',
     this.fevaluasi = '',
     this.fsurvey = '',
     this.fileSertifikat = '',
@@ -27,6 +29,7 @@ class PelatihanModel {
       nama: AFconvert.keString(map['nama']),
       tahun: AFconvert.keInt(map['tahun']),
       angkatan: AFconvert.keInt(map['angkatan']),
+      fstatus: AFconvert.keString(map['fstatus']),
       fevaluasi: AFconvert.keString(map['fevaluasi']),
       fsurvey: AFconvert.keString(map['fsurvey']),
       fileSertifikat: AFconvert.keString(map['file_sertifikat']),
@@ -40,6 +43,7 @@ class PelatihanModel {
       'nama': nama,
       'tahun': tahun,
       'angkatan': angkatan,
+      'fstatus': fstatus,
       'fevaluasi': fevaluasi,
       'fsurvey': fsurvey,
       'file_sertifikat': fileSertifikat,

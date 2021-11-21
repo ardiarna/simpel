@@ -60,12 +60,15 @@ class _BumdesPageState extends State<BumdesPage> {
   final TextEditingController _txtOmset = TextEditingController();
   final TextEditingController _txtJabatan = TextEditingController();
   final TextEditingController _txtJabPeriode = TextEditingController();
+  final TextEditingController _txtKendala = TextEditingController();
+
   late FocusNode _focNama;
   late FocusNode _focTahun;
   late FocusNode _focUnitUsaha;
   late FocusNode _focOmset;
   late FocusNode _focJabatan;
   late FocusNode _focJabPeriode;
+  late FocusNode _focKendala;
 
   @override
   void initState() {
@@ -76,6 +79,7 @@ class _BumdesPageState extends State<BumdesPage> {
     _focOmset = FocusNode();
     _focJabatan = FocusNode();
     _focJabPeriode = FocusNode();
+    _focKendala = FocusNode();
   }
 
   @override
@@ -86,6 +90,7 @@ class _BumdesPageState extends State<BumdesPage> {
     _focOmset.dispose();
     _focJabatan.dispose();
     _focJabPeriode.dispose();
+    _focKendala.dispose();
     super.dispose();
   }
 
@@ -107,6 +112,7 @@ class _BumdesPageState extends State<BumdesPage> {
                   _txtOmset.text = snap.data!.omset;
                   _txtJabatan.text = snap.data!.jabatan;
                   _txtJabPeriode.text = snap.data!.jabperiode;
+                  _txtKendala.text = snap.data!.kendala;
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -181,6 +187,17 @@ class _BumdesPageState extends State<BumdesPage> {
                         ),
                         textCapitalization: TextCapitalization.characters,
                       ),
+                      AFwidget.textField(
+                        context: context,
+                        kontroler: _txtKendala,
+                        focusNode: _focKendala,
+                        label: 'Kendala / Permasalahan',
+                        suffix: const Icon(
+                          Icons.person,
+                          size: 20,
+                          color: Colors.transparent,
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                         child: ElevatedButton(
@@ -235,6 +252,7 @@ class _BumdesPageState extends State<BumdesPage> {
                               omset: _txtOmset.text,
                               jabatan: _txtJabatan.text,
                               jabperiode: _txtJabPeriode.text,
+                              kendala: _txtKendala.text,
                             );
 
                             AFwidget.circularDialog(context);
@@ -317,7 +335,7 @@ class _KedudukanPageState extends State<KedudukanPage> {
                         context: context,
                         kontroler: _txtJabatan,
                         focusNode: _focJabatan,
-                        label: 'Jabatan',
+                        label: 'Jabatan / Kedudukan di Desa',
                         suffix: const Icon(
                           Icons.person,
                           size: 20,

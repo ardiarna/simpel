@@ -33,8 +33,20 @@ class _PelatihanPageState extends State<PelatihanPage> {
             future: _pelatihanBloc.getPelatihans(widget.member.nik),
             builder: (context, snap) {
               if (snap.hasData) {
+                String labelStatus = '';
+                bool statusYa = false;
                 return SliverList(
                   delegate: SliverChildBuilderDelegate((context, i) {
+                    if (snap.data![i].fstatus == 'Y') {
+                      labelStatus = 'Lihat';
+                      statusYa = true;
+                    } else if (snap.data![i].fstatus == 'N') {
+                      labelStatus = 'Tidak Lulus Seleksi';
+                      statusYa = false;
+                    } else {
+                      labelStatus = 'Belum Diseleksi';
+                      statusYa = false;
+                    }
                     return Container(
                       margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                       padding: const EdgeInsets.fromLTRB(10, 20, 10, 15),
@@ -243,20 +255,29 @@ class _PelatihanPageState extends State<PelatihanPage> {
                           Align(
                             alignment: Alignment.topRight,
                             child: ElevatedButton(
-                              child: Text('Lihat'),
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.limeAccent.shade700,
+                              child: Text(
+                                labelStatus,
+                                style: TextStyle(
+                                  color: statusYa ? Colors.white : Colors.red,
+                                ),
                               ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => PelatihanForm(
-                                      member: widget.member,
-                                      pelatihan: snap.data![i],
-                                    ),
-                                  ),
-                                );
-                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: statusYa
+                                    ? Colors.indigo.shade700
+                                    : Colors.white,
+                              ),
+                              onPressed: statusYa
+                                  ? () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => PelatihanForm(
+                                            member: widget.member,
+                                            pelatihan: snap.data![i],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  : null,
                             ),
                           )
                         ],

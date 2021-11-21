@@ -329,16 +329,15 @@ class _RealFormState extends State<RealForm> {
   final TextEditingController _txtTanggal = TextEditingController();
   final TextEditingController _txtKendala = TextEditingController();
   final TextEditingController _txtKeterangan = TextEditingController();
-  final TextEditingController _txtCapaian = TextEditingController();
   final TextEditingController _txtFile = TextEditingController();
   late FocusNode _focTarget;
   late FocusNode _focTanggal;
   late FocusNode _focKendala;
   late FocusNode _focKeterangan;
-  late FocusNode _focCapaian;
   late FocusNode _focFile;
   DateTime? _tanggal;
   int _targetId = 0;
+  double _capaian = 0;
   String _pathFile = '';
 
   List<Opsi> _listOpsiTarget = [];
@@ -358,6 +357,11 @@ class _RealFormState extends State<RealForm> {
     _rtlBloc.fetchFile(label);
   }
 
+  void fetchCapaian(double nilai) {
+    _capaian = nilai;
+    _rtlBloc.fetchCapaian(nilai);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -367,13 +371,12 @@ class _RealFormState extends State<RealForm> {
       fetchTanggal(widget.real!.tanggal!);
       _txtKendala.text = widget.real!.kendala;
       _txtKeterangan.text = widget.real!.keterangan;
-      _txtCapaian.text = widget.real!.capaian.toString();
+      fetchCapaian(widget.real!.capaian.toDouble());
     }
     _focTarget = FocusNode();
     _focTanggal = FocusNode();
     _focKendala = FocusNode();
     _focKeterangan = FocusNode();
-    _focCapaian = FocusNode();
     _focFile = FocusNode();
     if (_listOpsiTarget.isEmpty) {
       _rtlBloc
@@ -396,7 +399,6 @@ class _RealFormState extends State<RealForm> {
     _focTanggal.dispose();
     _focKendala.dispose();
     _focKeterangan.dispose();
-    _focCapaian.dispose();
     _focFile.dispose();
     _rtlBloc.dispose();
     super.dispose();
@@ -499,15 +501,46 @@ class _RealFormState extends State<RealForm> {
               label: 'Kendala',
               maxLines: 2,
             ),
-            AFwidget.textField(
-              context: context,
-              kontroler: _txtCapaian,
-              focusNode: _focCapaian,
-              label: 'Capaian',
-              keyboard: TextInputType.number,
-              suffix: Icon(
-                FontAwesome5.percent,
-                size: 12,
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 15, 15, 0),
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Capaian',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
+              child: StreamBuilder<double>(
+                stream: _rtlBloc.streamCapaian,
+                builder: (context, snap) {
+                  double nilai = 0;
+                  if (snap.hasData) {
+                    nilai = snap.data!;
+                  } else {
+                    if (widget.real != null) {
+                      fetchCapaian(widget.real!.capaian.toDouble());
+                    }
+                  }
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: Slider(
+                          value: nilai,
+                          min: 0,
+                          max: 100,
+                          label: nilai.round().toString(),
+                          onChanged: (value) {
+                            fetchCapaian(value);
+                          },
+                        ),
+                      ),
+                      Text('${nilai.round()} %'),
+                    ],
+                  );
+                },
               ),
             ),
             StreamBuilder<String>(
@@ -689,15 +722,13 @@ class _RealFormState extends State<RealForm> {
                         _focKeterangan.requestFocus();
                         return;
                       }
-                      if (_txtCapaian.text.isEmpty) {
+                      if (_capaian == 0) {
                         AFwidget.snack(context, 'Capaian harus diisi.');
-                        _focCapaian.requestFocus();
                         return;
                       }
-                      if (int.parse(_txtCapaian.text) > 100) {
+                      if (_capaian > 100) {
                         AFwidget.snack(context,
                             'Nilai Capaian tidak boleh lebih dari 100');
-                        _focCapaian.requestFocus();
                         return;
                       }
 
@@ -708,7 +739,7 @@ class _RealFormState extends State<RealForm> {
                         tanggal: _tanggal,
                         keterangan: _txtKeterangan.text,
                         kendala: _txtKendala.text,
-                        capaian: int.parse(_txtCapaian.text),
+                        capaian: _capaian.round(),
                         file: _pathFile,
                       );
 

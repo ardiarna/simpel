@@ -48,7 +48,6 @@ class RekrutmenBloc {
     required MemberModel member,
     required BumdesModel bumdes,
     required RekrutmenModel rekrutmen,
-    required String kendala,
   }) async {
     var a = await DBHelper.setData(
       rute: 'rekrutmen',
@@ -69,7 +68,7 @@ class RekrutmenBloc {
         'omzet_bumdes': bumdes.omset,
         'jab_desa_bumdes': bumdes.jabatan,
         'jab_periode': bumdes.jabperiode,
-        'kendala_bumdes': kendala,
+        'kendala_bumdes': bumdes.kendala,
       },
     );
     return a;

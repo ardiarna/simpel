@@ -221,7 +221,7 @@ class _PelatihanFormState extends State<PelatihanForm> {
                       );
                   }
                 } else {
-                  if (_currentPage == '') fetchPage('materi');
+                  if (_currentPage == '') fetchPage('rtl');
                   return AFwidget.circularProgress();
                 }
               },
@@ -242,6 +242,10 @@ class _PelatihanFormState extends State<PelatihanForm> {
                       type: BottomNavigationBarType.fixed,
                       items: [
                         BottomNavigationBarItem(
+                          icon: Icon(Icons.receipt_long),
+                          label: 'RTL',
+                        ),
+                        BottomNavigationBarItem(
                           icon: Icon(Icons.description),
                           label: 'Materi',
                         ),
@@ -253,10 +257,6 @@ class _PelatihanFormState extends State<PelatihanForm> {
                         //   icon: Icon(Icons.quiz_outlined),
                         //   label: 'Quiz',
                         // ),
-                        BottomNavigationBarItem(
-                          icon: Icon(Icons.receipt_long),
-                          label: 'RTL',
-                        ),
                         BottomNavigationBarItem(
                           icon: Icon(Icons.record_voice_over),
                           label: 'PSM',
@@ -274,11 +274,11 @@ class _PelatihanFormState extends State<PelatihanForm> {
                         switch (idx) {
                           case 0:
                             fetchMenu(idx);
-                            fetchPage('materi');
+                            fetchPage('rtl');
                             break;
                           case 1:
                             fetchMenu(idx);
-                            fetchPage('rtl');
+                            fetchPage('materi');
                             break;
                           case 2:
                             fetchMenu(idx);

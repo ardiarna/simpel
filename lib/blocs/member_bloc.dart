@@ -66,6 +66,18 @@ class MemberBloc {
     return a;
   }
 
+  Future<Map<String, dynamic>> cekDuplikasi({
+    required String nik,
+    required String email,
+  }) async {
+    var a = await DBHelper.setData(
+      rute: 'member',
+      mode: 'cekduplikasi',
+      body: {'nik': nik, 'email': email},
+    );
+    return a;
+  }
+
   Future<Map<String, dynamic>> signUp(MemberModel member) async {
     var map = member.keMap();
     var a = await DBHelper.setData(

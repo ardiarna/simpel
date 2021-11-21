@@ -203,11 +203,18 @@ class RTLBloc {
     _strFile.sink.add(nilai);
   }
 
+  final _strCapaian = StreamController<double>.broadcast();
+  Stream<double> get streamCapaian => _strCapaian.stream;
+  void fetchCapaian(double nilai) async {
+    _strCapaian.sink.add(nilai);
+  }
+
   void dispose() {
     _strTarget.close();
     _strReal.close();
     _strTanggal.close();
     _strRencanaLabel.close();
     _strFile.close();
+    _strCapaian.close();
   }
 }
