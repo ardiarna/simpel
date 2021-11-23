@@ -4,6 +4,9 @@ import 'package:simpel/models/pelatihan_model.dart';
 import 'package:simpel/utils/db_helper.dart';
 
 class DiskusiBloc {
+  final String _dirImageMember = DBHelper.dirImage + 'member/';
+  String get dirImageMember => _dirImageMember;
+
   final String _dirImageGiat = DBHelper.dirImage + 'pelatihan/mobile/';
   String get dirImageGiat => _dirImageGiat;
 

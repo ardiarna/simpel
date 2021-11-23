@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:simpel/blocs/home_bloc.dart';
+import 'package:simpel/chat/composition_root.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/utils/af_widget.dart';
 import 'package:simpel/views/akun_page.dart';
 import 'package:simpel/views/beranda_page.dart';
-import 'package:simpel/views/diskusi_page.dart';
 import 'package:simpel/views/rekrutmen_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
                 case 'rekrutmen':
                   return RekrutmenPage(member: widget.member);
                 case 'diskusi':
-                  return DiskusiPage(member: widget.member);
+                  return CompositionRoot.composeDiskusi(widget.member);
                 default:
                   return AFwidget.belum(ket: snap.data!);
               }

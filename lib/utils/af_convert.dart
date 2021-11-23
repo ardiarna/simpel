@@ -2,7 +2,9 @@ import 'package:intl/intl.dart';
 
 abstract class AFconvert {
   static String keString(dynamic nilai) {
-    if (nilai != null) {
+    if (nilai is String) {
+      return nilai;
+    } else if (nilai != null) {
       return nilai.toString();
     } else {
       return '';
@@ -10,7 +12,9 @@ abstract class AFconvert {
   }
 
   static int keInt(dynamic nilai) {
-    if (nilai != null) {
+    if (nilai is int) {
+      return nilai;
+    } else if (nilai != null) {
       return int.parse(nilai);
     } else {
       return 0;
@@ -18,7 +22,9 @@ abstract class AFconvert {
   }
 
   static double keDouble(dynamic nilai) {
-    if (nilai != null) {
+    if (nilai is double) {
+      return nilai;
+    } else if (nilai != null) {
       return double.parse(nilai);
     } else {
       return 0;
@@ -28,7 +34,11 @@ abstract class AFconvert {
   static bool keBool(dynamic nilai) {
     if (nilai != null) {
       if (nilai is String) {
-        return nilai == 'Y' ? true : false;
+        if (nilai == 'Y' || nilai == 'true' || nilai == 't') {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return nilai;
       }
@@ -38,7 +48,9 @@ abstract class AFconvert {
   }
 
   static DateTime? keTanggal(dynamic nilai) {
-    if (nilai != null && nilai != '') {
+    if (nilai is DateTime) {
+      return nilai;
+    } else if (nilai != null && nilai != '') {
       return DateTime.parse(nilai);
     } else {
       return null;

@@ -9,7 +9,6 @@ import 'package:simpel/utils/af_combobox.dart';
 import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_sliver_subheader.dart';
 import 'package:simpel/utils/af_widget.dart';
-import 'package:simpel/utils/font_awesome5.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RTLrealPage extends StatefulWidget {
