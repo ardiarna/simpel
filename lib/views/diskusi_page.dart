@@ -36,21 +36,25 @@ class _DiskusiPageState extends State<DiskusiPage> {
   @override
   void initState() {
     super.initState();
-    context.read<DiskusiCubit>().activeUsers(widget.user);
-    context.read<MessageBloc>().add(MessageEvent.onSubscribed(widget.user));
-    final chatsCubit = context.read<ChatsCubit>();
-    chatsCubit.chats();
-    context.read<MessageBloc>().stream.listen((state) async {
-      if (state is MessageReceivedSuccess) {
-        await chatsCubit.viewModel.receivedMessage(state.message);
-        chatsCubit.chats();
-      }
-    });
-  }
+    if (!context.read<DiskusiCubit>().isClosed)
+      context.read<DiskusiCubit>().activeUsers(widget.user);
+    if (!context.read<MessageBloc>().isClosed)
+      context.read<MessageBloc>().add(MessageEvent.onSubscribed(widget.user));
 
-  @override
-  void dispose() {
-    super.dispose();
+    final chatsCubit = context.read<ChatsCubit>();
+    if (!chatsCubit.isClosed) chatsCubit.chats();
+
+    if (!context.read<MessageBloc>().isClosed) {
+      print('ardi');
+      context.read<MessageBloc>().stream.listen((state) async {
+        if (state is MessageReceivedSuccess) {
+          if (!chatsCubit.isClosed) {
+            await chatsCubit.viewModel.receivedMessage(state.message);
+            chatsCubit.chats();
+          }
+        }
+      });
+    }
   }
 
   @override
@@ -58,12 +62,15 @@ class _DiskusiPageState extends State<DiskusiPage> {
     return BlocBuilder<ChatsCubit, List<Chat>>(builder: (_, chats) {
       this.chats = chats;
       if (this.chats.isEmpty) return Container();
-      context.read<TypingNotificationBloc>().add(
-            TypingNotificationEvent.onSubscribed(
-              widget.user,
-              usersWithChat: chats.map((e) => e.from!.nik).toList(),
-            ),
-          );
+      if (!context.read<TypingNotificationBloc>().isClosed) {
+        context.read<TypingNotificationBloc>().add(
+              TypingNotificationEvent.onSubscribed(
+                widget.user,
+                usersWithChat: chats.map((e) => e.from!.nik).toList(),
+              ),
+            );
+      }
+
       return _buildList();
     });
   }
