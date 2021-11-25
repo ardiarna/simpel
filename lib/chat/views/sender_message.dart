@@ -23,7 +23,7 @@ class SenderMessage extends StatelessWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: Colors.lightGreen.shade200,
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   position: DecorationPosition.background,
                   child: Padding(

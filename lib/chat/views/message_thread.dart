@@ -190,7 +190,7 @@ class _MessageThreadState extends State<MessageThread> {
 
   _buildListOfMessages() => ListView.builder(
         itemCount: messages.length,
-        padding: EdgeInsets.fromLTRB(16, 16, 0, 20),
+        padding: EdgeInsets.fromLTRB(0, 16, 0, 20),
         controller: _scrollController,
         physics: AlwaysScrollableScrollPhysics(),
         addAutomaticKeepAlives: true,

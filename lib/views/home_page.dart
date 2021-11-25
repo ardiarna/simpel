@@ -1,4 +1,6 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:simpel/blocs/home_bloc.dart';
 import 'package:simpel/chat/composition_root.dart';
 import 'package:simpel/models/member_model.dart';
@@ -6,6 +8,8 @@ import 'package:simpel/utils/af_widget.dart';
 import 'package:simpel/views/akun_page.dart';
 import 'package:simpel/views/beranda_page.dart';
 import 'package:simpel/views/rekrutmen_page.dart';
+
+import '../main.dart';
 
 class HomePage extends StatefulWidget {
   final int menu;
@@ -38,6 +42,41 @@ class _HomePageState extends State<HomePage> {
     if (page != _currentPage) {
       _currentPage = page;
       _homeBloc.fetchPage(page);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      messaging.subscribeToTopic(widget.member.nik);
+      FirebaseMessaging.onMessage.listen((msg) {
+        RemoteNotification? notification = msg.notification;
+        AndroidNotification? android = msg.notification?.android;
+        if (android != null && notification != null) {
+          bool tampilkan = true;
+          if (tampilkan) {
+            flutterLocalNotificationsPlugin.show(
+              notification.hashCode,
+              notification.title,
+              notification.body,
+              NotificationDetails(
+                android: AndroidNotificationDetails(
+                  channel.id,
+                  channel.name,
+                  playSound: true,
+                  icon: '@mipmap/ic_launcher',
+                ),
+              ),
+            );
+          }
+        }
+      });
+    } catch (e) {
+      AFwidget.alertDialog(
+        context,
+        Text(e.toString()),
+      );
     }
   }
 

@@ -17,14 +17,18 @@ class ReceiverMessage extends StatelessWidget {
       child: Stack(
         children: [
           Padding(
-            padding: EdgeInsets.only(left: 20),
+            padding: EdgeInsets.only(left: 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DecoratedBox(
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(35),
+                      bottomRight: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
                   ),
                   position: DecorationPosition.background,
                   child: Padding(
@@ -56,22 +60,35 @@ class ReceiverMessage extends StatelessWidget {
               ],
             ),
           ),
-          CircleAvatar(
-            backgroundColor: Colors.white,
-            radius: 18,
+          // CircleAvatar(
+          //   backgroundColor: Colors.white,
+          //   radius: 18,
+          //   child: ClipRRect(
+          //     borderRadius: BorderRadius.circular(20),
+          //     child: _url != ''
+          //         ? AFwidget.cachedNetworkImage(
+          //             _url,
+          //             height: 30,
+          //             width: 30,
+          //             fit: BoxFit.fill,
+          //           )
+          //         : Icon(
+          //             Icons.person,
+          //             size: 25,
+          //           ),
+          //   ),
+          // ),
+          Padding(
+            padding: const EdgeInsets.only(top: 0),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: _url != ''
-                  ? AFwidget.cachedNetworkImage(
-                      _url,
-                      height: 30,
-                      width: 30,
-                      fit: BoxFit.fill,
-                    )
-                  : Icon(
-                      Icons.person,
-                      size: 25,
-                    ),
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(10),
+              ),
+              child: Container(
+                color: Colors.grey.shade200,
+                height: 40,
+                width: 15,
+              ),
             ),
           ),
         ],
