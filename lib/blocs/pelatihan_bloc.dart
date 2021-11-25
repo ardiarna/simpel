@@ -11,6 +11,9 @@ import 'package:simpel/models/tugas_model.dart';
 import 'package:simpel/utils/db_helper.dart';
 
 class PelatihanBloc {
+  final String _dirImageMember = DBHelper.dirImage + 'member/';
+  String get dirImageMember => _dirImageMember;
+
   final String _dirMateri = DBHelper.dirBase + 'filelms/01/materi/';
   String get dirMateri => _dirMateri;
 

@@ -4,6 +4,19 @@ import 'package:simpel/utils/db_helper.dart';
 
 class UserService implements IUserService {
   @override
+  Future<User> create(User user) async {
+    var data = user.keMap();
+    var a = await DBHelper.getData(
+      methodeRequest: MethodeRequest.post,
+      rute: 'chat',
+      mode: 'adduser',
+      body: data,
+    );
+
+    return a != null ? User.dariMap(a) : User();
+  }
+
+  @override
   Future<User> connect(User user) async {
     var data = user.keMap();
     if (user.idn != '') data['id'] = user.idn;

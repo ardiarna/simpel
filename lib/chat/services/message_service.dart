@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:simpel/chat/models/user_model.dart';
 import 'package:simpel/chat/models/message_model.dart';
@@ -24,17 +25,28 @@ class MessageService implements IMessageService {
   @override
   Future<Message> send(Message message) async {
     var map = message.keMap();
-    await DBHelper.setData(
+    var a = await DBHelper.setData(
       rute: 'chat',
       mode: 'sendmessage',
       body: map,
     );
-    // if (a['status'].toString() == '1') {
-    //   return true;
-    // } else {
-    //   return false;
-    // }
-    return message;
+
+    if (a['status'].toString() == '1') {
+      return Message.dariMap(a['data']);
+    } else {
+      var r = Random();
+      const _chars = 'fufFRXWNKJsdjjmjRMINYUgyf776FFg120987654321';
+      String rString =
+          List.generate(17, (index) => _chars[r.nextInt(_chars.length)]).join();
+      var b = {
+        'sender': message.from,
+        'receiver': message.to,
+        'created_at': message.timestamp,
+        'contents': message.contents,
+        'id': rString,
+      };
+      return Message.dariMap(b);
+    }
   }
 
   Stream<List<Message>> _getDaftar(User user) async* {

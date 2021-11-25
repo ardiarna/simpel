@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:simpel/utils/db_helper.dart';
 
 abstract class AFwidget {
   static Widget circularProgress({
@@ -354,14 +355,27 @@ abstract class AFwidget {
     double? width,
     double? height,
   }) {
-    return CachedNetworkImage(
-      imageUrl: url,
-      fit: fit,
-      width: width,
-      height: height,
-      progressIndicatorBuilder: (context, url, downloadProgress) =>
-          AFwidget.circularProgress(nilai: downloadProgress.progress),
-      errorWidget: (context, url, error) => Icon(Icons.error),
+    return FutureBuilder<bool>(
+      future: DBHelper.isUrlCanLaunch(url),
+      builder: (context, snap) {
+        if (snap.hasData) {
+          if (snap.data!) {
+            return CachedNetworkImage(
+              imageUrl: url,
+              fit: fit,
+              width: width,
+              height: height,
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  AFwidget.circularProgress(nilai: downloadProgress.progress),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            );
+          } else {
+            return Icon(Icons.broken_image);
+          }
+        } else {
+          return AFwidget.circularProgress();
+        }
+      },
     );
   }
 

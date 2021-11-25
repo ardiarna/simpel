@@ -22,14 +22,12 @@ class MessageThread extends StatefulWidget {
   final User receiver;
   final User me;
   final String chatId;
-  final MessageBloc messageBloc;
   final TypingNotificationBloc typingNotificationBloc;
   final ChatsCubit chatsCubit;
 
   const MessageThread(
     this.receiver,
     this.me,
-    this.messageBloc,
     this.chatsCubit,
     this.typingNotificationBloc, {
     String chatId = '',
@@ -41,11 +39,9 @@ class MessageThread extends StatefulWidget {
 
 class _MessageThreadState extends State<MessageThread> {
   final String _dirImageMember = DBHelper.dirImage + 'member/';
-
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _txt = TextEditingController();
   String chatId = '';
-  late User receiver;
   StreamSubscription? _subscription;
   List<LocalMessage> messages = [];
   Timer? _startTypingTimer;
@@ -55,13 +51,12 @@ class _MessageThreadState extends State<MessageThread> {
   void initState() {
     super.initState();
     chatId = widget.chatId;
-    receiver = widget.receiver;
     _updateOnMessageReceived();
     _updateOnReceiptReceived();
     context.read<ReceiptBloc>().add(ReceiptEvent.onSubscribed(widget.me));
     widget.typingNotificationBloc.add(
       TypingNotificationEvent.onSubscribed(widget.me,
-          usersWithChat: [receiver.nik]),
+          usersWithChat: [widget.receiver.nik]),
     );
   }
 
@@ -97,17 +92,17 @@ class _MessageThreadState extends State<MessageThread> {
                   bool typing = false;
                   if (state is TypingNotificationReceivedSuccess &&
                       state.event.event == Typing.start &&
-                      state.event.from == receiver.nik) {
+                      state.event.from == widget.receiver.nik) {
                     typing = true;
                   }
 
                   return HeaderStatus(
-                    receiver.username,
-                    receiver.photoUrl != ''
-                        ? _dirImageMember + receiver.photoUrl
+                    widget.receiver.username,
+                    widget.receiver.photoUrl != ''
+                        ? _dirImageMember + widget.receiver.photoUrl
                         : '',
-                    receiver.active,
-                    lastSeen: receiver.lastseen,
+                    widget.receiver.active,
+                    lastSeen: widget.receiver.lastseen,
                     typing: typing,
                   );
                 },
@@ -121,10 +116,11 @@ class _MessageThreadState extends State<MessageThread> {
         onTap: () {
           FocusScope.of(context).requestFocus(FocusNode());
         },
-        child: Column(
+        child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
           children: [
-            Flexible(
-              flex: 6,
+            Padding(
+              padding: const EdgeInsets.only(bottom: 70),
               child: BlocBuilder<MessageThreadCubit, List<LocalMessage>>(
                 builder: (_, messages) {
                   this.messages = messages;
@@ -138,49 +134,51 @@ class _MessageThreadState extends State<MessageThread> {
                 },
               ),
             ),
-            Expanded(
-              child: Container(
-                height: 199,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      offset: Offset(0, 13),
-                      blurRadius: 6,
-                      color: Colors.black12,
-                    ),
-                  ],
-                ),
-                alignment: Alignment.topCenter,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: _buildMessageInput(context),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: Container(
-                          height: 45,
-                          width: 45,
-                          child: RawMaterialButton(
-                              fillColor: Colors.green,
-                              shape: CircleBorder(),
-                              elevation: 5,
-                              child: Icon(
-                                Icons.send,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                _sendMessage();
-                              }),
-                        ),
-                      )
-                    ],
+            Container(
+              constraints: BoxConstraints(
+                minHeight: 70,
+                maxHeight: 70,
+              ),
+              height: 70,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(0, 13),
+                    blurRadius: 6,
+                    color: Colors.black12,
                   ),
+                ],
+              ),
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: _buildMessageInput(context),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Container(
+                        height: 35,
+                        width: 35,
+                        child: RawMaterialButton(
+                            fillColor: Colors.green,
+                            shape: CircleBorder(),
+                            elevation: 5,
+                            child: Icon(
+                              Icons.send,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              _sendMessage();
+                            }),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -197,14 +195,14 @@ class _MessageThreadState extends State<MessageThread> {
         physics: AlwaysScrollableScrollPhysics(),
         addAutomaticKeepAlives: true,
         itemBuilder: (_, i) {
-          if (messages[i].message.from == receiver.nik) {
+          if (messages[i].message.from == widget.receiver.nik) {
             _sendReceipt(messages[i]);
             return Padding(
               padding: EdgeInsets.only(bottom: 8),
               child: ReceiverMessage(
                   messages[i],
-                  receiver.photoUrl != ''
-                      ? _dirImageMember + receiver.photoUrl
+                  widget.receiver.photoUrl != ''
+                      ? _dirImageMember + widget.receiver.photoUrl
                       : ''),
             );
           } else {
@@ -247,8 +245,9 @@ class _MessageThreadState extends State<MessageThread> {
 
   void _updateOnMessageReceived() {
     final messageThreadCubit = context.read<MessageThreadCubit>();
-    if (chatId.isNotEmpty) messageThreadCubit.messages(chatId);
-    _subscription = widget.messageBloc.stream.listen((state) async {
+    if (chatId != '') messageThreadCubit.messages(chatId);
+    context.read<MessageBloc>().add(MessageEvent.onSubscribed(widget.me));
+    _subscription = context.read<MessageBloc>().stream.listen((state) async {
       if (state is MessageReceivedSuccess) {
         await messageThreadCubit.viewModel.receivedMessage(state.message);
         final receipt = Receipt(
@@ -262,7 +261,7 @@ class _MessageThreadState extends State<MessageThread> {
       if (state is MessageSentSuccess) {
         await messageThreadCubit.viewModel.sentMessage(state.message);
       }
-      if (chatId.isEmpty) chatId = messageThreadCubit.viewModel.chatId;
+      if (chatId == '') chatId = messageThreadCubit.viewModel.chatId;
       messageThreadCubit.messages(chatId);
     });
   }
@@ -283,13 +282,13 @@ class _MessageThreadState extends State<MessageThread> {
 
     final message = Message(
       from: widget.me.nik,
-      to: receiver.nik,
+      to: widget.receiver.nik,
       timestamp: DateTime.now(),
       contents: _txt.text,
     );
 
     final sendMessageEvent = MessageEvent.onMessageSent(message);
-    widget.messageBloc.add(sendMessageEvent);
+    context.read<MessageBloc>().add(sendMessageEvent);
 
     _txt.clear();
     _startTypingTimer?.cancel();
@@ -315,7 +314,7 @@ class _MessageThreadState extends State<MessageThread> {
 
   void _dispatchTyping(Typing event) {
     final typing =
-        TypingEvent(from: widget.me.nik, to: receiver.nik, event: event);
+        TypingEvent(from: widget.me.nik, to: widget.receiver.nik, event: event);
     widget.typingNotificationBloc
         .add(TypingNotificationEvent.onTypingEventSent(typing));
   }

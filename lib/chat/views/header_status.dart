@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_widget.dart';
 
 class HeaderStatus extends StatelessWidget {
@@ -31,6 +31,7 @@ class HeaderStatus extends StatelessWidget {
                   style: Theme.of(context).textTheme.caption!.copyWith(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                 ),
               ),
@@ -40,13 +41,16 @@ class HeaderStatus extends StatelessWidget {
                     ? Text(
                         online
                             ? 'online'
-                            : 'terakhir terlihat ${DateFormat.yMd().add_jm().format}',
-                        style: Theme.of(context).textTheme.caption,
+                            : 'terakhir terlihat ${AFconvert.matDateTime(lastSeen)}',
+                        style: Theme.of(context).textTheme.caption!.copyWith(
+                              color: Colors.white,
+                            ),
                       )
                     : Text(
                         'mengetik...',
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               fontStyle: FontStyle.italic,
+                              color: Colors.white,
                             ),
                       ),
               ),
@@ -77,7 +81,7 @@ class HeaderStatus extends StatelessWidget {
                     )
                   : Icon(
                       Icons.person,
-                      size: 90,
+                      size: 25,
                     ),
             ),
             Align(

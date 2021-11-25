@@ -54,50 +54,66 @@ class PelatihanModel {
 }
 
 class PersonPSMModel {
-  String posisi;
+  String nik;
   String nama;
+  String foto;
+  String posisi;
 
   PersonPSMModel({
-    this.posisi = '',
+    this.nik = '',
     this.nama = '',
+    this.foto = '',
+    this.posisi = '',
   });
 
   factory PersonPSMModel.dariMap(Map<String, dynamic> map) {
     return PersonPSMModel(
-      posisi: AFconvert.keString(map['posisi']),
+      nik: AFconvert.keString(map['nik']),
       nama: AFconvert.keString(map['nama']),
+      foto: AFconvert.keString(map['pas_foto']),
+      posisi: AFconvert.keString(map['posisi']),
     );
   }
 
   Map<String, dynamic> keMap() {
     Map<String, dynamic> map = {
-      'posisi': posisi,
+      'nik': nik,
       'nama': nama,
+      'pas_foto': foto,
+      'posisi': posisi,
     };
     return map;
   }
 }
 
 class PersonPesertaModel {
-  String posisi;
+  String nik;
   String nama;
+  String foto;
+  String posisi;
 
   PersonPesertaModel({
-    this.posisi = '',
+    this.nik = '',
     this.nama = '',
+    this.foto = '',
+    this.posisi = '',
   });
 
   factory PersonPesertaModel.dariMap(Map<String, dynamic> map) {
     return PersonPesertaModel(
-      posisi: AFconvert.keString(map['posisi']),
+      nik: AFconvert.keString(map['nik']),
       nama: AFconvert.keString(map['nama']),
+      foto: AFconvert.keString(map['pas_foto']),
+      posisi: AFconvert.keString(map['posisi']),
     );
   }
 
   Map<String, dynamic> keMap() {
     Map<String, dynamic> map = {
-      'posisi': posisi,
+      'nik': nik,
       'nama': nama,
+      'pas_foto': foto,
+      'posisi': posisi,
     };
     return map;
   }

@@ -1631,9 +1631,6 @@ class _PelatihanFormState extends State<PelatihanForm> {
   }
 
   Widget tabPSM(List<PersonPSMModel> el) {
-    el.forEach((element) {
-      print(element.nama);
-    });
     List<PersonPSMModel> _listPSM = [];
     List<PersonPSMModel> _listFilterPSM = [];
     final TextEditingController _txtPSM = TextEditingController();
@@ -1757,9 +1754,6 @@ class _PelatihanFormState extends State<PelatihanForm> {
   }
 
   Widget tabPeserta(List<PersonPesertaModel> el) {
-    el.forEach((element) {
-      print(element.nama);
-    });
     List<PersonPesertaModel> _listPeserta = [];
     List<PersonPesertaModel> _listFilterPeserta = [];
     final TextEditingController _txtPeserta = TextEditingController();

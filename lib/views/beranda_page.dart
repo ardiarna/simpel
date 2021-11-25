@@ -23,7 +23,6 @@ class _BerandaPageState extends State<BerandaPage> {
   bool _isShowSlide = true;
 
   _scrollListener() {
-    // print(_scroller.offset);
     if (_scroller.offset >= 135 &&
         _scroller.position.userScrollDirection == ScrollDirection.reverse &&
         _isShowSlide) {

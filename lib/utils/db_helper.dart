@@ -106,4 +106,9 @@ abstract class DBHelper {
     var jd = jsonDecode(resp.body);
     return jd['data'];
   }
+
+  static Future<bool> isUrlCanLaunch(String url) async {
+    var a = await http.get(Uri.parse(url));
+    return (a.statusCode == 200);
+  }
 }

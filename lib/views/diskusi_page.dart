@@ -5,6 +5,7 @@ import 'package:simpel/chat/blocs/diskusi_cubit.dart';
 import 'package:simpel/chat/blocs/message/message_bloc.dart';
 import 'package:simpel/chat/blocs/typing/typing_bloc.dart';
 import 'package:simpel/chat/diskusi_route.dart';
+import 'package:simpel/chat/message_contact.dart';
 import 'package:simpel/chat/models/chat_model.dart';
 import 'package:simpel/chat/models/typing_event_model.dart';
 import 'package:simpel/chat/models/user_model.dart';
@@ -36,43 +37,79 @@ class _DiskusiPageState extends State<DiskusiPage> {
   @override
   void initState() {
     super.initState();
-    if (!context.read<DiskusiCubit>().isClosed)
-      context.read<DiskusiCubit>().activeUsers(widget.user);
-    if (!context.read<MessageBloc>().isClosed)
-      context.read<MessageBloc>().add(MessageEvent.onSubscribed(widget.user));
+
+    // if (!context.read<DiskusiCubit>().isClosed)
+    context.read<DiskusiCubit>().activeUsers(widget.user);
+    // if (!context.read<MessageBloc>().isClosed)
+    context.read<MessageBloc>().add(MessageEvent.onSubscribed(widget.user));
 
     final chatsCubit = context.read<ChatsCubit>();
-    if (!chatsCubit.isClosed) chatsCubit.chats();
+    // if (!chatsCubit.isClosed)
+    chatsCubit.chats();
 
-    if (!context.read<MessageBloc>().isClosed) {
-      print('ardi');
-      context.read<MessageBloc>().stream.listen((state) async {
-        if (state is MessageReceivedSuccess) {
-          if (!chatsCubit.isClosed) {
-            await chatsCubit.viewModel.receivedMessage(state.message);
-            chatsCubit.chats();
-          }
-        }
-      });
-    }
+    // if (!context.read<MessageBloc>().isClosed) {
+    context.read<MessageBloc>().stream.listen((state) async {
+      if (state is MessageReceivedSuccess) {
+        await chatsCubit.viewModel.receivedMessage(state.message);
+        chatsCubit.chats();
+      }
+    });
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ChatsCubit, List<Chat>>(builder: (_, chats) {
-      this.chats = chats;
-      if (this.chats.isEmpty) return Container();
-      if (!context.read<TypingNotificationBloc>().isClosed) {
+    return Scaffold(
+      appBar: AppBar(
+        // titleSpacing: 0,
+        // automaticallyImplyLeading: false,
+        title: Row(
+          children: [
+            // IconButton(
+            //   icon: Icon(Icons.arrow_back_ios_rounded),
+            //   onPressed: () {
+            //     Navigator.of(context).pop(true);
+            //   },
+            // ),
+            Expanded(
+              child: Text('Pojok Diskusi'),
+            ),
+          ],
+        ),
+      ),
+      body: BlocBuilder<ChatsCubit, List<Chat>>(builder: (_, chats) {
+        this.chats = chats;
+        if (this.chats.isEmpty) return Container();
+        // if (!context.read<TypingNotificationBloc>().isClosed) {
         context.read<TypingNotificationBloc>().add(
               TypingNotificationEvent.onSubscribed(
                 widget.user,
                 usersWithChat: chats.map((e) => e.from!.nik).toList(),
               ),
             );
-      }
-
-      return _buildList();
-    });
+        // }
+        return _buildList();
+      }),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.insert_comment),
+        onPressed: () async {
+          var a = await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => MessageContact(nik: widget.user.nik),
+            ),
+          );
+          if (a != null) {
+            await this.widget.router.onShowMessageThread(
+                  context,
+                  a,
+                  widget.user,
+                  chatId: '',
+                );
+            context.read<ChatsCubit>().chats();
+          }
+        },
+      ),
+    );
   }
 
   _buildList() => ListView.separated(
@@ -90,9 +127,11 @@ class _DiskusiPageState extends State<DiskusiPage> {
         dense: true,
         leading: _profileImage(
           imageUrl: (chat.from != null)
-              ? _diskusiBloc.dirImageMember + chat.from!.photoUrl
+              ? (chat.from!.photoUrl != ''
+                  ? _diskusiBloc.dirImageMember + chat.from!.photoUrl
+                  : '')
               : '',
-          online: true,
+          online: chat.from!.active,
         ),
         title: Text(
           chat.from!.username,
@@ -172,6 +211,7 @@ class _DiskusiPageState extends State<DiskusiPage> {
                 widget.user,
                 chatId: chat.id,
               );
+          context.read<ChatsCubit>().chats();
         },
       );
 
@@ -195,7 +235,7 @@ class _DiskusiPageState extends State<DiskusiPage> {
                     )
                   : Icon(
                       Icons.person,
-                      size: 90,
+                      size: 25,
                     ),
             ),
             Align(

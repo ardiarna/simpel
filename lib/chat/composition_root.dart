@@ -31,50 +31,44 @@ import 'package:simpel/views/diskusi_page.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CompositionRoot {
-  static late IUserService _userService;
-  static late IMessageService _messageService;
-  static late IDataSource _dataSource;
   static late Database _db;
+  static late IDataSource _dataSource;
   static late ILocalCache _localCache;
-  static late ITypingNotification _typingNotification;
-  static late TypingNotificationBloc _typingNotificationBloc;
-  static late MessageBloc _messageBloc;
-  static late ChatsCubit _chatsCubit;
-  static late UserCubit _userCubit;
-  static late DiskusiCubit _diskusiCubit;
 
   static configure() async {
-    _userService = UserService();
-    _messageService = MessageService();
     _db = await LocalDatabaseFactory().createDatabase();
     _dataSource = SqfLiteDataSource(_db);
     final sp = await SharedPreferences.getInstance();
     _localCache = LocalCache(sp);
-    _typingNotification = TypingNotification(_userService);
-    _typingNotificationBloc = TypingNotificationBloc(_typingNotification);
-    _messageBloc = MessageBloc(_messageService);
-    final viewModel = ChatsViewModel(_dataSource, _userService);
-    _chatsCubit = ChatsCubit(viewModel);
-    _userCubit = UserCubit(_userService, _localCache);
-    _diskusiCubit = DiskusiCubit(_userService);
     // _db.delete('chats');
     // _db.delete('messages');
   }
 
   static Widget composeDiskusi(MemberModel member) {
+    IUserService _userService = UserService();
+    IMessageService _messageService = MessageService();
+    UserCubit userCubit = UserCubit(_userService, _localCache);
     return FutureBuilder<User>(
-      future: _userCubit.connect(member.nik, member.nama, member.foto),
+      future: userCubit.connect(member.nik, member.nama, member.foto),
       builder: (_, snapUser) {
         if (snapUser.hasData) {
+          DiskusiCubit diskusiCubit = DiskusiCubit(_userService);
+          MessageBloc messageBloc = MessageBloc(_messageService);
+          final viewModel = ChatsViewModel(_dataSource, _userService);
+          ChatsCubit chatsCubit = ChatsCubit(viewModel);
+          ITypingNotification typingNotification =
+              TypingNotification(_userService);
+          TypingNotificationBloc typingNotificationBloc =
+              TypingNotificationBloc(typingNotification);
           IDiskusiRouter router =
               DiskusiRouter(showMessageThread: composeDiskusiThread);
           return MultiBlocProvider(
             providers: [
-              BlocProvider(create: (context) => _diskusiCubit),
-              BlocProvider(create: (context) => _messageBloc),
-              BlocProvider(create: (context) => _userCubit),
-              BlocProvider(create: (context) => _typingNotificationBloc),
-              BlocProvider(create: (context) => _chatsCubit),
+              BlocProvider(create: (context) => diskusiCubit),
+              BlocProvider(create: (context) => messageBloc),
+              BlocProvider(create: (context) => userCubit),
+              BlocProvider(create: (context) => typingNotificationBloc),
+              BlocProvider(create: (context) => chatsCubit),
             ],
             child: DiskusiPage(
               member: member,
@@ -94,7 +88,15 @@ class CompositionRoot {
     User me, {
     String chatId = '',
   }) {
-    ChatViewModel viewModel = ChatViewModel(_dataSource);
+    IUserService _userService = UserService();
+    IMessageService _messageService = MessageService();
+    MessageBloc messageBloc = MessageBloc(_messageService);
+    final viewsModel = ChatsViewModel(_dataSource, _userService);
+    ChatsCubit chatsCubit = ChatsCubit(viewsModel);
+    ITypingNotification typingNotification = TypingNotification(_userService);
+    TypingNotificationBloc typingNotificationBloc =
+        TypingNotificationBloc(typingNotification);
+    final ChatViewModel viewModel = ChatViewModel(_dataSource);
     MessageThreadCubit messageThreadCubit = MessageThreadCubit(viewModel);
     IReceiptService receiptService = ReceiptService();
     ReceiptBloc receiptBloc = ReceiptBloc(receiptService);
@@ -102,13 +104,13 @@ class CompositionRoot {
       providers: [
         BlocProvider(create: (context) => messageThreadCubit),
         BlocProvider(create: (context) => receiptBloc),
+        BlocProvider(create: (context) => messageBloc),
       ],
       child: MessageThread(
         receiver,
         me,
-        _messageBloc,
-        _chatsCubit,
-        _typingNotificationBloc,
+        chatsCubit,
+        typingNotificationBloc,
         chatId: chatId,
       ),
     );
