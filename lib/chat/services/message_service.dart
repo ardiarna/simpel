@@ -11,12 +11,6 @@ class MessageService implements IMessageService {
   StreamSubscription? _changefeed;
 
   @override
-  dispose() {
-    _strKontrol.close();
-    _changefeed?.cancel();
-  }
-
-  @override
   Stream<Message> messages({required User activeUser}) {
     _startReceivingMessages(activeUser);
     return _strKontrol.stream;
@@ -82,5 +76,11 @@ class MessageService implements IMessageService {
       mode: 'delmessage',
       body: {'id': message.id},
     );
+  }
+
+  @override
+  dispose() {
+    _changefeed?.cancel();
+    _strKontrol.close();
   }
 }

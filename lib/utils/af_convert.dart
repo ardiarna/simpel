@@ -57,7 +57,7 @@ abstract class AFconvert {
     }
   }
 
-  static List keList(dynamic nilai) {
+  static List<String> keList(dynamic nilai) {
     if (nilai != null) {
       if (nilai is String) {
         return nilai.split(',');

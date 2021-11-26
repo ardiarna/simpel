@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simpel/chat/models/local_message_model.dart';
 import 'package:simpel/utils/af_convert.dart';
-import 'package:simpel/utils/af_widget.dart';
 
 class ReceiverMessage extends StatelessWidget {
   final String _url;
