@@ -40,7 +40,7 @@ class TypingNotificationBloc
 
   _onTypingNotificationSent(TypingNotificationSent event,
       Emitter<TypingNotificationState> emit) async {
-    await _typingNotification.send(event: event.event);
+    await _typingNotification.send(events: event.events);
     emit(TypingNotificationState.sent());
   }
 

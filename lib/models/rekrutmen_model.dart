@@ -4,6 +4,8 @@ class RekrutmenModel {
   int id;
   String kdgiat;
   String nmgiat;
+  String singkatangiat;
+  String imagegiat;
   int tahun;
   int angkatan;
   DateTime? tglMulai;
@@ -28,6 +30,8 @@ class RekrutmenModel {
     this.id = 0,
     this.kdgiat = '',
     this.nmgiat = '',
+    this.singkatangiat = '',
+    this.imagegiat = '',
     this.tahun = 0,
     this.angkatan = 0,
     this.tglMulai,
@@ -54,6 +58,8 @@ class RekrutmenModel {
       id: AFconvert.keInt(map['id']),
       kdgiat: AFconvert.keString(map['kd_giat']),
       nmgiat: AFconvert.keString(map['nm_giat']),
+      singkatangiat: AFconvert.keString(map['singkatan_giat']),
+      imagegiat: AFconvert.keString(map['image_giat']),
       tahun: AFconvert.keInt(map['tahun']),
       angkatan: AFconvert.keInt(map['angkatan']),
       tglMulai: AFconvert.keTanggal(map['tgl_mulai']),
@@ -81,6 +87,8 @@ class RekrutmenModel {
       'id': AFconvert.keString(id),
       'kd_giat': kdgiat,
       'nm_giat': nmgiat,
+      'singkatan_giat': singkatangiat,
+      'image_giat': singkatangiat,
       'tahun': AFconvert.keString(tahun),
       'angkatan': AFconvert.keString(angkatan),
       'tgl_mulai': AFconvert.keString(tglMulai),

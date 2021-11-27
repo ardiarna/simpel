@@ -20,20 +20,27 @@ class TypingNotification implements ITypingNotification {
   }
 
   @override
-  Future<bool> send({required TypingEvent event}) async {
-    final receiver = await _userService.fetch(event.to);
-    if (!receiver.active) return false;
-    var map = event.keMap();
-    var a = await DBHelper.setData(
-      rute: 'chat',
-      mode: 'sendtyping',
-      body: map,
-    );
-    if (a['status'].toString() == '1') {
-      return true;
-    } else {
-      return false;
+  Future<bool> send({required List<TypingEvent> events}) async {
+    bool hasil = false;
+    final receivers =
+        await _userService.fetch(events.map((e) => e.to).toList());
+    if (receivers.isEmpty) return false;
+    events
+        .retainWhere((event) => receivers.map((e) => e.nik).contains(event.to));
+    for (var event in events) {
+      var map = event.keMap();
+      var a = await DBHelper.setData(
+        rute: 'chat',
+        mode: 'sendtyping',
+        body: map,
+      );
+      if (a['status'].toString() == '1') {
+        hasil = true;
+      } else {
+        hasil = false;
+      }
     }
+    return hasil;
   }
 
   @override
@@ -74,7 +81,7 @@ class TypingNotification implements ITypingNotification {
     await DBHelper.setData(
       rute: 'chat',
       mode: 'deltyping',
-      body: {'id': typing.id},
+      body: {'chat_id': typing.chatId},
     );
   }
 }

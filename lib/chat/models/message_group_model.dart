@@ -2,6 +2,7 @@ import 'package:simpel/utils/af_convert.dart';
 
 class MessageGroup {
   String name;
+  String photoUrl;
   String createdBy;
   List<String> members;
   String _id = '';
@@ -9,6 +10,7 @@ class MessageGroup {
 
   MessageGroup({
     this.name = '',
+    this.photoUrl = '',
     this.createdBy = '',
     this.members = const [],
   });
@@ -16,6 +18,7 @@ class MessageGroup {
   factory MessageGroup.dariMap(Map<String, dynamic> map) {
     final messageGroup = MessageGroup(
       name: AFconvert.keString(map['name']),
+      photoUrl: AFconvert.keString(map['photo_url']),
       createdBy: AFconvert.keString(map['created_by']),
       members: AFconvert.keList(map['members']),
     );
@@ -26,6 +29,7 @@ class MessageGroup {
   Map<String, String> keMap() {
     Map<String, String> map = {
       'name': name,
+      'photo_url': photoUrl,
       'created_by': createdBy,
       'members': AFconvert.keString(members),
     };

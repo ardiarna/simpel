@@ -4,6 +4,9 @@ import 'package:simpel/models/rekrutmen_model.dart';
 import 'package:simpel/utils/db_helper.dart';
 
 class RekrutmenBloc {
+  final String _dirImageGiat = DBHelper.dirImage + 'pelatihan/mobile/';
+  String get dirImageGiat => _dirImageGiat;
+
   Future<List<RekrutmenModel>> getRekrutmens() async {
     List<RekrutmenModel> list = [];
     var a = await DBHelper.getDaftar(

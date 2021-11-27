@@ -5,7 +5,7 @@ class Message {
   final String to;
   final DateTime? timestamp;
   final String contents;
-  String groupId;
+  String? groupId;
   String _id = '';
   String get id => _id;
 
@@ -14,7 +14,7 @@ class Message {
     required this.to,
     required this.timestamp,
     required this.contents,
-    this.groupId = '',
+    this.groupId,
   });
 
   factory Message.dariMap(Map<String, dynamic> map) {
@@ -35,7 +35,7 @@ class Message {
       'receiver': to,
       'created_at': AFconvert.keString(timestamp),
       'contents': AFconvert.keString(contents),
-      'group_id': groupId,
+      'group_id': AFconvert.keString(groupId),
     };
     return map;
   }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:simpel/blocs/pelatihan_bloc.dart';
-import 'package:simpel/models/giat_model.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
 import 'package:simpel/models/rekrutmen_model.dart';
@@ -75,23 +74,14 @@ class _PelatihanPageState extends State<PelatihanPage> {
                                 child: const Text('Nama Pelatihan'),
                               ),
                               const Text(' : '),
-                              FutureBuilder<GiatModel>(
-                                  future: _pelatihanBloc
-                                      .getGiatId(snap.data![i].giatKode),
-                                  builder: (context, snapGiat) {
-                                    String singkatan = '';
-                                    if (snapGiat.hasData)
-                                      singkatan =
-                                          '(${snapGiat.data!.singkatan})';
-                                    return Expanded(
-                                      child: Text(
-                                        '${snap.data![i].nama} $singkatan',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    );
-                                  }),
+                              Expanded(
+                                child: Text(
+                                  '${snap.data![i].nama} ${snap.data![i].singkatan}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                           const Padding(padding: EdgeInsets.only(bottom: 15)),

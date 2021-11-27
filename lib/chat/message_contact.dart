@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simpel/blocs/pelatihan_bloc.dart';
 import 'package:simpel/chat/models/user_model.dart';
 import 'package:simpel/chat/services/user_service.dart';
+import 'package:simpel/chat/views/profil_image.dart';
 import 'package:simpel/models/pelatihan_model.dart';
 import 'package:simpel/utils/af_widget.dart';
 
@@ -64,11 +65,10 @@ class _ContactPSMState extends State<ContactPSM> {
     List<PersonPSMModel> list = [];
     var listLatih = await _pelatihanBloc.getPelatihans(widget.nik);
     for (var latih in listLatih) {
-      var giat = await _pelatihanBloc.getGiatId(latih.giatKode);
       var listPerson = await _pelatihanBloc.getPSM(latih.kode);
       for (var person in listPerson) {
         person.posisi =
-            '${person.posisi} ${giat.singkatan} ${latih.angkatan} - ${latih.tahun}';
+            '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
         list.add(person);
       }
     }
@@ -126,17 +126,19 @@ class _ContactPSMState extends State<ContactPSM> {
                     return ListTile(
                       contentPadding: EdgeInsets.only(left: 16),
                       dense: true,
-                      leading: _profileImage(
+                      leading: ProfilImage(
                         imageUrl: snapPSM.data![i].foto != ''
                             ? _pelatihanBloc.dirImageMember +
                                 snapPSM.data![i].foto
                             : '',
+                        online: false,
                       ),
                       title: Text(snapPSM.data![i].nama),
                       subtitle: Text(snapPSM.data![i].posisi),
                       onTap: () async {
-                        var a = await _userService.fetch(snapPSM.data![i].nik);
-                        if (a.nik != '') {
+                        var a =
+                            await _userService.fetch([snapPSM.data![i].nik]);
+                        if (a.first.nik != '') {
                           Navigator.of(context).pop(a);
                         } else {
                           var b = User(
@@ -175,71 +177,6 @@ class _ContactPSMState extends State<ContactPSM> {
       ],
     );
   }
-
-  _profileImage({
-    String imageUrl = '',
-    bool online = false,
-  }) =>
-      CircleAvatar(
-        backgroundColor: Colors.grey.shade300,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(126),
-              child: imageUrl != ''
-                  ? AFwidget.cachedNetworkImage(
-                      imageUrl,
-                      width: 126,
-                      height: 126,
-                      fit: BoxFit.fill,
-                    )
-                  : Icon(
-                      Icons.record_voice_over,
-                      size: 25,
-                    ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: online ? _onlineIndicator() : Container(),
-            ),
-          ],
-        ),
-      );
-
-  _onlineIndicator() => Container(
-        height: 15,
-        width: 15,
-        decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            width: 3,
-            color: Colors.white,
-          ),
-        ),
-      );
-
-  Widget selKolom({
-    String isi = '',
-    Color warna = Colors.red,
-    FontWeight fontWeight = FontWeight.normal,
-    Color? backGround,
-    Alignment align = Alignment.center,
-  }) {
-    return Container(
-      color: backGround,
-      alignment: align,
-      padding: EdgeInsets.all(5),
-      child: Text(
-        isi,
-        style: TextStyle(
-          color: warna,
-          fontWeight: fontWeight,
-        ),
-      ),
-    );
-  }
 }
 
 class ContactPeserta extends StatefulWidget {
@@ -265,11 +202,10 @@ class _ContactPesertaState extends State<ContactPeserta> {
     List<PersonPesertaModel> list = [];
     var listLatih = await _pelatihanBloc.getPelatihans(widget.nik);
     for (var latih in listLatih) {
-      var giat = await _pelatihanBloc.getGiatId(latih.giatKode);
       var listPerson = await _pelatihanBloc.getPeserta(latih.kode);
       for (var person in listPerson) {
         person.posisi =
-            '${person.posisi} ${giat.singkatan} ${latih.angkatan} - ${latih.tahun}';
+            '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
         list.add(person);
       }
     }
@@ -327,18 +263,19 @@ class _ContactPesertaState extends State<ContactPeserta> {
                     return ListTile(
                       contentPadding: EdgeInsets.only(left: 16),
                       dense: true,
-                      leading: _profileImage(
+                      leading: ProfilImage(
                         imageUrl: snapPeserta.data![i].foto != ''
                             ? _pelatihanBloc.dirImageMember +
                                 snapPeserta.data![i].foto
                             : '',
+                        online: false,
                       ),
                       title: Text(snapPeserta.data![i].nama),
                       subtitle: Text(snapPeserta.data![i].posisi),
                       onTap: () async {
-                        var a =
-                            await _userService.fetch(snapPeserta.data![i].nik);
-                        if (a.nik != '') {
+                        var a = await _userService
+                            .fetch([snapPeserta.data![i].nik]);
+                        if (a.first.nik != '') {
                           Navigator.of(context).pop(a);
                         } else {
                           var b = User(
@@ -349,7 +286,7 @@ class _ContactPesertaState extends State<ContactPeserta> {
                             lastseen: DateTime(2021),
                           );
                           var c = await _userService.create(b);
-                          Navigator.of(context).pop(c);
+                          Navigator.of(context).pop([c]);
                         }
                       },
                     );
@@ -377,48 +314,4 @@ class _ContactPesertaState extends State<ContactPeserta> {
       ],
     );
   }
-
-  _profileImage({
-    String imageUrl = '',
-    bool online = false,
-  }) =>
-      CircleAvatar(
-        backgroundColor: Colors.grey.shade300,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(126),
-              child: imageUrl != ''
-                  ? AFwidget.cachedNetworkImage(
-                      imageUrl,
-                      width: 126,
-                      height: 126,
-                      fit: BoxFit.fill,
-                    )
-                  : Icon(
-                      Icons.person,
-                      size: 25,
-                    ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: online ? _onlineIndicator() : Container(),
-            ),
-          ],
-        ),
-      );
-
-  _onlineIndicator() => Container(
-        height: 15,
-        width: 15,
-        decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            width: 3,
-            color: Colors.white,
-          ),
-        ),
-      );
 }

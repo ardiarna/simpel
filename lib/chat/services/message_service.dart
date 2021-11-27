@@ -17,13 +17,18 @@ class MessageService implements IMessageService {
   }
 
   @override
-  Future<Message> send(Message message) async {
-    var map = message.keMap();
-    var a = await DBHelper.setData(
-      rute: 'chat',
-      mode: 'sendmessage',
-      body: map,
-    );
+  Future<Message> send(List<Message> messages) async {
+    var length = messages.length;
+    var idxLast = length - 1;
+    Map<String, dynamic> a = {};
+    for (var message in messages) {
+      var map = message.keMap();
+      a = await DBHelper.setData(
+        rute: 'chat',
+        mode: 'sendmessage',
+        body: map,
+      );
+    }
 
     if (a['status'].toString() == '1') {
       return Message.dariMap(a['data']);
@@ -33,10 +38,10 @@ class MessageService implements IMessageService {
       String rString =
           List.generate(17, (index) => _chars[r.nextInt(_chars.length)]).join();
       var b = {
-        'sender': message.from,
-        'receiver': message.to,
-        'created_at': message.timestamp,
-        'contents': message.contents,
+        'sender': messages[idxLast].from,
+        'receiver': messages[idxLast].to,
+        'created_at': messages[idxLast].timestamp,
+        'contents': messages[idxLast].contents,
         'id': rString,
       };
       return Message.dariMap(b);

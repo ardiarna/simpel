@@ -343,7 +343,7 @@ class _RealFormState extends State<RealForm> {
 
   void fetchTanggal(DateTime nilai) {
     _tanggal = nilai;
-    _rtlBloc.fetchTanggal(nilai);
+    _rtlBloc.fetchTglAwal(nilai);
   }
 
   void fetchRencanaLabel(int id, String label) {
@@ -448,7 +448,7 @@ class _RealFormState extends State<RealForm> {
               },
             ),
             StreamBuilder<DateTime>(
-              stream: _rtlBloc.streamTanggal,
+              stream: _rtlBloc.streamTglAwal,
               builder: (context, snap) {
                 late DateTime nilai;
                 if (snap.hasData) {

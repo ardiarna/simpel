@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:simpel/blocs/pelatihan_bloc.dart';
 import 'package:simpel/models/evaluasi_model.dart';
-import 'package:simpel/models/giat_model.dart';
 import 'package:simpel/models/kuis_model.dart';
 import 'package:simpel/models/materi_model.dart';
 import 'package:simpel/models/member_model.dart';
@@ -63,49 +62,32 @@ class _PelatihanFormState extends State<PelatihanForm> {
         elevation: 0.5,
         flexibleSpace: Container(
           padding: EdgeInsets.fromLTRB(50, 19, 10, 5),
-          child: FutureBuilder<GiatModel>(
-              future: _pelatihanBloc.getGiatId(widget.pelatihan.giatKode),
-              builder: (context, snap) {
-                if (snap.hasData) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Pelatihan : ',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 25),
-                        child: Text(
-                          '${snap.data!.singkatan} ${widget.pelatihan.angkatan}-${widget.pelatihan.tahun}',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 19,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Text(
-                    'Pelatihan',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  );
-                }
-              }),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Pelatihan : ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: Text(
+                  '${widget.pelatihan.singkatan} ${widget.pelatihan.angkatan}-${widget.pelatihan.tahun}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       body: Stack(

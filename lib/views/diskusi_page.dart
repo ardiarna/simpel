@@ -3,6 +3,7 @@ import 'package:simpel/blocs/diskusi_bloc.dart';
 import 'package:simpel/chat/blocs/chats_cubit.dart';
 import 'package:simpel/chat/blocs/diskusi_cubit.dart';
 import 'package:simpel/chat/blocs/message/message_bloc.dart';
+import 'package:simpel/chat/blocs/message_group/message_group_bloc.dart';
 import 'package:simpel/chat/blocs/typing/typing_bloc.dart';
 import 'package:simpel/chat/diskusi_route.dart';
 import 'package:simpel/chat/message_contact.dart';
@@ -10,18 +11,23 @@ import 'package:simpel/chat/models/chat_model.dart';
 import 'package:simpel/chat/models/typing_event_model.dart';
 import 'package:simpel/chat/models/user_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:simpel/chat/services/user_service.dart';
+import 'package:simpel/chat/viewmodels/chats_view_model.dart';
+import 'package:simpel/chat/views/color_generator.dart';
+import 'package:simpel/chat/views/profil_image.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/utils/af_convert.dart';
-import 'package:simpel/utils/af_widget.dart';
 
 class DiskusiPage extends StatefulWidget {
   final MemberModel member;
   final User user;
   final IDiskusiRouter router;
+  final ChatsViewModel viewModel;
   const DiskusiPage(
       {required this.member,
       required this.user,
       required this.router,
+      required this.viewModel,
       Key? key})
       : super(key: key);
 
@@ -32,6 +38,7 @@ class DiskusiPage extends StatefulWidget {
 class _DiskusiPageState extends State<DiskusiPage> {
   final DiskusiBloc _diskusiBloc = DiskusiBloc();
   List<Chat> chats = [];
+  // List<User> _activeUsers = [];
   final typingEvents = [];
 
   @override
@@ -42,6 +49,9 @@ class _DiskusiPageState extends State<DiskusiPage> {
     context.read<DiskusiCubit>().activeUsers(widget.user);
     // if (!context.read<MessageBloc>().isClosed)
     context.read<MessageBloc>().add(MessageEvent.onSubscribed(widget.user));
+    context
+        .read<MessageGroupBloc>()
+        .add(MessageGroupEvent.onSubscribed(widget.user));
 
     final chatsCubit = context.read<ChatsCubit>();
     // if (!chatsCubit.isClosed)
@@ -54,7 +64,35 @@ class _DiskusiPageState extends State<DiskusiPage> {
         chatsCubit.chats();
       }
     });
-    // }
+
+    // if (!context.read<MessageGroupBloc>().isClosed)
+    context.read<MessageGroupBloc>().stream.listen((state) async {
+      if (state is MessageGroupReceived) {
+        final group = state.messageGroup;
+        group.members.removeWhere((e) => e == widget.user.nik);
+        final membersId = group.members
+            .map((e) => {e: RandomColorGenerator.getColor().value.toString()})
+            .toList();
+        final chat = Chat(
+          group.id,
+          ChatType.group,
+          name: group.name,
+          membersId: membersId,
+          photoUrl: group.photoUrl,
+        );
+        // if (!chatsCubit.isClosed) {
+        await chatsCubit.viewModel.createNewChat(chat);
+        await chatsCubit.chats();
+        // }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    final UserService userService = UserService();
+    userService.disconnect(widget.user.nik, DateTime.now());
+    super.dispose();
   }
 
   @override
@@ -62,7 +100,7 @@ class _DiskusiPageState extends State<DiskusiPage> {
     return Scaffold(
       appBar: AppBar(
         // titleSpacing: 0,
-        // automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             // IconButton(
@@ -74,17 +112,32 @@ class _DiskusiPageState extends State<DiskusiPage> {
             Expanded(
               child: Text('Pojok Diskusi'),
             ),
+            // Expanded(
+            //   child: BlocBuilder<DiskusiCubit, DiskusiState>(
+            //     builder: (_, state) {
+            //       if (state is DiskusiSuccess) {
+            //         _activeUsers = state.onlineUsers;
+            //         return Text('Pojok Diskusi(${state.onlineUsers.length})');
+            //       }
+            //       return Text('Pojok Diskusi');
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),
       body: BlocBuilder<ChatsCubit, List<Chat>>(builder: (_, chats) {
         this.chats = chats;
         if (this.chats.isEmpty) return Container();
+        List<String> userNiks = [];
+        chats.forEach((chat) {
+          userNiks += chat.members.map((e) => e.nik).toList();
+        });
         // if (!context.read<TypingNotificationBloc>().isClosed) {
         context.read<TypingNotificationBloc>().add(
               TypingNotificationEvent.onSubscribed(
                 widget.user,
-                usersWithChat: chats.map((e) => e.from!.nik).toList(),
+                usersWithChat: userNiks.toSet().toList(),
               ),
             );
         // }
@@ -93,22 +146,34 @@ class _DiskusiPageState extends State<DiskusiPage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.insert_comment),
         onPressed: () async {
-          var a = await Navigator.of(context).push(
+          var a = await Navigator.of(context).push<List<User>>(
             MaterialPageRoute(
               builder: (context) => MessageContact(nik: widget.user.nik),
             ),
           );
           if (a != null) {
             await this.widget.router.onShowMessageThread(
-                  context,
-                  a,
-                  widget.user,
-                  chatId: '',
+                  context: context,
+                  receivers: a,
+                  me: widget.user,
+                  chat: Chat('', ChatType.individual),
                 );
             context.read<ChatsCubit>().chats();
           }
         },
       ),
+      //     FloatingActionButton(
+      //   child: Icon(
+      //     Icons.group_add_rounded,
+      //   ),
+      //   onPressed: () async {
+      //     await widget.router.onShowCreateGroup(
+      //       context,
+      //       _activeUsers,
+      //       widget.user,
+      //     );
+      //   },
+      // ),
     );
   }
 
@@ -125,16 +190,22 @@ class _DiskusiPageState extends State<DiskusiPage> {
   _listItem(Chat chat) => ListTile(
         contentPadding: EdgeInsets.only(left: 16),
         dense: true,
-        leading: _profileImage(
-          imageUrl: (chat.from != null)
-              ? (chat.from!.photoUrl != ''
-                  ? _diskusiBloc.dirImageMember + chat.from!.photoUrl
-                  : '')
-              : '',
-          online: chat.from!.active,
+        leading: ProfilImage(
+          imageUrl: (chat.type == ChatType.individual)
+              ? chat.members.first.photoUrl != ''
+                  ? _diskusiBloc.dirImageMember + chat.members.first.photoUrl
+                  : ''
+              : chat.photoUrl != ''
+                  ? _diskusiBloc.dirImageGiat + chat.photoUrl
+                  : '',
+          online: chat.type == ChatType.individual
+              ? chat.members.first.active
+              : false,
         ),
         title: Text(
-          chat.from!.username,
+          chat.type == ChatType.individual
+              ? chat.members.first.username
+              : chat.name,
           style: Theme.of(context).textTheme.subtitle2!.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
@@ -144,25 +215,51 @@ class _DiskusiPageState extends State<DiskusiPage> {
             builder: (_, state) {
           if (state is TypingNotificationReceivedSuccess &&
               state.event.event == Typing.start &&
-              state.event.from == chat.from!.nik)
-            this.typingEvents.add(state.event.from);
+              state.event.chatId == chat.id)
+            this.typingEvents.add(state.event.chatId);
 
           if (state is TypingNotificationReceivedSuccess &&
               state.event.event == Typing.stop &&
-              state.event.from == chat.from!.nik)
-            this.typingEvents.remove(state.event.from);
+              state.event.chatId == chat.id)
+            this.typingEvents.remove(state.event.chatId);
 
-          if (this.typingEvents.contains(chat.from!.nik))
-            return Text(
-              'Mengetik...',
-              style: Theme.of(context)
-                  .textTheme
-                  .caption!
-                  .copyWith(fontStyle: FontStyle.italic),
-            );
+          if (this.typingEvents.contains(chat.id)) {
+            switch (chat.type) {
+              case ChatType.group:
+                final st = state as TypingNotificationReceivedSuccess;
+                final username = chat.members
+                    .firstWhere((e) => e.nik == st.event.from)
+                    .username;
+                return Text(
+                  '$username sedang mengetik...',
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption!
+                      .copyWith(fontStyle: FontStyle.italic),
+                );
 
+              default:
+                return Text(
+                  'Mengetik...',
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption!
+                      .copyWith(fontStyle: FontStyle.italic),
+                );
+            }
+          }
           return Text(
-            chat.mostRecent!.message.contents,
+            chat.mostRecent != null
+                ? chat.type == ChatType.individual
+                    ? chat.mostRecent!.message.contents
+                    : (chat.members
+                            .firstWhere(
+                                (e) => e.nik == chat.mostRecent!.message.from,
+                                orElse: () => User(username: 'Anda'))
+                            .username) +
+                        ': ' +
+                        chat.mostRecent!.message.contents
+                : 'Diskusi Grup Dibuat',
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             softWrap: true,
@@ -176,12 +273,13 @@ class _DiskusiPageState extends State<DiskusiPage> {
         trailing: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              AFconvert.matDateTime(chat.mostRecent!.message.timestamp),
-              style: Theme.of(context).textTheme.overline!.copyWith(
-                    color: Colors.black54,
-                  ),
-            ),
+            if (chat.mostRecent != null)
+              Text(
+                AFconvert.matDateTime(chat.mostRecent!.message.timestamp),
+                style: Theme.of(context).textTheme.overline!.copyWith(
+                      color: Colors.black54,
+                    ),
+              ),
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
               child: ClipRRect(
@@ -206,56 +304,12 @@ class _DiskusiPageState extends State<DiskusiPage> {
         ),
         onTap: () async {
           await this.widget.router.onShowMessageThread(
-                context,
-                chat.from!,
-                widget.user,
-                chatId: chat.id,
+                context: context,
+                receivers: chat.members,
+                me: widget.user,
+                chat: chat,
               );
           context.read<ChatsCubit>().chats();
         },
-      );
-
-  _profileImage({
-    String imageUrl = '',
-    bool online = false,
-  }) =>
-      CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(126),
-              child: imageUrl != ''
-                  ? AFwidget.cachedNetworkImage(
-                      imageUrl,
-                      width: 126,
-                      height: 126,
-                      fit: BoxFit.fill,
-                    )
-                  : Icon(
-                      Icons.person,
-                      size: 25,
-                    ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: online ? _onlineIndicator() : Container(),
-            ),
-          ],
-        ),
-      );
-
-  _onlineIndicator() => Container(
-        height: 15,
-        width: 15,
-        decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            width: 3,
-            color: Colors.white,
-          ),
-        ),
       );
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:simpel/models/evaluasi_model.dart';
-import 'package:simpel/models/giat_model.dart';
 import 'package:simpel/models/kuis_model.dart';
 import 'package:simpel/models/materi_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
@@ -222,16 +221,6 @@ class PelatihanBloc {
       body: {'kode': kode},
     );
     return a != null ? RekrutmenModel.dariMap(a) : RekrutmenModel();
-  }
-
-  Future<GiatModel> getGiatId(String kode) async {
-    var a = await DBHelper.getData(
-      methodeRequest: MethodeRequest.post,
-      rute: 'combo',
-      mode: 'giat',
-      body: {'kode': kode},
-    );
-    return a != null ? GiatModel.dariMap(a) : GiatModel();
   }
 
   void dispose() {

@@ -16,13 +16,15 @@ class TypingEvent {
   final String from;
   final String to;
   final Typing event;
+  String chatId;
   String _id = '';
   String get id => _id;
 
   TypingEvent({
-    this.from = '',
-    this.to = '',
-    this.event = Typing.start,
+    required this.from,
+    required this.to,
+    required this.event,
+    required this.chatId,
   });
 
   factory TypingEvent.dariMap(Map<String, dynamic> map) {
@@ -30,6 +32,7 @@ class TypingEvent {
       from: AFconvert.keString(map['sender']),
       to: AFconvert.keString(map['receiver']),
       event: TypingParser.fromString(map['event']),
+      chatId: AFconvert.keString(map['chat_id']),
     );
     receipt._id = AFconvert.keString(map['id']);
     return receipt;
@@ -40,6 +43,7 @@ class TypingEvent {
       'sender': from,
       'receiver': to,
       'event': event.value(),
+      'chat_id': chatId,
     };
     return map;
   }

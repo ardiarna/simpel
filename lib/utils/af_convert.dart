@@ -4,6 +4,8 @@ abstract class AFconvert {
   static String keString(dynamic nilai) {
     if (nilai is String) {
       return nilai;
+    } else if (nilai is List<String>) {
+      return nilai.join(",");
     } else if (nilai != null) {
       return nilai.toString();
     } else {

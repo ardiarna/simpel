@@ -11,6 +11,8 @@ abstract class AFwidget {
     double? nilai,
     Color? warna,
     String? keterangan,
+    double tinggi = 45,
+    double lebar = 45,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -18,8 +20,8 @@ abstract class AFwidget {
       children: [
         Center(
           child: Container(
-            height: 45,
-            width: 45,
+            height: tinggi,
+            width: lebar,
             margin: const EdgeInsets.all(5),
             child: CircularProgressIndicator(
               value: nilai,
@@ -157,6 +159,8 @@ abstract class AFwidget {
     String judul = '',
     double? tinggi,
     bool isScrollControlled = true,
+    bool isDismissible = true,
+    bool enableDrag = false,
   }) {
     return showModalBottomSheet(
       constraints: BoxConstraints(
@@ -165,6 +169,8 @@ abstract class AFwidget {
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: isScrollControlled,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
       builder: (context) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -366,14 +372,23 @@ abstract class AFwidget {
               width: width,
               height: height,
               progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  AFwidget.circularProgress(nilai: downloadProgress.progress),
+                  AFwidget.circularProgress(
+                nilai: downloadProgress.progress,
+                tinggi: 25,
+                lebar: 25,
+                warna: Colors.red,
+              ),
               errorWidget: (context, url, error) => Icon(Icons.error),
             );
           } else {
             return Icon(Icons.broken_image);
           }
         } else {
-          return AFwidget.circularProgress();
+          return AFwidget.circularProgress(
+            tinggi: 25,
+            lebar: 25,
+            warna: Colors.green,
+          );
         }
       },
     );
@@ -400,6 +415,7 @@ abstract class AFwidget {
     int? maxLength,
     InputBorder? border,
     EdgeInsetsGeometry? padding,
+    TextInputAction? textInputAction,
   }) {
     return Container(
       margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
@@ -427,6 +443,7 @@ abstract class AFwidget {
         maxLines: maxLines,
         minLines: minLines,
         maxLength: maxLength,
+        textInputAction: textInputAction,
       ),
     );
   }

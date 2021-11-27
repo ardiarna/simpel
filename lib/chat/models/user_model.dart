@@ -39,4 +39,8 @@ class User {
     };
     return map;
   }
+
+  bool operator ==(Object other) => other is User && other.idn == idn;
+
+  int get hashCode => idn.hashCode;
 }

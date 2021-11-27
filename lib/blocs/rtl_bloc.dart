@@ -185,10 +185,16 @@ class RTLBloc {
     _strReal.sink.add(list);
   }
 
-  final _strTanggal = StreamController<DateTime>.broadcast();
-  Stream<DateTime> get streamTanggal => _strTanggal.stream;
-  void fetchTanggal(DateTime nilai) async {
-    _strTanggal.sink.add(nilai);
+  final _strTglAwal = StreamController<DateTime>.broadcast();
+  Stream<DateTime> get streamTglAwal => _strTglAwal.stream;
+  void fetchTglAwal(DateTime nilai) async {
+    _strTglAwal.sink.add(nilai);
+  }
+
+  final _strTglAkhir = StreamController<DateTime>.broadcast();
+  Stream<DateTime> get streamTglAkhir => _strTglAkhir.stream;
+  void fetchTglAkhir(DateTime nilai) async {
+    _strTglAkhir.sink.add(nilai);
   }
 
   final _strRencanaLabel = StreamController<String>.broadcast();
@@ -212,7 +218,8 @@ class RTLBloc {
   void dispose() {
     _strTarget.close();
     _strReal.close();
-    _strTanggal.close();
+    _strTglAwal.close();
+    _strTglAkhir.close();
     _strRencanaLabel.close();
     _strFile.close();
     _strCapaian.close();

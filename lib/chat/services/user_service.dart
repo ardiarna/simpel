@@ -1,5 +1,6 @@
 import 'package:simpel/chat/models/user_model.dart';
 import 'package:simpel/chat/services/user_service_contract.dart';
+import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/db_helper.dart';
 
 class UserService implements IUserService {
@@ -32,13 +33,13 @@ class UserService implements IUserService {
   }
 
   @override
-  Future<void> disconnect(User user) async {
-    var data = user.keMap();
+  Future<void> disconnect(String nik, DateTime lastseen) async {
+    String last = AFconvert.keString(lastseen);
     await DBHelper.getData(
       methodeRequest: MethodeRequest.post,
       rute: 'chat',
       mode: 'disconnect',
-      body: data,
+      body: {'nik': nik, 'last_seen': last},
     );
   }
 
@@ -59,14 +60,18 @@ class UserService implements IUserService {
   }
 
   @override
-  Future<User> fetch(String nik) async {
-    var a = await DBHelper.getData(
-      methodeRequest: MethodeRequest.post,
-      rute: 'chat',
-      mode: 'getuser',
-      body: {'nik': nik},
-    );
-
-    return a != null ? User.dariMap(a) : User();
+  Future<List<User>> fetch(List<String> niks) async {
+    List<User> list = [];
+    for (var nik in niks) {
+      var a = await DBHelper.getData(
+        methodeRequest: MethodeRequest.post,
+        rute: 'chat',
+        mode: 'getuser',
+        body: {'nik': nik},
+      );
+      var b = a != null ? User.dariMap(a) : User();
+      list.add(b);
+    }
+    return list;
   }
 }

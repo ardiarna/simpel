@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:simpel/chat/models/message_group_model.dart';
 import 'package:simpel/chat/models/user_model.dart';
-import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/db_helper.dart';
 
 abstract class IGroupService {
@@ -34,6 +33,7 @@ class MessageGroupService implements IGroupService {
           List.generate(27, (index) => _chars[r.nextInt(_chars.length)]).join();
       var b = {
         'name': messageGroup.name,
+        'photo_url': messageGroup.photoUrl,
         'created_by': messageGroup.createdBy,
         'members': messageGroup.members,
         'id': rString,
@@ -58,28 +58,28 @@ class MessageGroupService implements IGroupService {
   }
 
   _updateWhenReceivedGroupCreated(MessageGroup messageGroup, User user) async {
-    var a = await DBHelper.setData(
-      rute: 'chat',
-      mode: 'receivedmessagegroup',
-      body: {'name': messageGroup.name, 'nik': user.nik},
-    );
-
-    if (a['status'].toString() == '1') {
-      _removeGroupWhenDeliverredToAll(a['data']);
-    }
-  }
-
-  _removeGroupWhenDeliverredToAll(Map nilai) async {
-    final List members = AFconvert.keList(nilai['members']);
-    final List alreadyReceived = AFconvert.keList(nilai['received_by']);
-    final String name = AFconvert.keString(nilai['name']);
-    if (members.length > alreadyReceived.length) return;
     await DBHelper.setData(
       rute: 'chat',
-      mode: 'delmessagegroup',
-      body: {'name': name},
+      mode: 'receivedmessagegroup',
+      body: {'id': messageGroup.id, 'nik': user.nik},
     );
+
+    // if (a['status'].toString() == '1') {
+    //   _removeGroupWhenDeliverredToAll(a['data']);
+    // }
   }
+
+  // _removeGroupWhenDeliverredToAll(Map nilai) async {
+  //   final List members = AFconvert.keList(nilai['members']);
+  //   final List alreadyReceived = AFconvert.keList(nilai['received_by']);
+  //   final String id = AFconvert.keString(nilai['id']);
+  //   if (members.length > alreadyReceived.length) return;
+  //   await DBHelper.setData(
+  //     rute: 'chat',
+  //     mode: 'delmessagegroup',
+  //     body: {'id': id},
+  //   );
+  // }
 
   Stream<List<MessageGroup>> _getDaftar(User user) async* {
     while (true) {

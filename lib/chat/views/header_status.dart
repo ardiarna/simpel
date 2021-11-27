@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:simpel/utils/af_convert.dart';
-import 'package:simpel/utils/af_widget.dart';
+import 'package:simpel/chat/views/profil_image.dart';
 
 class HeaderStatus extends StatelessWidget {
   final String username;
   final String imageUrl;
   final bool online;
-  final DateTime? lastSeen;
-  final bool typing;
-  const HeaderStatus(this.username, this.imageUrl, this.online,
-      {this.lastSeen, this.typing = false});
+  final String description;
+  final String typing;
+  const HeaderStatus(
+    this.username,
+    this.imageUrl,
+    this.online, {
+    this.description = '',
+    this.typing = '',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,7 @@ class HeaderStatus extends StatelessWidget {
       width: double.maxFinite,
       child: Row(
         children: [
-          _profileImage(
+          ProfilImage(
             imageUrl: imageUrl,
             online: online,
           ),
@@ -37,17 +41,15 @@ class HeaderStatus extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 12),
-                child: !typing
+                child: typing == ''
                     ? Text(
-                        online
-                            ? 'online'
-                            : 'terakhir terlihat ${AFconvert.matDateTime(lastSeen)}',
+                        online ? 'online' : description,
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               color: Colors.white,
                             ),
                       )
                     : Text(
-                        'mengetik...',
+                        typing,
                         style: Theme.of(context).textTheme.caption!.copyWith(
                               fontStyle: FontStyle.italic,
                               color: Colors.white,
@@ -60,48 +62,4 @@ class HeaderStatus extends StatelessWidget {
       ),
     );
   }
-
-  _profileImage({
-    String imageUrl = '',
-    bool online = false,
-  }) =>
-      CircleAvatar(
-        backgroundColor: Colors.transparent,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(126),
-              child: imageUrl != ''
-                  ? AFwidget.cachedNetworkImage(
-                      imageUrl,
-                      width: 126,
-                      height: 126,
-                      fit: BoxFit.fill,
-                    )
-                  : Icon(
-                      Icons.person,
-                      size: 25,
-                    ),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: online ? _onlineIndicator() : Container(),
-            ),
-          ],
-        ),
-      );
-
-  _onlineIndicator() => Container(
-        height: 15,
-        width: 15,
-        decoration: BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            width: 3,
-            color: Colors.white,
-          ),
-        ),
-      );
 }

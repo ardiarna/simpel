@@ -90,8 +90,12 @@ class _RTLtargetPageState extends State<RTLtargetPage> {
                                       ),
                                       Text(
                                         AFconvert.matDate(
-                                          snapTarget.data![i].tanggal,
-                                        ),
+                                              snapTarget.data![i].tglAwal,
+                                            ) +
+                                            ' s/d ' +
+                                            AFconvert.matDate(
+                                              snapTarget.data![i].tglAkhir,
+                                            ),
                                       ),
                                     ],
                                   ),
@@ -201,35 +205,46 @@ class TargetForm extends StatefulWidget {
 
 class _TargetFormState extends State<TargetForm> {
   final RTLBloc _rtlBloc = RTLBloc();
-  final TextEditingController _txtTanggal = TextEditingController();
+  final TextEditingController _txtTglAwal = TextEditingController();
+  final TextEditingController _txtTglAkhir = TextEditingController();
   final TextEditingController _txtRencana = TextEditingController();
   final TextEditingController _txtKeterangan = TextEditingController();
-  late FocusNode _focTanggal;
+  late FocusNode _focTglAwal;
+  late FocusNode _focTglAkhir;
   late FocusNode _focRencana;
   late FocusNode _focKeterangan;
-  DateTime? _tanggal;
+  DateTime? _tglAwal;
+  DateTime? _tglAkhir;
 
-  void fetchTanggal(DateTime nilai) {
-    _tanggal = nilai;
-    _rtlBloc.fetchTanggal(nilai);
+  void fetchTglAwal(DateTime nilai) {
+    _tglAwal = nilai;
+    _rtlBloc.fetchTglAwal(nilai);
+  }
+
+  void fetchTglAkhir(DateTime nilai) {
+    _tglAkhir = nilai;
+    _rtlBloc.fetchTglAkhir(nilai);
   }
 
   @override
   void initState() {
     super.initState();
     if (widget.target != null) {
-      fetchTanggal(widget.target!.tanggal!);
+      fetchTglAwal(widget.target!.tglAwal!);
+      fetchTglAkhir(widget.target!.tglAkhir!);
       _txtRencana.text = widget.target!.rencana;
       _txtKeterangan.text = widget.target!.keterangan;
     }
-    _focTanggal = FocusNode();
+    _focTglAwal = FocusNode();
+    _focTglAkhir = FocusNode();
     _focRencana = FocusNode();
     _focKeterangan = FocusNode();
   }
 
   @override
   void dispose() {
-    _focTanggal.dispose();
+    _focTglAwal.dispose();
+    _focTglAkhir.dispose();
     _focRencana.dispose();
     _focKeterangan.dispose();
     _rtlBloc.dispose();
@@ -248,25 +263,25 @@ class _TargetFormState extends State<TargetForm> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             StreamBuilder<DateTime>(
-              stream: _rtlBloc.streamTanggal,
+              stream: _rtlBloc.streamTglAwal,
               builder: (context, snap) {
                 late DateTime nilai;
                 if (snap.hasData) {
                   nilai = snap.data!;
-                  _txtTanggal.text = AFconvert.matDate(snap.data);
+                  _txtTglAwal.text = AFconvert.matDate(snap.data);
                 } else {
                   nilai = DateTime.now();
                   if (widget.target != null) {
-                    if (widget.target!.tanggal != null) {
-                      fetchTanggal(widget.target!.tanggal!);
+                    if (widget.target!.tglAwal != null) {
+                      fetchTglAwal(widget.target!.tglAwal!);
                     }
                   }
                 }
                 return AFwidget.textField(
                   context: context,
-                  kontroler: _txtTanggal,
-                  focusNode: _focTanggal,
-                  label: 'Tanggal Rencana',
+                  kontroler: _txtTglAwal,
+                  focusNode: _focTglAwal,
+                  label: 'Tanggal Awal',
                   readonly: true,
                   prefix: const Icon(
                     Icons.calendar_today,
@@ -280,7 +295,46 @@ class _TargetFormState extends State<TargetForm> {
                       lastDate: DateTime(2099),
                     );
                     if (a != null) {
-                      fetchTanggal(a);
+                      fetchTglAwal(a);
+                    }
+                  },
+                );
+              },
+            ),
+            StreamBuilder<DateTime>(
+              stream: _rtlBloc.streamTglAkhir,
+              builder: (context, snap) {
+                late DateTime nilai;
+                if (snap.hasData) {
+                  nilai = snap.data!;
+                  _txtTglAkhir.text = AFconvert.matDate(snap.data);
+                } else {
+                  nilai = DateTime.now();
+                  if (widget.target != null) {
+                    if (widget.target!.tglAkhir != null) {
+                      fetchTglAkhir(widget.target!.tglAkhir!);
+                    }
+                  }
+                }
+                return AFwidget.textField(
+                  context: context,
+                  kontroler: _txtTglAkhir,
+                  focusNode: _focTglAkhir,
+                  label: 'Tanggal Akhir',
+                  readonly: true,
+                  prefix: const Icon(
+                    Icons.calendar_today,
+                    size: 20,
+                  ),
+                  ontap: () async {
+                    var a = await showDatePicker(
+                      context: context,
+                      initialDate: nilai,
+                      firstDate: DateTime(2021),
+                      lastDate: DateTime(2099),
+                    );
+                    if (a != null) {
+                      fetchTglAkhir(a);
                     }
                   },
                 );
@@ -367,9 +421,14 @@ class _TargetFormState extends State<TargetForm> {
                   ElevatedButton(
                     child: Text('Simpan'),
                     onPressed: () async {
-                      if (_tanggal == null) {
-                        AFwidget.snack(context, 'Tanggal harus diisi.');
-                        _focTanggal.requestFocus();
+                      if (_tglAwal == null) {
+                        AFwidget.snack(context, 'Tanggal Awal harus diisi.');
+                        _focTglAwal.requestFocus();
+                        return;
+                      }
+                      if (_tglAkhir == null) {
+                        AFwidget.snack(context, 'Tanggal Akhir harus diisi.');
+                        _focTglAkhir.requestFocus();
                         return;
                       }
                       if (_txtRencana.text.isEmpty) {
@@ -391,7 +450,8 @@ class _TargetFormState extends State<TargetForm> {
                         root: widget.target != null
                             ? widget.target!.root
                             : '${widget.pelatihan.giatKode}${widget.pelatihan.tahun}${widget.pelatihan.angkatan}',
-                        tanggal: _tanggal,
+                        tglAwal: _tglAwal,
+                        tglAkhir: _tglAkhir,
                         rencana: _txtRencana.text,
                         keterangan: _txtKeterangan.text,
                       );

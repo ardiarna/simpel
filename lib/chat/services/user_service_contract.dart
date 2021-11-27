@@ -4,6 +4,6 @@ abstract class IUserService {
   Future<User> create(User user);
   Future<User> connect(User user);
   Future<List<User>> online();
-  Future<void> disconnect(User user);
-  Future<User> fetch(String nik);
+  Future<void> disconnect(String nik, DateTime lastseen);
+  Future<List<User>> fetch(List<String> niks);
 }

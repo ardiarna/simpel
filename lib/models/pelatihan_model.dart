@@ -3,6 +3,7 @@ import 'package:simpel/utils/af_convert.dart';
 class PelatihanModel {
   String kode;
   String nama;
+  String singkatan;
   int tahun;
   int angkatan;
   String fstatus;
@@ -14,6 +15,7 @@ class PelatihanModel {
   PelatihanModel({
     this.kode = '',
     this.nama = '',
+    this.singkatan = '',
     this.tahun = 0,
     this.angkatan = 0,
     this.fstatus = '',
@@ -27,6 +29,7 @@ class PelatihanModel {
     return PelatihanModel(
       kode: AFconvert.keString(map['kode']),
       nama: AFconvert.keString(map['nama']),
+      singkatan: AFconvert.keString(map['singkatan']),
       tahun: AFconvert.keInt(map['tahun']),
       angkatan: AFconvert.keInt(map['angkatan']),
       fstatus: AFconvert.keString(map['fstatus']),
@@ -41,6 +44,7 @@ class PelatihanModel {
     Map<String, dynamic> map = {
       'kode': kode,
       'nama': nama,
+      'singkatan': singkatan,
       'tahun': tahun,
       'angkatan': angkatan,
       'fstatus': fstatus,

@@ -4,7 +4,8 @@ class RTLtargetModel {
   int id;
   String root;
   String nik;
-  DateTime? tanggal;
+  DateTime? tglAwal;
+  DateTime? tglAkhir;
   String rencana;
   String keterangan;
 
@@ -12,7 +13,8 @@ class RTLtargetModel {
     this.id = 0,
     this.root = '',
     this.nik = '',
-    this.tanggal,
+    this.tglAwal,
+    this.tglAkhir,
     this.rencana = '',
     this.keterangan = '',
   });
@@ -22,7 +24,8 @@ class RTLtargetModel {
       id: AFconvert.keInt(map['target_id']),
       root: AFconvert.keString(map['kdroot']),
       nik: AFconvert.keString(map['nik']),
-      tanggal: AFconvert.keTanggal(map['target_tanggal']),
+      tglAwal: AFconvert.keTanggal(map['target_tgl_awal']),
+      tglAkhir: AFconvert.keTanggal(map['target_tgl_akhir']),
       rencana: AFconvert.keString(map['target_rencana']),
       keterangan: AFconvert.keString(map['target_keterangan']),
     );
@@ -33,7 +36,8 @@ class RTLtargetModel {
       'target_id': AFconvert.keString(id),
       'kdroot': root,
       'nik': nik,
-      'target_tanggal': AFconvert.keString(tanggal),
+      'target_tgl_awal': AFconvert.keString(tglAwal),
+      'target_tgl_akhir': AFconvert.keString(tglAkhir),
       'target_rencana': rencana,
       'target_keterangan': keterangan,
     };
