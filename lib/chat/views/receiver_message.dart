@@ -19,8 +19,6 @@ class ReceiverMessage extends StatelessWidget {
     Color? color,
   }) : this.color = color;
 
-  final String _dirImageMember = DBHelper.dirImage + 'member/';
-
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
@@ -35,7 +33,7 @@ class ReceiverMessage extends StatelessWidget {
               children: [
                 if (type == ChatType.group)
                   Padding(
-                    padding: EdgeInsets.only(left: 22, bottom: 2),
+                    padding: EdgeInsets.only(left: 2, bottom: 2),
                     child: Align(
                       alignment: Alignment.topLeft,
                       child: Text(
@@ -94,13 +92,13 @@ class ReceiverMessage extends StatelessWidget {
           ),
           type == ChatType.group
               ? Padding(
-                  padding: const EdgeInsets.only(left: 10, bottom: 5),
+                  padding: const EdgeInsets.only(left: 12, top: 23),
                   child: ProfilImage(
                     imageUrl: _user.photoUrl != ''
-                        ? _dirImageMember + _user.photoUrl
+                        ? '${DBHelper.dirImage}${_user.kategori}/${_user.photoUrl}'
                         : '',
                     online: _user.active,
-                    size: 30,
+                    size: 20,
                   ),
                 )
               : Padding(

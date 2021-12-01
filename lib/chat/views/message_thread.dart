@@ -5,11 +5,9 @@ import 'package:simpel/chat/blocs/chats_cubit.dart';
 import 'package:simpel/chat/blocs/message/message_bloc.dart';
 import 'package:simpel/chat/blocs/message_thread/message_thread_cubit.dart';
 import 'package:simpel/chat/blocs/receipt/receipt_bloc.dart';
-import 'package:simpel/chat/blocs/typing/typing_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:simpel/chat/models/chat_model.dart';
 import 'package:simpel/chat/models/message_model.dart';
-import 'package:simpel/chat/models/typing_event_model.dart';
 import 'package:simpel/chat/views/header_status.dart';
 import 'package:simpel/chat/models/local_message_model.dart';
 import 'package:simpel/chat/models/receipt_model.dart';
@@ -24,14 +22,12 @@ class MessageThread extends StatefulWidget {
   final List<User> receivers;
   final User me;
   final Chat chat;
-  final TypingNotificationBloc typingNotificationBloc;
   final ChatsCubit chatsCubit;
 
   const MessageThread(
     this.receivers,
     this.me,
     this.chatsCubit,
-    this.typingNotificationBloc,
     this.chat,
   );
 
@@ -40,7 +36,7 @@ class MessageThread extends StatefulWidget {
 }
 
 class _MessageThreadState extends State<MessageThread> {
-  final String _dirImageMember = DBHelper.dirImage + 'member/';
+  final String _dirImage = DBHelper.dirImage;
   final String _dirImageGiat = DBHelper.dirImage + 'pelatihan/mobile/';
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _txt = TextEditingController();
@@ -48,8 +44,6 @@ class _MessageThreadState extends State<MessageThread> {
   List<User> receivers = [];
   StreamSubscription? _subscription;
   List<LocalMessage> messages = [];
-  Timer? _startTypingTimer;
-  Timer? _stopTypingTimer;
 
   void _updateOnMessageReceived() {
     final messageThreadCubit = context.read<MessageThreadCubit>();
@@ -95,20 +89,12 @@ class _MessageThreadState extends State<MessageThread> {
     _updateOnMessageReceived();
     _updateOnReceiptReceived();
     context.read<ReceiptBloc>().add(ReceiptEvent.onSubscribed(widget.me));
-    widget.typingNotificationBloc.add(
-      TypingNotificationEvent.onSubscribed(
-        widget.me,
-        usersWithChat: receivers.map((e) => e.nik).toList(),
-      ),
-    );
   }
 
   @override
   void dispose() {
     _txt.dispose();
     _subscription?.cancel();
-    _stopTypingTimer?.cancel();
-    _startTypingTimer?.cancel();
     super.dispose();
   }
 
@@ -128,44 +114,26 @@ class _MessageThreadState extends State<MessageThread> {
               },
             ),
             Expanded(
-              child:
-                  BlocBuilder<TypingNotificationBloc, TypingNotificationState>(
-                bloc: widget.typingNotificationBloc,
-                builder: (_, state) {
-                  String typing = '';
-                  if (state is TypingNotificationReceivedSuccess &&
-                      state.event.event == Typing.start &&
-                      state.event.chatId == chatId) {
-                    if (widget.chat.type == ChatType.individual)
-                      typing = 'Mengetik...';
-                    else
-                      typing =
-                          '${receivers.firstWhere((e) => e.nik == state.event.from).username} mengetik...';
-                  }
-
-                  return HeaderStatus(
-                    widget.chat.name != ''
-                        ? widget.chat.name
-                        : receivers.first.username,
-                    widget.chat.type == ChatType.individual
-                        ? receivers.first.photoUrl != ''
-                            ? _dirImageMember + receivers.first.photoUrl
-                            : ''
-                        : widget.chat.photoUrl != ''
-                            ? _dirImageGiat + widget.chat.photoUrl
-                            : '',
-                    widget.chat.type == ChatType.individual
-                        ? receivers.first.active
-                        : false,
-                    description: widget.chat.type == ChatType.individual
-                        ? 'terakhir terlihat ${AFconvert.matDateTime(receivers.first.lastseen)}'
-                        : receivers
-                            .fold<String>('', (p, e) => p + ', ' + e.username)
-                            .replaceFirst(',', '')
-                            .trim(),
-                    typing: typing,
-                  );
-                },
+              child: HeaderStatus(
+                widget.chat.name != ''
+                    ? widget.chat.name
+                    : receivers.first.username,
+                widget.chat.type == ChatType.individual
+                    ? receivers.first.photoUrl != ''
+                        ? '$_dirImage${receivers.first.kategori}/${receivers.first.photoUrl}'
+                        : ''
+                    : widget.chat.photoUrl != ''
+                        ? _dirImageGiat + widget.chat.photoUrl
+                        : '',
+                widget.chat.type == ChatType.individual
+                    ? receivers.first.active
+                    : false,
+                description: widget.chat.type == ChatType.individual
+                    ? 'terakhir terlihat ${AFconvert.matDateTime(receivers.first.lastseen)}'
+                    : receivers
+                        .fold<String>('', (p, e) => p + ', ' + e.username)
+                        .replaceFirst(',', '')
+                        .trim(),
               ),
             ),
           ],
@@ -307,26 +275,17 @@ class _MessageThreadState extends State<MessageThread> {
       borderRadius: BorderRadius.all(Radius.circular(90)),
       borderSide: BorderSide.none,
     );
-    return Focus(
-      onFocusChange: (focus) {
-        if (_startTypingTimer == null || (_startTypingTimer != null && focus))
-          return;
-        _stopTypingTimer?.cancel();
-        _dispatchTyping(Typing.stop);
-      },
-      child: TextFormField(
-        controller: _txt,
-        textInputAction: TextInputAction.newline,
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        style: Theme.of(context).textTheme.caption,
-        onChanged: _sendTypingNotification,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(left: 16, right: 16, bottom: 8),
-          enabledBorder: _border,
-          filled: true,
-          focusedBorder: _border,
-        ),
+    return TextFormField(
+      controller: _txt,
+      textInputAction: TextInputAction.newline,
+      keyboardType: TextInputType.multiline,
+      maxLines: null,
+      style: Theme.of(context).textTheme.caption,
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.only(left: 16, right: 16, bottom: 8),
+        enabledBorder: _border,
+        filled: true,
+        focusedBorder: _border,
       ),
     );
   }
@@ -342,16 +301,18 @@ class _MessageThreadState extends State<MessageThread> {
               to: e.nik,
               timestamp: DateTime.now(),
               contents: _txt.text,
+              title: widget.chat.type == ChatType.group
+                  ? widget.chat.name
+                  : widget.me.username,
+              body: widget.chat.type == ChatType.group
+                  ? '${widget.me.username} : ${_txt.text}'
+                  : _txt.text,
             ))
         .toList();
     final sendMessageEvent = MessageEvent.onMessageSent(messages);
     context.read<MessageBloc>().add(sendMessageEvent);
 
     _txt.clear();
-    _startTypingTimer?.cancel();
-    _stopTypingTimer?.cancel();
-
-    _dispatchTyping(Typing.stop);
   }
 
   _sendReceipt(LocalMessage message) async {
@@ -368,26 +329,6 @@ class _MessageThreadState extends State<MessageThread> {
         .read<MessageThreadCubit>()
         .viewModel
         .updateMessageReceipt(receipt);
-  }
-
-  void _dispatchTyping(Typing event) {
-    final chatid = widget.chat.type == ChatType.group ? chatId : widget.me.nik;
-    final typings = receivers
-        .map((e) => TypingEvent(
-            from: widget.me.nik, to: e.nik, event: event, chatId: chatid))
-        .toList();
-    widget.typingNotificationBloc
-        .add(TypingNotificationEvent.onTypingEventSent(typings));
-  }
-
-  void _sendTypingNotification(String text) {
-    if (text.trim().isEmpty || messages.isEmpty) return;
-    if (_startTypingTimer?.isActive ?? false) return;
-    if (_stopTypingTimer?.isActive ?? false) _stopTypingTimer?.cancel();
-    _dispatchTyping(Typing.start);
-    _startTypingTimer = Timer(Duration(seconds: 5), () {});
-    _stopTypingTimer =
-        Timer(Duration(seconds: 6), () => _dispatchTyping(Typing.stop));
   }
 
   _scrollToEnd() {

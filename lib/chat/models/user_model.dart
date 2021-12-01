@@ -6,6 +6,7 @@ class User {
   String photoUrl;
   bool active;
   DateTime? lastseen;
+  String kategori;
   String _idn = '';
   String get idn => _idn;
 
@@ -15,6 +16,7 @@ class User {
     this.photoUrl = '',
     this.active = false,
     this.lastseen,
+    this.kategori = '',
   });
 
   factory User.dariMap(Map<String, dynamic> map) {
@@ -24,6 +26,7 @@ class User {
       photoUrl: AFconvert.keString(map['photo_url']),
       active: AFconvert.keBool(map['active']),
       lastseen: AFconvert.keTanggal(map['last_seen']),
+      kategori: AFconvert.keString(map['kategori']),
     );
     user._idn = AFconvert.keString(map['id']);
     return user;
@@ -36,6 +39,7 @@ class User {
       'photo_url': photoUrl,
       'active': AFconvert.keString(active),
       'last_seen': AFconvert.keString(lastseen),
+      'kategori': kategori,
     };
     return map;
   }

@@ -42,7 +42,7 @@ class _BiofotoPageState extends State<BiofotoPage> {
                 widget.member.foto != ''
                     ? InteractiveViewer(
                         child: AFwidget.cachedNetworkImage(
-                          DBHelper.dirImage + 'member/' + widget.member.foto,
+                          '${DBHelper.dirImage}${widget.member.kategori}/${widget.member.foto}',
                           fit: BoxFit.fitWidth,
                         ),
                       )
@@ -71,7 +71,7 @@ class _BiofotoPageState extends State<BiofotoPage> {
                     if (a != null) {
                       AFwidget.circularDialog(context);
                       var b = await _memberBloc.editFoto(
-                        nik: widget.member.nik,
+                        member: widget.member,
                         pathFoto: a.path,
                       );
                       Navigator.of(context).pop();
@@ -110,7 +110,7 @@ class _BiofotoPageState extends State<BiofotoPage> {
                     if (a != null) {
                       AFwidget.circularDialog(context);
                       var b = await _memberBloc.editFoto(
-                        nik: widget.member.nik,
+                        member: widget.member,
                         pathFoto: a.path,
                       );
                       Navigator.of(context).pop();

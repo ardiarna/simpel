@@ -126,7 +126,6 @@ class _DaftarOpsiState extends State<DaftarOpsi> {
                 _isAwalFetchOpsi = false;
                 fetchOpsi(widget.listOpsi);
               }
-
               return SliverToBoxAdapter(
                 child: AFwidget.circularProgress(),
               );

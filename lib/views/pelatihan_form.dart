@@ -103,10 +103,14 @@ class _PelatihanFormState extends State<PelatihanForm> {
                       return FutureBuilder<List<MateriModel>>(
                         future: _pelatihanBloc.getMateri(widget.pelatihan.kode),
                         builder: (context, snap) {
-                          if (snap.hasData && snap.data!.length > 0) {
-                            return tabMateri(snap.data!);
+                          if (snap.hasData) {
+                            if (snap.data!.length > 0) {
+                              return tabMateri(snap.data!);
+                            } else {
+                              return Center(child: Text('- Belum ada Materi'));
+                            }
                           } else {
-                            return Center(child: Text('- Belum ada Materi'));
+                            return Center(child: AFwidget.circularProgress());
                           }
                         },
                       );
@@ -114,10 +118,14 @@ class _PelatihanFormState extends State<PelatihanForm> {
                       return FutureBuilder<List<TugasModel>>(
                         future: _pelatihanBloc.getTugas(widget.pelatihan.kode),
                         builder: (context, snap) {
-                          if (snap.hasData && snap.data!.length > 0) {
-                            return tabTugas(snap.data!);
+                          if (snap.hasData) {
+                            if (snap.data!.length > 0) {
+                              return tabTugas(snap.data!);
+                            } else {
+                              return Center(child: Text('- Belum ada Tugas'));
+                            }
                           } else {
-                            return Center(child: Text('- Belum ada Tugas'));
+                            return Center(child: AFwidget.circularProgress());
                           }
                         },
                       );
@@ -125,10 +133,14 @@ class _PelatihanFormState extends State<PelatihanForm> {
                       return FutureBuilder<List<KuisModel>>(
                         future: _pelatihanBloc.getKuis(widget.pelatihan.kode),
                         builder: (context, snap) {
-                          if (snap.hasData && snap.data!.length > 0) {
-                            return tabKuis(snap.data!);
+                          if (snap.hasData) {
+                            if (snap.data!.length > 0) {
+                              return tabKuis(snap.data!);
+                            } else {
+                              return Center(child: Text('- Belum ada Quiz'));
+                            }
                           } else {
-                            return Center(child: Text('- Belum ada Quiz'));
+                            return Center(child: AFwidget.circularProgress());
                           }
                         },
                       );
@@ -137,10 +149,14 @@ class _PelatihanFormState extends State<PelatihanForm> {
                         future: _pelatihanBloc.getSurvey(
                             widget.member.nik, widget.pelatihan.kode),
                         builder: (context, snap) {
-                          if (snap.hasData && snap.data!.length > 0) {
-                            return tabSurvey(snap.data!);
+                          if (snap.hasData) {
+                            if (snap.data!.length > 0) {
+                              return tabSurvey(snap.data!);
+                            } else {
+                              return Center(child: Text('- Belum ada Survey'));
+                            }
                           } else {
-                            return Center(child: Text('- Belum ada Survey'));
+                            return Center(child: AFwidget.circularProgress());
                           }
                         },
                       );
@@ -149,10 +165,15 @@ class _PelatihanFormState extends State<PelatihanForm> {
                         future: _pelatihanBloc.getEvaluasi(
                             widget.member.nik, widget.pelatihan.kode),
                         builder: (context, snap) {
-                          if (snap.hasData && snap.data!.length > 0) {
-                            return tabEvaluasi(snap.data!);
+                          if (snap.hasData) {
+                            if (snap.data!.length > 0) {
+                              return tabEvaluasi(snap.data!);
+                            } else {
+                              return Center(
+                                  child: Text('- Belum ada Evaluasi'));
+                            }
                           } else {
-                            return Center(child: Text('- Belum ada Evaluasi'));
+                            return Center(child: AFwidget.circularProgress());
                           }
                         },
                       );
@@ -172,10 +193,15 @@ class _PelatihanFormState extends State<PelatihanForm> {
                       return FutureBuilder<List<PersonPSMModel>>(
                         future: _pelatihanBloc.getPSM(widget.pelatihan.kode),
                         builder: (context, snapPSM) {
-                          if (snapPSM.hasData && snapPSM.data!.length > 0) {
-                            return tabPSM(snapPSM.data!);
+                          if (snapPSM.hasData) {
+                            if (snapPSM.data!.length > 0) {
+                              return tabPSM(snapPSM.data!);
+                            } else {
+                              return Center(
+                                  child: Text('- PSM tidak ditemukan'));
+                            }
                           } else {
-                            return Center(child: Text('- PSM tidak ditemukan'));
+                            return Center(child: AFwidget.circularProgress());
                           }
                         },
                       );
@@ -184,11 +210,15 @@ class _PelatihanFormState extends State<PelatihanForm> {
                         future:
                             _pelatihanBloc.getPeserta(widget.pelatihan.kode),
                         builder: (context, snap) {
-                          if (snap.hasData && snap.data!.length > 0) {
-                            return tabPeserta(snap.data!);
+                          if (snap.hasData) {
+                            if (snap.data!.length > 0) {
+                              return tabPeserta(snap.data!);
+                            } else {
+                              return Center(
+                                  child: Text('- Peserta tidak ditemukan'));
+                            }
                           } else {
-                            return Center(
-                                child: Text('- Peserta tidak ditemukan'));
+                            return Center(child: AFwidget.circularProgress());
                           }
                         },
                       );

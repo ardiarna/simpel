@@ -81,9 +81,9 @@ abstract class AFconvert {
     return nilai != null ? mat.format(nilai) : '';
   }
 
-  static String matTime(DateTime nilai) {
+  static String matTime(DateTime? nilai) {
     final mat = DateFormat('HH:mm');
-    return mat.format(nilai);
+    return nilai != null ? mat.format(nilai) : '';
   }
 
   static String matDateYMD(DateTime nilai) {

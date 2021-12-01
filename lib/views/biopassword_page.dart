@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:simpel/blocs/member_bloc.dart';
+import 'package:simpel/models/member_model.dart';
 import 'package:simpel/utils/af_widget.dart';
 
 class BiopasswordPage extends StatefulWidget {
-  final String memberNik;
-  const BiopasswordPage({required this.memberNik, Key? key}) : super(key: key);
+  final MemberModel member;
+  const BiopasswordPage({required this.member, Key? key}) : super(key: key);
 
   @override
   _BiopasswordPageState createState() => _BiopasswordPageState();
@@ -172,7 +173,7 @@ class _BiopasswordPageState extends State<BiopasswordPage> {
 
           AFwidget.circularDialog(context);
           var a = await _memberBloc.editPassword(
-            nik: widget.memberNik,
+            member: widget.member,
             pwdLama: _txtPwdLama.text,
             pwdBaru: _txtPwdBaru.text,
           );

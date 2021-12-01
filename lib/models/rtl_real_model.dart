@@ -9,7 +9,11 @@ class RTLrealModel {
   String kendala;
   String file;
   String targetRencana;
+  DateTime? targetTglAwal;
+  DateTime? targetTglAkhir;
   int jml;
+  String psmSaran;
+  String psmNik;
 
   RTLrealModel({
     this.id = 0,
@@ -20,7 +24,11 @@ class RTLrealModel {
     this.kendala = '',
     this.file = '',
     this.targetRencana = '',
+    this.targetTglAwal,
+    this.targetTglAkhir,
     this.jml = 0,
+    this.psmSaran = '',
+    this.psmNik = '',
   });
 
   factory RTLrealModel.dariMap(Map<String, dynamic> map) {
@@ -33,7 +41,11 @@ class RTLrealModel {
       kendala: AFconvert.keString(map['real_kendala']),
       file: AFconvert.keString(map['real_file']),
       targetRencana: AFconvert.keString(map['target_rencana']),
+      targetTglAwal: AFconvert.keTanggal(map['target_tgl_awal']),
+      targetTglAkhir: AFconvert.keTanggal(map['target_tgl_akhir']),
       jml: AFconvert.keInt(map['jml']),
+      psmSaran: AFconvert.keString(map['real_psm_saran']),
+      psmNik: AFconvert.keString(map['real_psm_nik']),
     );
   }
 
@@ -48,6 +60,8 @@ class RTLrealModel {
       'real_file': file,
       'target_rencana': targetRencana,
       'jml': AFconvert.keString(jml),
+      'real_psm_saran': psmSaran,
+      'real_psm_nik': psmNik,
     };
     return map;
   }

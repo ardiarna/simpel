@@ -43,6 +43,7 @@ dependencies:
   http: ^0.13.4
   image_picker: ^0.8.4+3
   intl: ^0.17.0
+  linked_scroll_controller: ^0.2.0
   mime: ^1.0.1
   path: ^1.8.0
   shared_preferences: ^2.0.9

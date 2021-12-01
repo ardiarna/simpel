@@ -42,7 +42,7 @@ class _AboutPageState extends State<AboutPage> {
                     if (snap.hasData) {
                       return AFwidget.html(snap.data!);
                     } else {
-                      return Container();
+                      return AFwidget.circularProgress();
                     }
                   },
                 ),

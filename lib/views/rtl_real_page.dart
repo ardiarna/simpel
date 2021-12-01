@@ -13,11 +13,13 @@ import 'package:url_launcher/url_launcher.dart';
 
 class RTLrealPage extends StatefulWidget {
   final MemberModel member;
+  final MemberModel? team;
   final PelatihanModel pelatihan;
 
   const RTLrealPage({
     required this.member,
     required this.pelatihan,
+    this.team,
     Key? key,
   }) : super(key: key);
 
@@ -44,20 +46,56 @@ class _RTLrealPageState extends State<RTLrealPage> {
   Widget build(BuildContext context) {
     refresh();
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => RealForm(
-                member: widget.member,
-                pelatihan: widget.pelatihan,
+      appBar: widget.team != null
+          ? AppBar(
+              elevation: 0.5,
+              flexibleSpace: Container(
+                padding: EdgeInsets.fromLTRB(50, 19, 10, 5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'RTL ${widget.pelatihan.singkatan} ${widget.pelatihan.angkatan}-${widget.pelatihan.tahun}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 25),
+                      child: Text(
+                        '${widget.member.nama}',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+            )
+          : null,
+      floatingActionButton: widget.team != null
+          ? null
+          : FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => RealForm(
+                      member: widget.member,
+                      pelatihan: widget.pelatihan,
+                    ),
+                  ),
+                );
+                refresh();
+              },
             ),
-          );
-          refresh();
-        },
-      ),
       body: CustomScrollView(
         slivers: [
           SliverPadding(padding: EdgeInsets.only(top: 1)),
@@ -181,39 +219,86 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                       ),
                                     ],
                                   ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 15, 0, 3),
+                                    child: Text(
+                                      'Saran PSM',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                    child: Text(
+                                      snapReal.data![i].psmSaran,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                             Column(
                               children: [
-                                GestureDetector(
-                                  child: Container(
-                                    padding: EdgeInsets.all(5),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.green,
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                  onTap: () async {
-                                    await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => RealForm(
-                                          member: widget.member,
-                                          pelatihan: widget.pelatihan,
-                                          real: snapReal.data![i],
+                                widget.team != null
+                                    ? GestureDetector(
+                                        child: Container(
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.green,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.comment,
+                                            color: Colors.green,
+                                          ),
                                         ),
+                                        onTap: () async {
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => RealSaran(
+                                                teamNik: widget.team!.nik,
+                                                real: snapReal.data![i],
+                                                member: widget.member,
+                                                pelatihan: widget.pelatihan,
+                                              ),
+                                            ),
+                                          );
+                                          refresh();
+                                        },
+                                      )
+                                    : GestureDetector(
+                                        child: Container(
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.green,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => RealForm(
+                                                member: widget.member,
+                                                pelatihan: widget.pelatihan,
+                                                real: snapReal.data![i],
+                                              ),
+                                            ),
+                                          );
+                                          refresh();
+                                        },
                                       ),
-                                    );
-                                    refresh();
-                                  },
-                                ),
                                 snapReal.data![i].file != ''
                                     ? GestureDetector(
                                         child: Container(
@@ -922,6 +1007,21 @@ class _RealHistoryState extends State<RealHistory> {
                                 ),
                               ],
                             ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),
+                              child: Text(
+                                'Saran PSM',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                              child: Text(
+                                widget.listReal[i].psmSaran,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -966,6 +1066,221 @@ class _RealHistoryState extends State<RealHistory> {
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class RealSaran extends StatefulWidget {
+  final RTLrealModel real;
+  final String teamNik;
+  final MemberModel member;
+  final PelatihanModel pelatihan;
+
+  RealSaran({
+    required this.real,
+    required this.teamNik,
+    required this.member,
+    required this.pelatihan,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<RealSaran> createState() => _RealSaranState();
+}
+
+class _RealSaranState extends State<RealSaran> {
+  final RTLBloc _rtlBloc = RTLBloc();
+  final TextEditingController _txtSaran = TextEditingController();
+  late FocusNode _focSaran;
+
+  @override
+  void initState() {
+    super.initState();
+    _txtSaran.text = widget.real.psmSaran;
+    _focSaran = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _rtlBloc.dispose();
+    _focSaran.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.5,
+        flexibleSpace: Container(
+          padding: EdgeInsets.fromLTRB(50, 19, 10, 5),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Saran RTL ${widget.pelatihan.singkatan} ${widget.pelatihan.angkatan}-${widget.pelatihan.tahun}',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 25),
+                child: Text(
+                  '${widget.member.nama}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      body: Container(
+        padding: EdgeInsets.fromLTRB(15, 15, 10, 15),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(
+            bottom: BorderSide(color: Colors.grey, width: 1),
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 3),
+                child: Text(
+                  'Rencana Aksi',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 15),
+                child: Text(
+                  widget.real.targetRencana,
+                ),
+              ),
+              Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 5),
+                    child: Icon(
+                      Icons.calendar_today_outlined,
+                      size: 20,
+                      color: Colors.green,
+                    ),
+                  ),
+                  Text(
+                    AFconvert.matDate(
+                      widget.real.tanggal,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 3),
+                child: Text(
+                  'Realisasi Aksi',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: Text(
+                  widget.real.keterangan,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 3),
+                child: Text(
+                  'Kendala',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                child: Text(
+                  widget.real.kendala,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                child: Text(
+                  'Capaian',
+                  style: TextStyle(
+                    color: Colors.grey,
+                  ),
+                ),
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width - 130,
+                    child: AFwidget.linearProgress(
+                      value: (widget.real.capaian.toDouble() / 100),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 20),
+                    child: Text(
+                      '${widget.real.capaian} %',
+                    ),
+                  ),
+                ],
+              ),
+              AFwidget.textField(
+                context: context,
+                kontroler: _txtSaran,
+                focusNode: _focSaran,
+                label: 'Saran',
+                maxLines: 2,
+                padding: EdgeInsets.all(10),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(7)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(15, 35, 15, 15),
+                child: ElevatedButton(
+                  child: Text('Simpan Saran'),
+                  onPressed: () async {
+                    if (_txtSaran.text.isEmpty) {
+                      AFwidget.snack(context, 'Saran harus diisi.');
+                      _focSaran.requestFocus();
+                      return;
+                    }
+
+                    AFwidget.circularDialog(context);
+                    var a = await _rtlBloc.saranReal(widget.real.id.toString(),
+                        _txtSaran.text, widget.teamNik);
+                    Navigator.of(context).pop();
+                    if (a['status'].toString() == '1') {
+                      await AFwidget.alertDialog(
+                          context, const Text('Saran berhasil disimpan.'));
+                      Navigator.of(context).pop();
+                    } else {
+                      AFwidget.alertDialog(
+                          context, Text(a['message'].toString()));
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

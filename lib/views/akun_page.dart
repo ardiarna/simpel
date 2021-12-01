@@ -50,9 +50,7 @@ class _AkunPageState extends State<AkunPage> {
                               Radius.circular(55),
                             ),
                             child: AFwidget.cachedNetworkImage(
-                              DBHelper.dirImage +
-                                  'member/' +
-                                  widget.member.foto,
+                              '${DBHelper.dirImage}${widget.member.kategori}/${widget.member.foto}',
                               fit: BoxFit.fill,
                               width: 150,
                               height: 150,
@@ -98,32 +96,36 @@ class _AkunPageState extends State<AkunPage> {
           aksi: () {},
           withPanah: false,
         ),
-        kontener(
-          ikon: FontAwesome5.tasks,
-          label: 'Pelatihan',
-          aksi: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => PelatihanPage(
-                  member: widget.member,
-                ),
-              ),
-            );
-          },
-        ),
-        kontener(
-          ikon: FontAwesome5.storeAlt,
-          label: 'Bumdes / Kedudukan',
-          aksi: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => BumdesTab(
-                  nik: widget.member.nik,
-                ),
-              ),
-            );
-          },
-        ),
+        widget.member.kategori == 'member'
+            ? kontener(
+                ikon: FontAwesome5.tasks,
+                label: 'Pelatihan',
+                aksi: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PelatihanPage(
+                        member: widget.member,
+                      ),
+                    ),
+                  );
+                },
+              )
+            : Container(),
+        widget.member.kategori == 'member'
+            ? kontener(
+                ikon: FontAwesome5.storeAlt,
+                label: 'Bumdes / Kedudukan',
+                aksi: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BumdesTab(
+                        nik: widget.member.nik,
+                      ),
+                    ),
+                  );
+                },
+              )
+            : Container(),
         kontener(
           ikon: FontAwesome5.userEdit,
           label: 'Ubah Data Diri',
@@ -144,7 +146,7 @@ class _AkunPageState extends State<AkunPage> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => BiopasswordPage(
-                  memberNik: widget.member.nik,
+                  member: widget.member,
                 ),
               ),
             );

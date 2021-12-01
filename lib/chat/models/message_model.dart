@@ -5,6 +5,8 @@ class Message {
   final String to;
   final DateTime? timestamp;
   final String contents;
+  final String title;
+  final String body;
   String? groupId;
   String _id = '';
   String get id => _id;
@@ -15,6 +17,8 @@ class Message {
     required this.timestamp,
     required this.contents,
     this.groupId,
+    required this.title,
+    required this.body,
   });
 
   factory Message.dariMap(Map<String, dynamic> map) {
@@ -24,6 +28,8 @@ class Message {
       timestamp: AFconvert.keTanggal(map['created_at']),
       contents: AFconvert.keString(map['contents']),
       groupId: AFconvert.keString(map['group_id']),
+      title: AFconvert.keString(map['title']),
+      body: AFconvert.keString(map['body']),
     );
     message._id = AFconvert.keString(map['id']);
     return message;
@@ -36,6 +42,8 @@ class Message {
       'created_at': AFconvert.keString(timestamp),
       'contents': AFconvert.keString(contents),
       'group_id': AFconvert.keString(groupId),
+      'title': title,
+      'body': body,
     };
     return map;
   }

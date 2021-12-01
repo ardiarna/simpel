@@ -178,6 +178,16 @@ class RTLBloc {
     return a;
   }
 
+  Future<Map<String, dynamic>> saranReal(
+      String id, String saran, String psmNik) async {
+    var a = await DBHelper.setData(
+      rute: 'rtl',
+      mode: 'saranreal',
+      body: {'real_id': id, 'real_psm_saran': saran, 'real_psm_nik': psmNik},
+    );
+    return a;
+  }
+
   final _strReal = StreamController<List<RTLrealModel>>.broadcast();
   Stream<List<RTLrealModel>> get streamReal => _strReal.stream;
 

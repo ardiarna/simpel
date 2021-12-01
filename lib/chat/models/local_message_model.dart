@@ -21,6 +21,8 @@ class LocalMessage {
       to: AFconvert.keString(map['receiver']),
       contents: AFconvert.keString(map['contents']),
       timestamp: AFconvert.keTanggal(map['received_at']),
+      title: AFconvert.keString(map['title']),
+      body: AFconvert.keString(map['body']),
     );
 
     final localMessage = LocalMessage(

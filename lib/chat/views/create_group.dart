@@ -178,7 +178,7 @@ class _CreateGroupState extends State<CreateGroup> {
   _listItem(User user) => ListTile(
         leading: ProfilImage(
           imageUrl: user.photoUrl != ''
-              ? _diskusiBloc.dirImageMember + user.photoUrl
+              ? _diskusiBloc.dirImage + user.kategori + '/' + user.photoUrl
               : '',
           online: true,
         ),
@@ -237,7 +237,10 @@ class _CreateGroupState extends State<CreateGroup> {
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(40),
                             child: AFwidget.cachedNetworkImage(
-                              _diskusiBloc.dirImageMember + user.photoUrl,
+                              _diskusiBloc.dirImage +
+                                  user.kategori +
+                                  '/' +
+                                  user.photoUrl,
                               fit: BoxFit.fill,
                               width: 40,
                               height: 40,

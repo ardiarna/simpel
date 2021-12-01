@@ -8,6 +8,7 @@ import 'package:simpel/utils/af_widget.dart';
 import 'package:simpel/views/akun_page.dart';
 import 'package:simpel/views/beranda_page.dart';
 import 'package:simpel/views/rekrutmen_page.dart';
+import 'package:simpel/views/reportpsm_page.dart';
 
 import '../main.dart';
 
@@ -116,6 +117,8 @@ class _HomePageState extends State<HomePage> {
                   return RekrutmenPage(member: widget.member);
                 case 'diskusi':
                   return CompositionRoot.composeDiskusi(widget.member);
+                case 'reportpsm':
+                  return ReportPsmPage(team: widget.member);
                 default:
                   return AFwidget.belum(ket: snap.data!);
               }
@@ -130,6 +133,64 @@ class _HomePageState extends State<HomePage> {
   }
 
   BottomAppBar menuBawah(int index) {
+    if (widget.member.kategori == 'team') {
+      return BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        color: Colors.white,
+        elevation: 0,
+        child: Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.black, width: 0.3),
+            ),
+          ),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: Theme.of(context).primaryColor.withAlpha(0),
+            elevation: 0,
+            currentIndex: index,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Beranda',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.description),
+                label: 'Report',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.question_answer),
+                label: 'Diskusi',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Saya',
+              ),
+            ],
+            onTap: (idx) async {
+              switch (idx) {
+                case 0:
+                  fetchMenu(idx);
+                  fetchPage('beranda');
+                  break;
+                case 1:
+                  fetchMenu(idx);
+                  fetchPage('reportpsm');
+                  break;
+                case 2:
+                  fetchMenu(idx);
+                  fetchPage('diskusi');
+                  break;
+                case 3:
+                  fetchMenu(idx);
+                  fetchPage('saya');
+                  break;
+              }
+            },
+          ),
+        ),
+      );
+    }
     return BottomAppBar(
       shape: const CircularNotchedRectangle(),
       color: Colors.white,

@@ -383,248 +383,267 @@ class _BiodataPageState extends State<BiodataPage> {
                     );
                   },
                 ),
-                StreamBuilder<String>(
-                  stream: _memberBloc.streamKawin,
-                  builder: (context, snap) {
-                    if (snap.hasData) {
-                      _txtKawin.text = snap.data!;
-                    }
-                    return AFwidget.textField(
-                      context: context,
-                      kontroler: _txtKawin,
-                      focusNode: _focKawin,
-                      label: 'Status',
-                      readonly: true,
-                      suffix: const Icon(
-                        Icons.expand_more,
-                        size: 20,
-                      ),
-                      ontap: () async {
-                        var a = await AFcombobox.modalBottom(
-                          context: context,
-                          listOpsi: _listOpsiKawin,
-                          idSelected: _kawin.toString(),
-                          judul: 'Status',
-                          isScrollControlled: false,
-                        );
-                        if (a != null) {
-                          fetchKawin(int.parse(a.id), a.label);
-                        }
-                      },
-                    );
-                  },
-                ),
-                AFwidget.textField(
-                  context: context,
-                  kontroler: _txtPekerjaan,
-                  focusNode: _focPekerjaan,
-                  label: 'Pekerjaan',
-                  suffix: const Icon(
-                    Icons.person,
-                    size: 20,
-                    color: Colors.transparent,
-                  ),
-                  textCapitalization: TextCapitalization.characters,
-                ),
-                StreamBuilder<String>(
-                  stream: _memberBloc.streamPendidikan,
-                  builder: (context, snap) {
-                    if (snap.hasData) {
-                      _txtPendidikan.text = snap.data!;
-                    }
-                    return AFwidget.textField(
-                      context: context,
-                      kontroler: _txtPendidikan,
-                      focusNode: _focPendidikan,
-                      label: 'Pendidikan',
-                      readonly: true,
-                      suffix: const Icon(
-                        Icons.expand_more,
-                        size: 20,
-                      ),
-                      ontap: () async {
-                        var a = await AFcombobox.modalBottom(
-                          context: context,
-                          listOpsi: _listOpsiPendidikan,
-                          idSelected: _pendidikan,
-                          judul: 'Pendidikan',
-                        );
-                        if (a != null) {
-                          fetchPendidikan(a.id, a.label);
-                        }
-                      },
-                    );
-                  },
-                ),
-                AFwidget.textField(
-                  context: context,
-                  kontroler: _txtJurusan,
-                  focusNode: _focJurusan,
-                  label: 'Jurusan',
-                  suffix: const Icon(
-                    Icons.person,
-                    size: 20,
-                    color: Colors.transparent,
-                  ),
-                  textCapitalization: TextCapitalization.characters,
-                ),
-                StreamBuilder<String>(
-                  stream: _memberBloc.streamProvinsi,
-                  builder: (context, snap) {
-                    if (snap.hasData) {
-                      _txtProvinsi.text = snap.data!;
-                    }
-                    return AFwidget.textField(
-                      context: context,
-                      kontroler: _txtProvinsi,
-                      focusNode: _focProvinsi,
-                      label: 'Provinsi',
-                      readonly: true,
-                      suffix: const Icon(
-                        Icons.expand_more,
-                        size: 20,
-                      ),
-                      ontap: () async {
-                        var a = await AFcombobox.modalBottom(
-                          context: context,
-                          listOpsi: _listOpsiProvinsi,
-                          idSelected: _provinsi.toString(),
-                          judul: 'Provinsi',
-                          isScrollControlled: false,
-                        );
-                        if (a != null) {
-                          fetchProvinsi(a.id, a.label);
-                          fetchKabupaten('', '');
-                          fetchKecamatan('', '');
-                          fetchKelurahan('', '');
-                        }
-                      },
-                    );
-                  },
-                ),
-                StreamBuilder<String>(
-                  stream: _memberBloc.streamKabupaten,
-                  builder: (context, snap) {
-                    if (snap.hasData) {
-                      _txtKabupaten.text = snap.data!;
-                    }
-                    return AFwidget.textField(
-                      context: context,
-                      kontroler: _txtKabupaten,
-                      focusNode: _focKabupaten,
-                      label: 'Kabupaten',
-                      readonly: true,
-                      suffix: const Icon(
-                        Icons.expand_more,
-                        size: 20,
-                      ),
-                      ontap: () async {
-                        if (_provinsi != '') {
-                          AFwidget.circularDialog(context);
-                          var _list = await _memberBloc.getOpsies(
-                              rute: 'domisili', mode: 'kabupaten/$_provinsi');
-                          Navigator.of(context).pop();
-                          var a = await AFcombobox.modalBottom(
-                            context: context,
-                            listOpsi: _list,
-                            idSelected: _kabupaten,
-                            judul: 'Kabupaten',
-                          );
-                          if (a != null) {
-                            fetchKabupaten(a.id, a.label);
-                            fetchKecamatan('', '');
-                            fetchKelurahan('', '');
+                widget.member.kategori == 'team'
+                    ? Container()
+                    : StreamBuilder<String>(
+                        stream: _memberBloc.streamKawin,
+                        builder: (context, snap) {
+                          if (snap.hasData) {
+                            _txtKawin.text = snap.data!;
                           }
-                        } else {
-                          AFwidget.snack(
-                              context, 'Silakan isi provinsi terlebih dahulu.');
-                          _focProvinsi.requestFocus();
-                        }
-                      },
-                    );
-                  },
-                ),
-                StreamBuilder<String>(
-                  stream: _memberBloc.streamKecamatan,
-                  builder: (context, snap) {
-                    if (snap.hasData) {
-                      _txtKecamatan.text = snap.data!;
-                    }
-                    return AFwidget.textField(
-                      context: context,
-                      kontroler: _txtKecamatan,
-                      focusNode: _focKecamatan,
-                      label: 'Kecamatan',
-                      readonly: true,
-                      suffix: const Icon(
-                        Icons.expand_more,
-                        size: 20,
-                      ),
-                      ontap: () async {
-                        if (_kabupaten != '') {
-                          AFwidget.circularDialog(context);
-                          var _list = await _memberBloc.getOpsies(
-                              rute: 'domisili', mode: 'kecamatan/$_kabupaten');
-                          Navigator.of(context).pop();
-                          var a = await AFcombobox.modalBottom(
+                          return AFwidget.textField(
                             context: context,
-                            listOpsi: _list,
-                            idSelected: _kecamatan,
-                            judul: 'Kecamatan',
+                            kontroler: _txtKawin,
+                            focusNode: _focKawin,
+                            label: 'Status',
+                            readonly: true,
+                            suffix: const Icon(
+                              Icons.expand_more,
+                              size: 20,
+                            ),
+                            ontap: () async {
+                              var a = await AFcombobox.modalBottom(
+                                context: context,
+                                listOpsi: _listOpsiKawin,
+                                idSelected: _kawin.toString(),
+                                judul: 'Status',
+                                isScrollControlled: false,
+                              );
+                              if (a != null) {
+                                fetchKawin(int.parse(a.id), a.label);
+                              }
+                            },
                           );
-                          if (a != null) {
-                            fetchKecamatan(a.id, a.label);
-                            fetchKelurahan('', '');
-                          }
-                        } else {
-                          AFwidget.snack(context,
-                              'Silakan isi kabupaten terlebih dahulu.');
-                          _focKabupaten.requestFocus();
-                        }
-                      },
-                    );
-                  },
-                ),
-                StreamBuilder<String>(
-                  stream: _memberBloc.streamKelurahan,
-                  builder: (context, snap) {
-                    if (snap.hasData) {
-                      _txtKelurahan.text = snap.data!;
-                    }
-                    return AFwidget.textField(
-                      context: context,
-                      kontroler: _txtKelurahan,
-                      focusNode: _focKelurahan,
-                      label: 'Kelurahan',
-                      readonly: true,
-                      suffix: const Icon(
-                        Icons.expand_more,
-                        size: 20,
+                        },
                       ),
-                      ontap: () async {
-                        if (_kecamatan != '') {
-                          AFwidget.circularDialog(context);
-                          var _list = await _memberBloc.getOpsies(
-                              rute: 'domisili', mode: 'kelurahan/$_kecamatan');
-                          Navigator.of(context).pop();
-                          var a = await AFcombobox.modalBottom(
-                            context: context,
-                            listOpsi: _list,
-                            idSelected: _kelurahan,
-                            judul: 'Kelurahan',
-                          );
-                          if (a != null) {
-                            fetchKelurahan(a.id, a.label);
+                widget.member.kategori == 'team'
+                    ? Container()
+                    : AFwidget.textField(
+                        context: context,
+                        kontroler: _txtPekerjaan,
+                        focusNode: _focPekerjaan,
+                        label: 'Pekerjaan',
+                        suffix: const Icon(
+                          Icons.person,
+                          size: 20,
+                          color: Colors.transparent,
+                        ),
+                        textCapitalization: TextCapitalization.characters,
+                      ),
+                widget.member.kategori == 'team'
+                    ? Container()
+                    : StreamBuilder<String>(
+                        stream: _memberBloc.streamPendidikan,
+                        builder: (context, snap) {
+                          if (snap.hasData) {
+                            _txtPendidikan.text = snap.data!;
                           }
-                        } else {
-                          AFwidget.snack(context,
-                              'Silakan isi kecamatan terlebih dahulu.');
-                          _focKecamatan.requestFocus();
-                        }
-                      },
-                    );
-                  },
-                ),
+                          return AFwidget.textField(
+                            context: context,
+                            kontroler: _txtPendidikan,
+                            focusNode: _focPendidikan,
+                            label: 'Pendidikan',
+                            readonly: true,
+                            suffix: const Icon(
+                              Icons.expand_more,
+                              size: 20,
+                            ),
+                            ontap: () async {
+                              var a = await AFcombobox.modalBottom(
+                                context: context,
+                                listOpsi: _listOpsiPendidikan,
+                                idSelected: _pendidikan,
+                                judul: 'Pendidikan',
+                              );
+                              if (a != null) {
+                                fetchPendidikan(a.id, a.label);
+                              }
+                            },
+                          );
+                        },
+                      ),
+                widget.member.kategori == 'team'
+                    ? Container()
+                    : AFwidget.textField(
+                        context: context,
+                        kontroler: _txtJurusan,
+                        focusNode: _focJurusan,
+                        label: 'Jurusan',
+                        suffix: const Icon(
+                          Icons.person,
+                          size: 20,
+                          color: Colors.transparent,
+                        ),
+                        textCapitalization: TextCapitalization.characters,
+                      ),
+                widget.member.kategori == 'team'
+                    ? Container()
+                    : StreamBuilder<String>(
+                        stream: _memberBloc.streamProvinsi,
+                        builder: (context, snap) {
+                          if (snap.hasData) {
+                            _txtProvinsi.text = snap.data!;
+                          }
+                          return AFwidget.textField(
+                            context: context,
+                            kontroler: _txtProvinsi,
+                            focusNode: _focProvinsi,
+                            label: 'Provinsi',
+                            readonly: true,
+                            suffix: const Icon(
+                              Icons.expand_more,
+                              size: 20,
+                            ),
+                            ontap: () async {
+                              var a = await AFcombobox.modalBottom(
+                                context: context,
+                                listOpsi: _listOpsiProvinsi,
+                                idSelected: _provinsi.toString(),
+                                judul: 'Provinsi',
+                                isScrollControlled: false,
+                              );
+                              if (a != null) {
+                                fetchProvinsi(a.id, a.label);
+                                fetchKabupaten('', '');
+                                fetchKecamatan('', '');
+                                fetchKelurahan('', '');
+                              }
+                            },
+                          );
+                        },
+                      ),
+                widget.member.kategori == 'team'
+                    ? Container()
+                    : StreamBuilder<String>(
+                        stream: _memberBloc.streamKabupaten,
+                        builder: (context, snap) {
+                          if (snap.hasData) {
+                            _txtKabupaten.text = snap.data!;
+                          }
+                          return AFwidget.textField(
+                            context: context,
+                            kontroler: _txtKabupaten,
+                            focusNode: _focKabupaten,
+                            label: 'Kabupaten',
+                            readonly: true,
+                            suffix: const Icon(
+                              Icons.expand_more,
+                              size: 20,
+                            ),
+                            ontap: () async {
+                              if (_provinsi != '') {
+                                AFwidget.circularDialog(context);
+                                var _list = await _memberBloc.getOpsies(
+                                    rute: 'domisili',
+                                    mode: 'kabupaten/$_provinsi');
+                                Navigator.of(context).pop();
+                                var a = await AFcombobox.modalBottom(
+                                  context: context,
+                                  listOpsi: _list,
+                                  idSelected: _kabupaten,
+                                  judul: 'Kabupaten',
+                                );
+                                if (a != null) {
+                                  fetchKabupaten(a.id, a.label);
+                                  fetchKecamatan('', '');
+                                  fetchKelurahan('', '');
+                                }
+                              } else {
+                                AFwidget.snack(context,
+                                    'Silakan isi provinsi terlebih dahulu.');
+                                _focProvinsi.requestFocus();
+                              }
+                            },
+                          );
+                        },
+                      ),
+                widget.member.kategori == 'team'
+                    ? Container()
+                    : StreamBuilder<String>(
+                        stream: _memberBloc.streamKecamatan,
+                        builder: (context, snap) {
+                          if (snap.hasData) {
+                            _txtKecamatan.text = snap.data!;
+                          }
+                          return AFwidget.textField(
+                            context: context,
+                            kontroler: _txtKecamatan,
+                            focusNode: _focKecamatan,
+                            label: 'Kecamatan',
+                            readonly: true,
+                            suffix: const Icon(
+                              Icons.expand_more,
+                              size: 20,
+                            ),
+                            ontap: () async {
+                              if (_kabupaten != '') {
+                                AFwidget.circularDialog(context);
+                                var _list = await _memberBloc.getOpsies(
+                                    rute: 'domisili',
+                                    mode: 'kecamatan/$_kabupaten');
+                                Navigator.of(context).pop();
+                                var a = await AFcombobox.modalBottom(
+                                  context: context,
+                                  listOpsi: _list,
+                                  idSelected: _kecamatan,
+                                  judul: 'Kecamatan',
+                                );
+                                if (a != null) {
+                                  fetchKecamatan(a.id, a.label);
+                                  fetchKelurahan('', '');
+                                }
+                              } else {
+                                AFwidget.snack(context,
+                                    'Silakan isi kabupaten terlebih dahulu.');
+                                _focKabupaten.requestFocus();
+                              }
+                            },
+                          );
+                        },
+                      ),
+                widget.member.kategori == 'team'
+                    ? Container()
+                    : StreamBuilder<String>(
+                        stream: _memberBloc.streamKelurahan,
+                        builder: (context, snap) {
+                          if (snap.hasData) {
+                            _txtKelurahan.text = snap.data!;
+                          }
+                          return AFwidget.textField(
+                            context: context,
+                            kontroler: _txtKelurahan,
+                            focusNode: _focKelurahan,
+                            label: 'Kelurahan',
+                            readonly: true,
+                            suffix: const Icon(
+                              Icons.expand_more,
+                              size: 20,
+                            ),
+                            ontap: () async {
+                              if (_kecamatan != '') {
+                                AFwidget.circularDialog(context);
+                                var _list = await _memberBloc.getOpsies(
+                                    rute: 'domisili',
+                                    mode: 'kelurahan/$_kecamatan');
+                                Navigator.of(context).pop();
+                                var a = await AFcombobox.modalBottom(
+                                  context: context,
+                                  listOpsi: _list,
+                                  idSelected: _kelurahan,
+                                  judul: 'Kelurahan',
+                                );
+                                if (a != null) {
+                                  fetchKelurahan(a.id, a.label);
+                                }
+                              } else {
+                                AFwidget.snack(context,
+                                    'Silakan isi kecamatan terlebih dahulu.');
+                                _focKecamatan.requestFocus();
+                              }
+                            },
+                          );
+                        },
+                      ),
                 AFwidget.textField(
                   context: context,
                   kontroler: _txtDusun,
@@ -699,52 +718,55 @@ class _BiodataPageState extends State<BiodataPage> {
             _focAgama.requestFocus();
             return;
           }
-          if (_kawin == 0) {
-            AFwidget.snack(context, 'Status harus diisi.');
-            _focKawin.requestFocus();
-            return;
-          }
 
-          if (_txtPekerjaan.text.isEmpty) {
-            AFwidget.snack(context, 'Pekerjaan harus diisi.');
-            _focPekerjaan.requestFocus();
-            return;
-          }
+          if (widget.member.kategori == 'member') {
+            if (_kawin == 0) {
+              AFwidget.snack(context, 'Status harus diisi.');
+              _focKawin.requestFocus();
+              return;
+            }
 
-          if (_pendidikan == '') {
-            AFwidget.snack(context, 'Pendidikan harus diisi.');
-            _focPendidikan.requestFocus();
-            return;
-          }
+            if (_txtPekerjaan.text.isEmpty) {
+              AFwidget.snack(context, 'Pekerjaan harus diisi.');
+              _focPekerjaan.requestFocus();
+              return;
+            }
 
-          if (_txtJurusan.text.isEmpty) {
-            AFwidget.snack(context, 'Jurusan harus diisi.');
-            _focJurusan.requestFocus();
-            return;
-          }
+            if (_pendidikan == '') {
+              AFwidget.snack(context, 'Pendidikan harus diisi.');
+              _focPendidikan.requestFocus();
+              return;
+            }
 
-          if (_provinsi == '') {
-            AFwidget.snack(context, 'Provinsi harus diisi.');
-            _focProvinsi.requestFocus();
-            return;
-          }
+            if (_txtJurusan.text.isEmpty) {
+              AFwidget.snack(context, 'Jurusan harus diisi.');
+              _focJurusan.requestFocus();
+              return;
+            }
 
-          if (_kabupaten == '') {
-            AFwidget.snack(context, 'Kabupaten harus diisi.');
-            _focKabupaten.requestFocus();
-            return;
-          }
+            if (_provinsi == '') {
+              AFwidget.snack(context, 'Provinsi harus diisi.');
+              _focProvinsi.requestFocus();
+              return;
+            }
 
-          if (_kecamatan == '') {
-            AFwidget.snack(context, 'Kecamatan harus diisi.');
-            _focKecamatan.requestFocus();
-            return;
-          }
+            if (_kabupaten == '') {
+              AFwidget.snack(context, 'Kabupaten harus diisi.');
+              _focKabupaten.requestFocus();
+              return;
+            }
 
-          if (_kelurahan == '') {
-            AFwidget.snack(context, 'Kelurahan harus diisi.');
-            _focKelurahan.requestFocus();
-            return;
+            if (_kecamatan == '') {
+              AFwidget.snack(context, 'Kecamatan harus diisi.');
+              _focKecamatan.requestFocus();
+              return;
+            }
+
+            if (_kelurahan == '') {
+              AFwidget.snack(context, 'Kelurahan harus diisi.');
+              _focKelurahan.requestFocus();
+              return;
+            }
           }
 
           if (_txtDusun.text.isEmpty) {
@@ -791,6 +813,7 @@ class _BiodataPageState extends State<BiodataPage> {
             password: widget.member.password,
             tglLastLogin: widget.member.tglLastLogin,
             token: widget.member.token,
+            kategori: widget.member.kategori,
           );
 
           AFwidget.circularDialog(context);

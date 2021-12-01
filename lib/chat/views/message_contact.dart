@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:simpel/blocs/pelatihan_bloc.dart';
+import 'package:simpel/chat/blocs/message_contact_bloc.dart';
 import 'package:simpel/chat/models/user_model.dart';
 import 'package:simpel/chat/services/user_service.dart';
 import 'package:simpel/chat/views/profil_image.dart';
+import 'package:simpel/models/member_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
 import 'package:simpel/utils/af_widget.dart';
 
 class MessageContact extends StatefulWidget {
-  final String nik;
+  final MemberModel member;
 
-  const MessageContact({required this.nik, Key? key}) : super(key: key);
+  const MessageContact({required this.member, Key? key}) : super(key: key);
 
   @override
   _MessageContactState createState() => _MessageContactState();
@@ -34,8 +35,8 @@ class _MessageContactState extends State<MessageContact> {
           ]),
         ),
         body: TabBarView(children: [
-          ContactPSM(nik: widget.nik),
-          ContactPeserta(nik: widget.nik),
+          ContactPSM(member: widget.member),
+          ContactPeserta(member: widget.member),
         ]),
       ),
     );
@@ -43,29 +44,29 @@ class _MessageContactState extends State<MessageContact> {
 }
 
 class ContactPSM extends StatefulWidget {
-  final String nik;
+  final MemberModel member;
 
-  const ContactPSM({required this.nik, Key? key}) : super(key: key);
+  const ContactPSM({required this.member, Key? key}) : super(key: key);
 
   @override
   _ContactPSMState createState() => _ContactPSMState();
 }
 
 class _ContactPSMState extends State<ContactPSM> {
-  final PelatihanBloc _pelatihanBloc = PelatihanBloc();
+  final MessageContactBloc _messageContactBloc = MessageContactBloc();
   final UserService _userService = UserService();
 
   @override
   void dispose() {
-    _pelatihanBloc.dispose();
+    _messageContactBloc.dispose();
     super.dispose();
   }
 
   Future<List<PersonPSMModel>> getListPSM() async {
     List<PersonPSMModel> list = [];
-    var listLatih = await _pelatihanBloc.getPelatihans(widget.nik);
+    var listLatih = await _messageContactBloc.getPelatihans(widget.member);
     for (var latih in listLatih) {
-      var listPerson = await _pelatihanBloc.getPSM(latih.kode);
+      var listPerson = await _messageContactBloc.getPSM(latih.kode);
       for (var person in listPerson) {
         person.posisi =
             '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
@@ -80,11 +81,17 @@ class _ContactPSMState extends State<ContactPSM> {
     return FutureBuilder<List<PersonPSMModel>>(
       future: getListPSM(),
       builder: (context, snap) {
-        if (snap.hasData && snap.data!.length > 0) {
-          return tabPSM(snap.data!);
+        if (snap.hasData) {
+          if (snap.data!.length > 0) {
+            return tabPSM(snap.data!);
+          } else {
+            return Center(
+              child: Text('PSM tidak ditemukan'),
+            );
+          }
         } else {
           return Center(
-            child: Text('PSM tidak ditemukan'),
+            child: AFwidget.circularProgress(warna: Colors.red),
           );
         }
       },
@@ -112,12 +119,12 @@ class _ContactPSMState extends State<ContactPSM> {
                   _listFilterPSM.add(a);
                 }
               }
-              _pelatihanBloc.fetchPSM(_listFilterPSM);
+              _messageContactBloc.fetchPSM(_listFilterPSM);
             },
           ),
         ),
         StreamBuilder<List<PersonPSMModel>>(
-          stream: _pelatihanBloc.streamPSM,
+          stream: _messageContactBloc.streamPSM,
           builder: (context, snapPSM) {
             if (snapPSM.hasData) {
               if (snapPSM.data!.isNotEmpty) {
@@ -128,7 +135,7 @@ class _ContactPSMState extends State<ContactPSM> {
                       dense: true,
                       leading: ProfilImage(
                         imageUrl: snapPSM.data![i].foto != ''
-                            ? _pelatihanBloc.dirImageMember +
+                            ? _messageContactBloc.dirImageTeam +
                                 snapPSM.data![i].foto
                             : '',
                         online: false,
@@ -147,9 +154,10 @@ class _ContactPSMState extends State<ContactPSM> {
                             photoUrl: snapPSM.data![i].foto,
                             active: false,
                             lastseen: DateTime(2021),
+                            kategori: 'team',
                           );
                           var c = await _userService.create(b);
-                          Navigator.of(context).pop(c);
+                          Navigator.of(context).pop([c]);
                         }
                       },
                     );
@@ -166,9 +174,9 @@ class _ContactPSMState extends State<ContactPSM> {
             } else {
               if (_listPSM.length < 1) {
                 _listPSM = el;
-                _pelatihanBloc.fetchPSM(el);
+                _messageContactBloc.fetchPSM(el);
               } else {
-                _pelatihanBloc.fetchPSM(_listPSM);
+                _messageContactBloc.fetchPSM(_listPSM);
               }
               return SliverToBoxAdapter(child: AFwidget.circularProgress());
             }
@@ -180,29 +188,29 @@ class _ContactPSMState extends State<ContactPSM> {
 }
 
 class ContactPeserta extends StatefulWidget {
-  final String nik;
+  final MemberModel member;
 
-  const ContactPeserta({required this.nik, Key? key}) : super(key: key);
+  const ContactPeserta({required this.member, Key? key}) : super(key: key);
 
   @override
   _ContactPesertaState createState() => _ContactPesertaState();
 }
 
 class _ContactPesertaState extends State<ContactPeserta> {
-  final PelatihanBloc _pelatihanBloc = PelatihanBloc();
+  final MessageContactBloc _messageContactBloc = MessageContactBloc();
   final UserService _userService = UserService();
 
   @override
   void dispose() {
-    _pelatihanBloc.dispose();
+    _messageContactBloc.dispose();
     super.dispose();
   }
 
   Future<List<PersonPesertaModel>> getListPeserta() async {
     List<PersonPesertaModel> list = [];
-    var listLatih = await _pelatihanBloc.getPelatihans(widget.nik);
+    var listLatih = await _messageContactBloc.getPelatihans(widget.member);
     for (var latih in listLatih) {
-      var listPerson = await _pelatihanBloc.getPeserta(latih.kode);
+      var listPerson = await _messageContactBloc.getPeserta(latih.kode);
       for (var person in listPerson) {
         person.posisi =
             '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
@@ -217,11 +225,17 @@ class _ContactPesertaState extends State<ContactPeserta> {
     return FutureBuilder<List<PersonPesertaModel>>(
       future: getListPeserta(),
       builder: (context, snap) {
-        if (snap.hasData && snap.data!.length > 0) {
-          return tabPeserta(snap.data!);
+        if (snap.hasData) {
+          if (snap.data!.length > 0) {
+            return tabPeserta(snap.data!);
+          } else {
+            return Center(
+              child: Text('Peserta tidak ditemukan'),
+            );
+          }
         } else {
           return Center(
-            child: Text('Peserta tidak ditemukan'),
+            child: AFwidget.circularProgress(warna: Colors.red),
           );
         }
       },
@@ -249,12 +263,12 @@ class _ContactPesertaState extends State<ContactPeserta> {
                   _listFilterPeserta.add(a);
                 }
               }
-              _pelatihanBloc.fetchPeserta(_listFilterPeserta);
+              _messageContactBloc.fetchPeserta(_listFilterPeserta);
             },
           ),
         ),
         StreamBuilder<List<PersonPesertaModel>>(
-          stream: _pelatihanBloc.streamPeserta,
+          stream: _messageContactBloc.streamPeserta,
           builder: (context, snapPeserta) {
             if (snapPeserta.hasData) {
               if (snapPeserta.data!.isNotEmpty) {
@@ -265,7 +279,7 @@ class _ContactPesertaState extends State<ContactPeserta> {
                       dense: true,
                       leading: ProfilImage(
                         imageUrl: snapPeserta.data![i].foto != ''
-                            ? _pelatihanBloc.dirImageMember +
+                            ? _messageContactBloc.dirImageMember +
                                 snapPeserta.data![i].foto
                             : '',
                         online: false,
@@ -284,6 +298,7 @@ class _ContactPesertaState extends State<ContactPeserta> {
                             photoUrl: snapPeserta.data![i].foto,
                             active: false,
                             lastseen: DateTime(2021),
+                            kategori: 'member',
                           );
                           var c = await _userService.create(b);
                           Navigator.of(context).pop([c]);
@@ -303,9 +318,9 @@ class _ContactPesertaState extends State<ContactPeserta> {
             } else {
               if (_listPeserta.length < 1) {
                 _listPeserta = el;
-                _pelatihanBloc.fetchPeserta(el);
+                _messageContactBloc.fetchPeserta(el);
               } else {
-                _pelatihanBloc.fetchPeserta(_listPeserta);
+                _messageContactBloc.fetchPeserta(_listPeserta);
               }
               return SliverToBoxAdapter(child: AFwidget.circularProgress());
             }

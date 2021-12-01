@@ -6,7 +6,6 @@ import 'package:simpel/blocs/member_bloc.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/utils/af_cache.dart';
 import 'package:simpel/utils/af_combobox.dart';
-
 import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_page_transisi.dart';
 import 'package:simpel/utils/af_widget.dart';
@@ -205,6 +204,20 @@ class _LoginPageState extends State<LoginPage> {
   late FocusNode _focNIK;
   late FocusNode _focPass;
   late FocusNode _focLupa;
+  String _kategori = '';
+  List<Opsi> _listOpsiKategori = [];
+  final Map<String, String> _mapKategori = {
+    'member': 'Peserta',
+    'team': 'Tim',
+    // 'dinas': 'Dinas',
+    '': '',
+  };
+
+  void fetchKategori(String nilai) {
+    _kategori = nilai;
+    _memberBloc.fetchKategori(nilai);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -222,6 +235,9 @@ class _LoginPageState extends State<LoginPage> {
           );
         });
       }
+    });
+    _mapKategori.forEach((key, value) {
+      _listOpsiKategori.add(Opsi(id: key, label: value));
     });
     _focNIK = FocusNode();
     _focPass = FocusNode();
@@ -241,167 +257,230 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              logo(),
-              AFwidget.textField(
-                context: context,
-                kontroler: _txtNIK,
-                focusNode: _focNIK,
-                label: 'NIK',
-                suffix: const Icon(
-                  Icons.person,
-                  size: 20,
-                  color: Colors.transparent,
-                ),
-              ),
-              StreamBuilder<bool>(
-                stream: _memberBloc.streamTampilPassword,
-                builder: (context, snapTampil) {
-                  if (snapTampil.hasData) {
-                    return AFwidget.textField(
-                      context: context,
-                      kontroler: _txtPass,
-                      focusNode: _focPass,
-                      label: 'Password',
-                      obscuretext: !snapTampil.data!,
-                      suffix: GestureDetector(
-                        child: Icon(
-                          snapTampil.data!
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          size: 20,
-                        ),
-                        onTap: () {
-                          _memberBloc.fetchTampilPassword(!snapTampil.data!);
-                        },
-                      ),
-                    );
-                  } else {
-                    _memberBloc.fetchTampilPassword(false);
-                    return Container();
-                  }
-                },
-              ),
-              Container(
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.fromLTRB(5, 15, 5, 0),
-                child: TextButton(
-                  child: const Text('Belum Punya Akun ? Daftar'),
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => LoginStep1(
-                          member: MemberModel(),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
-                child: TextButton(
-                  child: const Text('Lupa Password ? Reset'),
-                  onPressed: () {
-                    AFwidget.simpleDialog(
-                      context,
-                      [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 25),
-                          child: AFwidget.textField(
-                            context: context,
-                            kontroler: _txtLupa,
-                            focusNode: _focLupa,
-                            label: 'NIK',
-                            suffix: const Icon(
-                              Icons.person,
+        child: Stack(
+          alignment: AlignmentDirectional.topEnd,
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  logo(),
+                  AFwidget.textField(
+                    context: context,
+                    kontroler: _txtNIK,
+                    focusNode: _focNIK,
+                    label: 'NIK',
+                    suffix: const Icon(
+                      Icons.person,
+                      size: 20,
+                      color: Colors.transparent,
+                    ),
+                  ),
+                  StreamBuilder<bool>(
+                    stream: _memberBloc.streamTampilPassword,
+                    builder: (context, snapTampil) {
+                      if (snapTampil.hasData) {
+                        return AFwidget.textField(
+                          context: context,
+                          kontroler: _txtPass,
+                          focusNode: _focPass,
+                          label: 'Password',
+                          obscuretext: !snapTampil.data!,
+                          suffix: GestureDetector(
+                            child: Icon(
+                              snapTampil.data!
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                               size: 20,
-                              color: Colors.transparent,
                             ),
+                            onTap: () {
+                              _memberBloc
+                                  .fetchTampilPassword(!snapTampil.data!);
+                            },
                           ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            ElevatedButton(
-                              child: const Text('Batal'),
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.red.shade500,
+                        );
+                      } else {
+                        _memberBloc.fetchTampilPassword(false);
+                        return Container();
+                      }
+                    },
+                  ),
+                  StreamBuilder<String>(
+                      stream: _memberBloc.streamKategori,
+                      builder: (context, snapKategori) {
+                        if (snapKategori.hasData) {
+                          if (snapKategori.data == 'member') {
+                            return Container(
+                              alignment: Alignment.topLeft,
+                              padding: const EdgeInsets.fromLTRB(5, 15, 5, 0),
+                              child: TextButton(
+                                child: const Text('Belum Punya Akun ? Daftar'),
+                                onPressed: () {
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginStep1(
+                                        member: MemberModel(),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                            );
+                          } else {
+                            return Container();
+                          }
+                        } else {
+                          if (_kategori == '') fetchKategori('member');
+                          return Container();
+                        }
+                      }),
+                  Container(
+                    alignment: Alignment.topLeft,
+                    padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                    child: TextButton(
+                      child: const Text('Lupa Password ? Reset'),
+                      onPressed: () {
+                        AFwidget.simpleDialog(
+                          context,
+                          [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 25),
+                              child: AFwidget.textField(
+                                context: context,
+                                kontroler: _txtLupa,
+                                focusNode: _focLupa,
+                                label: 'NIK',
+                                suffix: const Icon(
+                                  Icons.person,
+                                  size: 20,
+                                  color: Colors.transparent,
+                                ),
+                              ),
                             ),
-                            ElevatedButton(
-                              child: const Text('Kirim'),
-                              onPressed: () {
-                                if (_txtLupa.text.isEmpty) {
-                                  AFwidget.snack(context, 'NIK harus diisi.');
-                                  _focLupa.requestFocus();
-                                  return;
-                                }
-                                Navigator.of(context).pop();
-                              },
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton(
+                                  child: const Text('Batal'),
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Colors.red.shade500,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                ElevatedButton(
+                                  child: const Text('Kirim'),
+                                  onPressed: () {
+                                    if (_txtLupa.text.isEmpty) {
+                                      AFwidget.snack(
+                                          context, 'NIK harus diisi.');
+                                      _focLupa.requestFocus();
+                                      return;
+                                    }
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
                             ),
                           ],
-                        ),
-                      ],
-                      judul: Text('Lupa Password'),
-                    );
-                  },
-                ),
+                          judul: Text('Lupa Password'),
+                        );
+                      },
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      child: const Text('Login'),
+                      onPressed: () async {
+                        if (_txtNIK.text.isEmpty) {
+                          AFwidget.snack(context, 'NIK harus diisi.');
+                          _focNIK.requestFocus();
+                          return;
+                        }
+
+                        if (_txtPass.text.isEmpty) {
+                          AFwidget.snack(context, 'Password harus diisi.');
+                          _focPass.requestFocus();
+                          return;
+                        }
+
+                        AFwidget.circularDialog(context);
+                        var a = await _memberBloc.signIn(
+                          kategori: _kategori,
+                          nik: _txtNIK.text,
+                          password: _txtPass.text,
+                        );
+                        Navigator.of(context).pop();
+
+                        if (a['status'].toString() == '1') {
+                          a['data']['kategori'] = _kategori;
+                          _aFcache.setUser(_kategori, a['data']['nik']);
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(
+                                menu: 0,
+                                page: 'beranda',
+                                member: MemberModel.dariMap(a['data']),
+                              ),
+                            ),
+                          );
+                        } else {
+                          AFwidget.alertDialog(
+                            context,
+                            Text(a['message'].toString()),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                child: ElevatedButton(
-                  child: const Text('Login'),
-                  onPressed: () async {
-                    if (_txtNIK.text.isEmpty) {
-                      AFwidget.snack(context, 'NIK harus diisi.');
-                      _focNIK.requestFocus();
-                      return;
-                    }
-
-                    if (_txtPass.text.isEmpty) {
-                      AFwidget.snack(context, 'Password harus diisi.');
-                      _focPass.requestFocus();
-                      return;
-                    }
-
-                    AFwidget.circularDialog(context);
-                    var a = await _memberBloc.signIn(
-                      nik: _txtNIK.text,
-                      password: _txtPass.text,
-                    );
-                    Navigator.of(context).pop();
-
-                    if (a['status'].toString() == '1') {
-                      _aFcache.setUser(a['data']['nik']);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (context) => HomePage(
-                            menu: 0,
-                            page: 'beranda',
-                            member: MemberModel.dariMap(a['data']),
-                          ),
+            ),
+            StreamBuilder<String>(
+              stream: _memberBloc.streamKategori,
+              builder: (context, snapKategori) {
+                if (snapKategori.hasData) {
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(15, 5, 15, 15),
+                    child: TextButton.icon(
+                      icon: Text(
+                        _mapKategori[_kategori]!,
+                        style: TextStyle(
+                          fontSize: 13,
                         ),
-                      );
-                    } else {
-                      AFwidget.alertDialog(
-                        context,
-                        Text(a['message'].toString()),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ],
-          ),
+                      ),
+                      label: Icon(
+                        Icons.expand_more,
+                        size: 19,
+                      ),
+                      style: TextButton.styleFrom(
+                        side: BorderSide(color: Colors.green),
+                      ),
+                      onPressed: () async {
+                        var a = await AFcombobox.modalBottom(
+                          context: context,
+                          listOpsi: _listOpsiKategori,
+                          idSelected: _kategori,
+                          judul: 'Login Sebagai :',
+                          isScrollControlled: false,
+                          withCari: false,
+                        );
+                        if (a != null) {
+                          fetchKategori(a.id);
+                        }
+                      },
+                    ),
+                  );
+                } else {
+                  fetchKategori(_kategori);
+                  return Container();
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -1648,7 +1727,7 @@ class _LoginStep4State extends State<LoginStep4> {
                     context: context,
                     kontroler: _txtKelurahan,
                     focusNode: _focKelurahan,
-                    label: 'Kelurahan',
+                    label: 'Kelurahan / Desa',
                     readonly: true,
                     suffix: const Icon(
                       Icons.expand_more,
@@ -1771,6 +1850,7 @@ class _LoginStep4State extends State<LoginStep4> {
                         }
 
                         MemberModel hasilMember = MemberModel(
+                          kategori: 'member',
                           nik: widget.member.nik,
                           password: widget.member.password,
                           nama: widget.member.nama,
@@ -1805,7 +1885,7 @@ class _LoginStep4State extends State<LoginStep4> {
                         Navigator.of(context).pop();
 
                         if (a['status'].toString() == '1') {
-                          _aFcache.setUser(hasilMember.nik);
+                          _aFcache.setUser('member', hasilMember.nik);
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => HomePage(

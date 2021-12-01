@@ -8,14 +8,19 @@ class MemberBloc {
   final String _dirImageMember = DBHelper.dirImage + 'member/';
   String get dirImageMember => _dirImageMember;
 
-  Future<MemberModel> getMember(String nik) async {
+  Future<MemberModel> getMember(String kategori, String nik) async {
     var a = await DBHelper.getData(
       methodeRequest: MethodeRequest.post,
-      rute: 'member',
+      rute: kategori,
       mode: 'get',
       body: {'nik': nik},
     );
-    return a != null ? MemberModel.dariMap(a) : MemberModel();
+    if (a != null) {
+      a['kategori'] = kategori;
+      return MemberModel.dariMap(a);
+    } else {
+      return MemberModel();
+    }
   }
 
   final _strMember = StreamController<MemberModel>.broadcast();
@@ -55,11 +60,12 @@ class MemberBloc {
   }
 
   Future<Map<String, dynamic>> signIn({
+    required String kategori,
     required String nik,
     required String password,
   }) async {
     var a = await DBHelper.setData(
-      rute: 'member',
+      rute: kategori,
       mode: 'login',
       body: {'nik': nik, 'password': password},
     );
@@ -93,7 +99,7 @@ class MemberBloc {
   Future<Map<String, dynamic>> editBiodata(MemberModel member) async {
     var map = member.keMap();
     var a = await DBHelper.setData(
-      rute: 'member',
+      rute: member.kategori,
       mode: 'edit',
       body: map,
     );
@@ -101,15 +107,15 @@ class MemberBloc {
   }
 
   Future<Map<String, dynamic>> editPassword({
-    required String nik,
+    required MemberModel member,
     required String pwdLama,
     required String pwdBaru,
   }) async {
     var a = await DBHelper.setData(
-      rute: 'member',
+      rute: member.kategori,
       mode: 'changepwd',
       body: {
-        'nik': nik,
+        'nik': member.nik,
         'password_lama': pwdLama,
         'password_baru': pwdBaru,
       },
@@ -118,17 +124,23 @@ class MemberBloc {
   }
 
   Future<Map<String, dynamic>> editFoto({
-    required String nik,
+    required MemberModel member,
     required String pathFoto,
   }) async {
     var a = await DBHelper.setData(
       methodeRequest: MethodeRequest.multipartRequest,
-      rute: 'member',
+      rute: member.kategori,
       mode: 'changefoto',
-      body: {'nik': nik},
+      body: {'nik': member.nik},
       filePath: {'foto': pathFoto},
     );
     return a;
+  }
+
+  final _strKategori = StreamController<String>.broadcast();
+  Stream<String> get streamKategori => _strKategori.stream;
+  void fetchKategori(String a) async {
+    _strKategori.sink.add(a);
   }
 
   final _strTampilPassword = StreamController<bool>.broadcast();
@@ -211,6 +223,7 @@ class MemberBloc {
 
   void dispose() {
     _strMember.close();
+    _strKategori.close();
     _strTampilPassword.close();
     _strTampilPasswordBaru.close();
     _strTampilPasswordKonf.close();

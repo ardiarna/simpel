@@ -1,6 +1,7 @@
 import 'package:simpel/utils/af_convert.dart';
 
 class MemberModel {
+  String kategori;
   String nik;
   String nama;
   String email;
@@ -38,8 +39,14 @@ class MemberModel {
   DateTime? createdOn;
   DateTime? modifiedOn;
   String modifiedBy;
+  String instansi;
+  String instansiLabel;
+  String posisi;
+  String posisiLabel;
+  String inteks;
 
   MemberModel({
+    this.kategori = '',
     this.nik = '',
     this.nama = '',
     this.email = '',
@@ -77,10 +84,16 @@ class MemberModel {
     this.createdOn,
     this.modifiedOn,
     this.modifiedBy = '',
+    this.instansi = '',
+    this.instansiLabel = '',
+    this.posisi = '',
+    this.posisiLabel = '',
+    this.inteks = '',
   });
 
   factory MemberModel.dariMap(Map<String, dynamic> map) {
     return MemberModel(
+      kategori: AFconvert.keString(map['kategori']),
       nik: AFconvert.keString(map['nik']),
       nama: AFconvert.keString(map['nama']),
       email: AFconvert.keString(map['email']),
@@ -118,6 +131,11 @@ class MemberModel {
       createdOn: AFconvert.keTanggal(map['created_on']),
       modifiedOn: AFconvert.keTanggal(map['modified_on']),
       modifiedBy: AFconvert.keString(map['modified_by']),
+      instansi: AFconvert.keString(map['kd_ins']),
+      posisi: AFconvert.keString(map['posisi']),
+      inteks: AFconvert.keString(map['int_eks']),
+      instansiLabel: AFconvert.keString(map['kd_ins_label']),
+      posisiLabel: AFconvert.keString(map['posisi_label']),
     );
   }
 
@@ -152,6 +170,9 @@ class MemberModel {
       'created_on': AFconvert.keString(createdOn),
       'modified_on': AFconvert.keString(modifiedOn),
       'modified_by': modifiedBy,
+      'kd_ins': instansi,
+      'posisi': posisi,
+      'int_eks': inteks,
     };
     return map;
   }

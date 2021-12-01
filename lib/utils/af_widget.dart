@@ -394,6 +394,28 @@ abstract class AFwidget {
     );
   }
 
+  static Widget cachedNetworkImageNoCek(
+    String url, {
+    BoxFit? fit,
+    double? width,
+    double? height,
+  }) {
+    return CachedNetworkImage(
+      imageUrl: url,
+      fit: fit,
+      width: width,
+      height: height,
+      progressIndicatorBuilder: (context, url, downloadProgress) =>
+          AFwidget.circularProgress(
+        nilai: downloadProgress.progress,
+        tinggi: 25,
+        lebar: 25,
+        warna: Colors.green,
+      ),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+    );
+  }
+
   static Widget textField({
     required BuildContext context,
     TextEditingController? kontroler,
@@ -487,19 +509,9 @@ abstract class AFwidget {
         ),
         "blockquote": Style(color: Colors.blue, fontSize: const FontSize(17))
       },
-      onLinkTap: (url, _, __, ___) {
-        // if (url != null) launch(url);
-      },
-      onImageError: (exception, stackTrace) {
-        // print(exception);
-      },
-      onCssParseError: (css, messages) {
-        // print("css that errored: $css");
-        // print("error messages:");
-        // messages.forEach((element) {
-        //   print(element);
-        // });
-      },
+      onLinkTap: (url, _, __, ___) {},
+      onImageError: (exception, stackTrace) {},
+      onCssParseError: (css, messages) {},
     );
   }
 }

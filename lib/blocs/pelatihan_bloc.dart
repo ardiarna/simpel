@@ -5,6 +5,9 @@ import 'package:simpel/models/kuis_model.dart';
 import 'package:simpel/models/materi_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
 import 'package:simpel/models/rekrutmen_model.dart';
+import 'package:simpel/models/resume_model.dart';
+import 'package:simpel/models/rtl_real_model.dart';
+import 'package:simpel/models/saran_model.dart';
 import 'package:simpel/models/survey_model.dart';
 import 'package:simpel/models/tugas_model.dart';
 import 'package:simpel/utils/db_helper.dart';
@@ -213,6 +216,21 @@ class PelatihanBloc {
     _strPeserta.sink.add(list);
   }
 
+  Future<List<PelatihanModel>> getPelatihanTeam(String nik) async {
+    List<PelatihanModel> list = [];
+    var a = await DBHelper.getDaftar(
+      methodeRequest: MethodeRequest.post,
+      rute: 'team',
+      mode: 'pelatihan',
+      body: {'nik': nik},
+    );
+    for (var el in a) {
+      var b = PelatihanModel.dariMap(el);
+      list.add(b);
+    }
+    return list;
+  }
+
   Future<RekrutmenModel> getRekrutmen(String kode) async {
     var a = await DBHelper.getData(
       methodeRequest: MethodeRequest.post,
@@ -223,10 +241,128 @@ class PelatihanBloc {
     return a != null ? RekrutmenModel.dariMap(a) : RekrutmenModel();
   }
 
+  Future<List<RTLrealModel>> getRTL(
+    String nik,
+    String kode,
+  ) async {
+    List<RTLrealModel> list = [];
+    var a = await DBHelper.getDaftar(
+      methodeRequest: MethodeRequest.post,
+      rute: 'rtl',
+      mode: 'real',
+      body: {'nik': nik, 'kode': kode},
+    );
+    for (var el in a) {
+      var b = RTLrealModel.dariMap(el);
+      list.add(b);
+    }
+    return list;
+  }
+
+  Future<List<SaranModel>> getSarans({
+    required String kode,
+    required String nik,
+  }) async {
+    List<SaranModel> list = [];
+    var a = await DBHelper.getDaftar(
+      methodeRequest: MethodeRequest.post,
+      rute: 'pelatihan',
+      mode: 'saran',
+      body: {'kode': kode, 'nik': nik},
+    );
+    for (var el in a) {
+      var b = SaranModel.dariMap(el);
+      list.add(b);
+    }
+    return list;
+  }
+
+  Future<SaranModel> getSaranId({
+    required String kode,
+    required String nik,
+    required String psmNik,
+  }) async {
+    var a = await DBHelper.getData(
+      methodeRequest: MethodeRequest.post,
+      rute: 'pelatihan',
+      mode: 'saran',
+      body: {'kode': kode, 'nik': nik, 'psm_nik': psmNik},
+    );
+    return a != null ? SaranModel.dariMap(a) : SaranModel();
+  }
+
+  final _strSaranId = StreamController<SaranModel>.broadcast();
+  Stream<SaranModel> get streamSaranId => _strSaranId.stream;
+
+  void fetchSaranId(SaranModel nilai) async {
+    _strSaranId.sink.add(nilai);
+  }
+
+  Future<Map<String, dynamic>> addSaran(SaranModel model) async {
+    var map = model.keMap();
+    var a = await DBHelper.setData(
+      rute: 'pelatihan',
+      mode: 'addsaran',
+      body: map,
+    );
+    return a;
+  }
+
+  Future<List<ResumeModel>> getResumes({
+    required String kode,
+    required String nik,
+  }) async {
+    List<ResumeModel> list = [];
+    var a = await DBHelper.getDaftar(
+      methodeRequest: MethodeRequest.post,
+      rute: 'pelatihan',
+      mode: 'resume',
+      body: {'kode': kode, 'nik': nik},
+    );
+    for (var el in a) {
+      var b = ResumeModel.dariMap(el);
+      list.add(b);
+    }
+    return list;
+  }
+
+  Future<ResumeModel> getResumeId({
+    required String kode,
+    required String nik,
+    required String psmNik,
+  }) async {
+    var a = await DBHelper.getData(
+      methodeRequest: MethodeRequest.post,
+      rute: 'pelatihan',
+      mode: 'resume',
+      body: {'kode': kode, 'nik': nik, 'psm_nik': psmNik},
+    );
+    return a != null ? ResumeModel.dariMap(a) : ResumeModel();
+  }
+
+  final _strResumeId = StreamController<ResumeModel>.broadcast();
+  Stream<ResumeModel> get streamResumeId => _strResumeId.stream;
+
+  void fetchResumeId(ResumeModel nilai) async {
+    _strResumeId.sink.add(nilai);
+  }
+
+  Future<Map<String, dynamic>> addResume(ResumeModel model) async {
+    var map = model.keMap();
+    var a = await DBHelper.setData(
+      rute: 'pelatihan',
+      mode: 'addresume',
+      body: map,
+    );
+    return a;
+  }
+
   void dispose() {
     _strPage.close();
     _strMenu.close();
     _strPSM.close();
     _strPeserta.close();
+    _strSaranId.close();
+    _strResumeId.close();
   }
 }

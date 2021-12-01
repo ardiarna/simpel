@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:simpel/models/giat_model.dart';
+import 'package:simpel/models/pelatihan_model.dart';
 import 'package:simpel/models/slide_model.dart';
 import 'package:simpel/utils/db_helper.dart';
 
@@ -44,6 +45,21 @@ class BerandaBloc {
     );
     for (var el in a) {
       var b = GiatModel.dariMap(el);
+      list.add(b);
+    }
+    return list;
+  }
+
+  Future<List<PelatihanModel>> getPelatihanTeam(String nik) async {
+    List<PelatihanModel> list = [];
+    var a = await DBHelper.getDaftar(
+      methodeRequest: MethodeRequest.post,
+      rute: 'team',
+      mode: 'pelatihan',
+      body: {'nik': nik},
+    );
+    for (var el in a) {
+      var b = PelatihanModel.dariMap(el);
       list.add(b);
     }
     return list;

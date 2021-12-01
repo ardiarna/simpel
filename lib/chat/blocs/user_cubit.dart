@@ -10,7 +10,12 @@ class UserCubit extends Cubit<UserState> {
 
   UserCubit(this._userService, this._localCache) : super(UserInitial());
 
-  Future<User> connect(String nik, String username, String photoUrl) async {
+  Future<User> connect({
+    required String nik,
+    required String username,
+    required String photoUrl,
+    required String kategori,
+  }) async {
     emit(Loading());
     final user = User(
       nik: nik,
@@ -18,6 +23,7 @@ class UserCubit extends Cubit<UserState> {
       photoUrl: photoUrl,
       active: true,
       lastseen: DateTime.now(),
+      kategori: kategori,
     );
     final createdUser = await _userService.connect(user);
     final userJson = {
@@ -26,6 +32,7 @@ class UserCubit extends Cubit<UserState> {
       'active': true,
       'photo_url': createdUser.photoUrl,
       'id': createdUser.idn,
+      'kategori': createdUser.kategori,
     };
     final userCache = _localCache.fetch('USER');
     if (userCache.isEmpty) await _localCache.save('USER', userJson);

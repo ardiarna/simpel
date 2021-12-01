@@ -11,6 +11,7 @@ class PelatihanModel {
   String fsurvey;
   String fileSertifikat;
   String giatKode;
+  String giatImage;
 
   PelatihanModel({
     this.kode = '',
@@ -23,6 +24,7 @@ class PelatihanModel {
     this.fsurvey = '',
     this.fileSertifikat = '',
     this.giatKode = '',
+    this.giatImage = '',
   });
 
   factory PelatihanModel.dariMap(Map<String, dynamic> map) {
@@ -37,6 +39,7 @@ class PelatihanModel {
       fsurvey: AFconvert.keString(map['fsurvey']),
       fileSertifikat: AFconvert.keString(map['file_sertifikat']),
       giatKode: AFconvert.keString(map['kd_giat']),
+      giatImage: AFconvert.keString(map['image_giat']),
     );
   }
 
@@ -52,6 +55,7 @@ class PelatihanModel {
       'fsurvey': fsurvey,
       'file_sertifikat': fileSertifikat,
       'kd_giat': giatKode,
+      'image_giat': giatImage,
     };
     return map;
   }
@@ -95,12 +99,32 @@ class PersonPesertaModel {
   String nama;
   String foto;
   String posisi;
+  String bumdes;
+  String provId;
+  String provLabel;
+  String kabId;
+  String kabLabel;
+  String kecId;
+  String kecLabel;
+  String kelId;
+  String kelLabel;
+  String dusun;
 
   PersonPesertaModel({
     this.nik = '',
     this.nama = '',
     this.foto = '',
     this.posisi = '',
+    this.bumdes = '',
+    this.provId = '',
+    this.provLabel = '',
+    this.kabId = '',
+    this.kabLabel = '',
+    this.kecId = '',
+    this.kecLabel = '',
+    this.kelId = '',
+    this.kelLabel = '',
+    this.dusun = '',
   });
 
   factory PersonPesertaModel.dariMap(Map<String, dynamic> map) {
@@ -109,6 +133,16 @@ class PersonPesertaModel {
       nama: AFconvert.keString(map['nama']),
       foto: AFconvert.keString(map['pas_foto']),
       posisi: AFconvert.keString(map['posisi']),
+      bumdes: AFconvert.keString(map['bumdes']),
+      provId: AFconvert.keString(map['kd_prov']),
+      kabId: AFconvert.keString(map['kd_kab']),
+      kecId: AFconvert.keString(map['kd_kec']),
+      kelId: AFconvert.keString(map['kd_kel']),
+      provLabel: AFconvert.keString(map['kd_prov_label']),
+      kabLabel: AFconvert.keString(map['kd_kab_label']),
+      kecLabel: AFconvert.keString(map['kd_kec_label']),
+      kelLabel: AFconvert.keString(map['kd_kel_label']),
+      dusun: AFconvert.keString(map['dusun_rt_rw']),
     );
   }
 
@@ -118,6 +152,16 @@ class PersonPesertaModel {
       'nama': nama,
       'pas_foto': foto,
       'posisi': posisi,
+      'bumdes': bumdes,
+      'kd_prov': provId,
+      'kd_kab': kabId,
+      'kd_kec': kecId,
+      'kd_kel': kelId,
+      'kd_prov_label': provLabel,
+      'kd_kab_label': kabLabel,
+      'kd_kec_label': kecLabel,
+      'kd_kel_label': kelLabel,
+      'dusun_rt_rw': dusun,
     };
     return map;
   }

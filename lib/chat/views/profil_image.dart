@@ -5,34 +5,41 @@ class ProfilImage extends StatelessWidget {
   final String imageUrl;
   final bool online;
   final double size;
+  final bool isUseImage;
 
   ProfilImage({
     required this.imageUrl,
     required this.online,
-    this.size = 126,
+    this.size = 40,
+    this.isUseImage = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      backgroundColor: Colors.transparent,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey,
+        borderRadius: BorderRadius.circular(size),
+      ),
+      width: size,
+      height: size,
       child: Stack(
         fit: StackFit.expand,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(126),
-            child: imageUrl != ''
-                ? AFwidget.cachedNetworkImage(
+          !isUseImage || imageUrl == ''
+              ? Icon(
+                  Icons.person,
+                  size: size / 1.6,
+                  color: Colors.white,
+                )
+              : ClipRRect(
+                  borderRadius: BorderRadius.circular(size),
+                  child: AFwidget.cachedNetworkImage(
                     imageUrl,
                     width: size,
                     height: size,
-                    fit: BoxFit.fill,
-                  )
-                : Icon(
-                    Icons.person,
-                    size: 25,
                   ),
-          ),
+                ),
           Align(
             alignment: Alignment.bottomLeft,
             child: online ? _onlineIndicator() : Container(),
@@ -43,13 +50,13 @@ class ProfilImage extends StatelessWidget {
   }
 
   _onlineIndicator() => Container(
-        height: size / 8,
-        width: size / 8,
+        height: size / 3.5,
+        width: size / 3.5,
         decoration: BoxDecoration(
           color: Colors.green,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(size / 3.5),
           border: Border.all(
-            width: 3,
+            width: 1.5,
             color: Colors.white,
           ),
         ),
