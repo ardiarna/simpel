@@ -41,8 +41,8 @@ class CompositionRoot {
     _dataSource = SqfLiteDataSource(_db);
     final sp = await SharedPreferences.getInstance();
     _localCache = LocalCache(sp);
-    _db.delete('chats');
-    _db.delete('messages');
+    // _db.delete('chats');
+    // _db.delete('messages');
   }
 
   static Widget composeDiskusi(MemberModel member) {

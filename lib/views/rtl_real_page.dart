@@ -223,7 +223,7 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 15, 0, 3),
                                     child: Text(
-                                      'Saran PSM',
+                                      'Solusi PSM',
                                       style: TextStyle(
                                         color: Colors.grey,
                                       ),
@@ -1010,7 +1010,7 @@ class _RealHistoryState extends State<RealHistory> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),
                               child: Text(
-                                'Saran PSM',
+                                'Solusi PSM',
                                 style: TextStyle(
                                   color: Colors.grey,
                                 ),
@@ -1246,36 +1246,41 @@ class _RealSaranState extends State<RealSaran> {
                 context: context,
                 kontroler: _txtSaran,
                 focusNode: _focSaran,
-                label: 'Saran',
+                label: 'Solusi PSM',
                 maxLines: 2,
                 padding: EdgeInsets.all(10),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(7)),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 35, 15, 15),
-                child: ElevatedButton(
-                  child: Text('Simpan Saran'),
-                  onPressed: () async {
-                    if (_txtSaran.text.isEmpty) {
-                      AFwidget.snack(context, 'Saran harus diisi.');
-                      _focSaran.requestFocus();
-                      return;
-                    }
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 35, 15, 15),
+                  child: ElevatedButton(
+                    child: Text('Simpan'),
+                    onPressed: () async {
+                      if (_txtSaran.text.isEmpty) {
+                        AFwidget.snack(context, 'Saran harus diisi.');
+                        _focSaran.requestFocus();
+                        return;
+                      }
 
-                    AFwidget.circularDialog(context);
-                    var a = await _rtlBloc.saranReal(widget.real.id.toString(),
-                        _txtSaran.text, widget.teamNik);
-                    Navigator.of(context).pop();
-                    if (a['status'].toString() == '1') {
-                      await AFwidget.alertDialog(
-                          context, const Text('Saran berhasil disimpan.'));
+                      AFwidget.circularDialog(context);
+                      var a = await _rtlBloc.saranReal(
+                          widget.real.id.toString(),
+                          _txtSaran.text,
+                          widget.teamNik);
                       Navigator.of(context).pop();
-                    } else {
-                      AFwidget.alertDialog(
-                          context, Text(a['message'].toString()));
-                    }
-                  },
+                      if (a['status'].toString() == '1') {
+                        await AFwidget.alertDialog(
+                            context, const Text('Saran berhasil disimpan.'));
+                        Navigator.of(context).pop();
+                      } else {
+                        AFwidget.alertDialog(
+                            context, Text(a['message'].toString()));
+                      }
+                    },
+                  ),
                 ),
               ),
             ],

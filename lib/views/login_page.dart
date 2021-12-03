@@ -2,7 +2,17 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:simpel/blocs/beranda_bloc.dart';
 import 'package:simpel/blocs/member_bloc.dart';
+import 'package:simpel/chat/data/datasource_contract.dart';
+import 'package:simpel/chat/data/sqflite_datasource.dart';
+import 'package:simpel/chat/models/chat_model.dart';
+import 'package:simpel/chat/models/message_group_model.dart';
+import 'package:simpel/chat/services/group_service.dart';
+import 'package:simpel/chat/services/user_service.dart';
+import 'package:simpel/chat/services/user_service_contract.dart';
+import 'package:simpel/chat/viewmodels/chats_view_model.dart';
+import 'package:simpel/chat/views/color_generator.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/utils/af_cache.dart';
 import 'package:simpel/utils/af_combobox.dart';
@@ -10,7 +20,9 @@ import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_page_transisi.dart';
 import 'package:simpel/utils/af_widget.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:simpel/utils/db_factory.dart';
 import 'package:simpel/views/home_page.dart';
+import 'package:sqflite/sqflite.dart';
 
 List<Opsi> _listOpsiAgama = [];
 List<Opsi> _listOpsiKelamin = [];
@@ -417,13 +429,53 @@ class _LoginPageState extends State<LoginPage> {
 
                         if (a['status'].toString() == '1') {
                           a['data']['kategori'] = _kategori;
-                          _aFcache.setUser(_kategori, a['data']['nik']);
+                          var member = MemberModel.dariMap(a['data']);
+                          await _aFcache.setUser(member.kategori, member.nik);
+                          BerandaBloc _berandaBloc = BerandaBloc();
+                          var _listPelatihan =
+                              await _berandaBloc.getPelatihanTeam(member.nik);
+                          if (_listPelatihan.isNotEmpty) {
+                            Database _db =
+                                await LocalDatabaseFactory().createDatabase();
+                            IDataSource _dataSource = SqfLiteDataSource(_db);
+                            IUserService _userService = UserService();
+                            MessageGroupService messageGroupService =
+                                MessageGroupService();
+                            ChatsViewModel chatsViewModel =
+                                ChatsViewModel(_dataSource, _userService);
+                            for (var _pelatihan in _listPelatihan) {
+                              var messageGroup = MessageGroup(
+                                name:
+                                    '${_pelatihan.singkatan} ${_pelatihan.angkatan}-${_pelatihan.tahun}',
+                                createdBy: member.nik,
+                                members: [member.nik],
+                                photoUrl: _pelatihan.giatImage,
+                              );
+                              var msgrupFromServer = await messageGroupService
+                                  .create(messageGroup);
+                              final membersId = msgrupFromServer.members
+                                  .map((e) => {
+                                        e: RandomColorGenerator.getColor()
+                                            .value
+                                            .toString()
+                                      })
+                                  .toList();
+                              Chat chat = Chat(
+                                msgrupFromServer.id,
+                                ChatType.group,
+                                membersId: membersId,
+                                name: msgrupFromServer.name,
+                                photoUrl: msgrupFromServer.photoUrl,
+                              );
+                              await chatsViewModel.createNewChat(chat);
+                            }
+                          }
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (context) => HomePage(
                                 menu: 0,
                                 page: 'beranda',
-                                member: MemberModel.dariMap(a['data']),
+                                member: member,
                               ),
                             ),
                           );

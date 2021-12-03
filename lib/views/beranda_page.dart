@@ -5,10 +5,14 @@ import 'package:simpel/blocs/beranda_bloc.dart';
 import 'package:simpel/models/giat_model.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
+import 'package:simpel/models/rekrutmen_model.dart';
 import 'package:simpel/models/slide_model.dart';
+import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_sliver_subheader.dart';
 import 'package:simpel/utils/af_widget.dart';
+import 'package:simpel/views/resume_rekrutmen.dart';
 import 'package:simpel/views/team_pelatihan_page.dart';
+import 'package:basic_utils/basic_utils.dart';
 
 class BerandaPage extends StatefulWidget {
   final MemberModel member;
@@ -23,6 +27,9 @@ class _BerandaPageState extends State<BerandaPage> {
   final ScrollController _scroller = ScrollController();
   final CarouselController _caroller = CarouselController();
   bool _isShowSlide = true;
+  List<PelatihanModel> _listPelatihan = [];
+  List<PelatihanModel> _listFilterPelatihan = [];
+  final TextEditingController _txtCari = TextEditingController();
 
   _scrollListener() {
     if (_scroller.offset >= 135 &&
@@ -77,7 +84,8 @@ class _BerandaPageState extends State<BerandaPage> {
                 child: Container(
                   height: 50,
                   margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  padding: const EdgeInsets.all(10),
+                  padding:
+                      EdgeInsets.all(widget.member.kategori == 'team' ? 0 : 10),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: const BorderRadius.all(
@@ -92,11 +100,78 @@ class _BerandaPageState extends State<BerandaPage> {
                       ),
                     ],
                   ),
-                  child: Text('Selamat Datang ${widget.member.nama},'),
+                  child: widget.member.kategori == 'team'
+                      ? AFwidget.textField(
+                          context: context,
+                          label: 'Cari Pelatihan...',
+                          kontroler: _txtCari,
+                          padding: EdgeInsets.all(10),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(7)),
+                          onchanged: (value) {
+                            _listFilterPelatihan = [];
+                            bool cek = false;
+                            for (var a in _listPelatihan) {
+                              cek = a.singkatan
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase());
+                              if (cek) {
+                                _listFilterPelatihan.add(a);
+                              } else {
+                                cek = a.tahun
+                                    .toString()
+                                    .toLowerCase()
+                                    .contains(value.toLowerCase());
+                                if (cek) {
+                                  _listFilterPelatihan.add(a);
+                                } else {
+                                  cek = a.angkatan
+                                      .toString()
+                                      .toLowerCase()
+                                      .contains(value.toLowerCase());
+                                  if (cek) {
+                                    _listFilterPelatihan.add(a);
+                                  }
+                                }
+                              }
+                            }
+                            _berandaBloc
+                                .fetchPelatihanTeam(_listFilterPelatihan);
+                          },
+                        )
+                      : Text('Selamat Datang ${widget.member.nama},'),
                 ),
               ),
               widget.member.kategori == 'team'
-                  ? kontenPelatihan(_lebarMedia)
+                  ? FutureBuilder<List<PelatihanModel>>(
+                      future: _berandaBloc.getPelatihanTeam(widget.member.nik),
+                      builder: (context, snap) {
+                        if (snap.hasData) {
+                          return kontenPelatihan(_lebarMedia, snap.data!);
+                        } else {
+                          return SliverToBoxAdapter(
+                            child: Container(
+                              width: _lebarMedia,
+                              height: _lebarMedia,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.5),
+                                    spreadRadius: 0.5,
+                                    blurRadius: 1,
+                                    offset: const Offset(1, 1),
+                                  ),
+                                ],
+                              ),
+                              margin: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                              child: AFwidget.circularProgress(),
+                            ),
+                          );
+                        }
+                      })
                   : kontenKegiatan(_lebarMedia),
             ],
           ),
@@ -310,25 +385,24 @@ class _BerandaPageState extends State<BerandaPage> {
     );
   }
 
-  Widget kontenPelatihan(double _lebarMedia) {
-    return FutureBuilder<List<PelatihanModel>>(
-      future: _berandaBloc.getPelatihanTeam(widget.member.nik),
-      builder: (context, snap) {
+  Widget kontenPelatihan(double _lebarMedia, List<PelatihanModel> el) {
+    double lebarA = 55;
+    return StreamBuilder<List<PelatihanModel>>(
+      stream: _berandaBloc.streamPelatihanTeam,
+      builder: (context, snapLatih) {
         double lebar = (_lebarMedia - 40) / 2;
-        if (snap.hasData) {
-          List<Widget> list = [];
-          for (var i = 0; i < snap.data!.length; i++) {
-            list.add(
-              GestureDetector(
-                child: Container(
-                  width: lebar,
-                  height: lebar * 1.2,
-                  constraints: BoxConstraints(
-                    minHeight: 225,
-                  ),
+        if (snapLatih.hasData) {
+          if (snapLatih.data!.length > 0) {
+            return SliverList(
+              delegate: SliverChildBuilderDelegate((context, i) {
+                return Container(
+                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 7),
+                  padding: const EdgeInsets.fromLTRB(10, 20, 10, 15),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.5),
@@ -339,125 +413,174 @@ class _BerandaPageState extends State<BerandaPage> {
                     ],
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(10),
-                          topLeft: Radius.circular(10),
-                        ),
-                        child: AFwidget.cachedNetworkImageNoCek(
-                          _berandaBloc.dirImageGiat + snap.data![i].giatImage,
-                          fit: BoxFit.fill,
-                          width: lebar,
-                          height: lebar / 1.5,
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(11, 10, 11, 0),
-                          child: Text(
-                            snap.data![i].singkatan,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: Colors.black,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${snapLatih.data![i].singkatan} ${snapLatih.data![i].angkatan}-${snapLatih.data![i].tahun}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            textAlign: TextAlign.center,
                           ),
-                        ),
+                        ],
                       ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(11, 5, 11, 11),
-                          child: Text(
-                            'Tahun : ${snap.data![i].tahun}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(11, 5, 11, 11),
-                          child: Text(
-                            'Angkatan : ${snap.data![i].angkatan}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
+                      const Padding(padding: EdgeInsets.only(bottom: 15)),
+                      FutureBuilder<RekrutmenModel>(
+                        future: _berandaBloc
+                            .getRekrutmenId(snapLatih.data![i].kode),
+                        builder: (context, snapRek) {
+                          if (snapRek.hasData) {
+                            return Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: lebarA,
+                                      child: const Text('Tanggal'),
+                                    ),
+                                    const Text(' : '),
+                                    Expanded(
+                                      child: Text(
+                                        '${AFconvert.matDate(snapRek.data!.tglMulai)} s/d ${AFconvert.matDate(snapRek.data!.tglSelesai)}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 15)),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: lebarA,
+                                      child: const Text('Lokasi'),
+                                    ),
+                                    const Text(' : '),
+                                    Expanded(
+                                      child: Text(
+                                        StringUtils.capitalize(
+                                          '${snapRek.data!.dusun}. KEL / DESA : ${snapRek.data!.kelLabel}, KEC : ${snapRek.data!.kecLabel}, KAB : ${snapRek.data!.kabLabel}, PROV : ${snapRek.data!.provLabel}.',
+                                          allWords: true,
+                                        ),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 15)),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: lebarA,
+                                      child: const Text('Resume'),
+                                    ),
+                                    const Text(' : '),
+                                    Expanded(
+                                      child: Text(
+                                        StringUtils.capitalize(
+                                          '${snapRek.data!.resume}',
+                                          allWords: true,
+                                        ),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 15)),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    const Padding(
+                                        padding: EdgeInsets.only(left: 5)),
+                                    ElevatedButton(
+                                      child: Text('Resume'),
+                                      onPressed: () async {
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ResumeRekrutmen(
+                                                    rekrutmen: snapRek.data!,
+                                                    pelatihanKode: snapLatih
+                                                        .data![i].kode),
+                                          ),
+                                        );
+                                        setState(() {});
+                                      },
+                                    ),
+                                    const Padding(
+                                        padding: EdgeInsets.only(left: 5)),
+                                    ElevatedButton(
+                                      child: Text('Lihat'),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                TeamPelatihanPage(
+                                              team: widget.member,
+                                              pelatihan: snapLatih.data![i],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
                       ),
                     ],
                   ),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => TeamPelatihanPage(
-                        team: widget.member,
-                        pelatihan: snap.data![i],
-                      ),
-                    ),
-                  );
-                },
-              ),
+                );
+              }, childCount: snapLatih.data!.length),
             );
+          } else {
+            return SliverToBoxAdapter(
+              child: Text('Data tidak ditemukan'),
+            );
+          }
+        } else {
+          if (_listPelatihan.length < 1) {
+            _listPelatihan = el;
+            _berandaBloc.fetchPelatihanTeam(el);
+          } else {
+            _berandaBloc.fetchPelatihanTeam(_listPelatihan);
           }
           return SliverToBoxAdapter(
             child: Container(
-              color: Colors.grey.shade200,
-              margin: const EdgeInsets.fromLTRB(10, 15, 10, 15),
-              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(5, 10, 5, 15),
-                    child: Text(
-                      'PELATIHAN',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
-                    children: list,
+              width: lebar,
+              height: lebar * 1.2,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.5),
+                    spreadRadius: 0.5,
+                    blurRadius: 1,
+                    offset: const Offset(1, 1),
                   ),
                 ],
               ),
+              margin: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+              child: AFwidget.circularProgress(),
             ),
-          );
-        } else {
-          return SliverToBoxAdapter(
-            child: Container(
-                width: lebar,
-                height: lebar * 1.2,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.5),
-                      spreadRadius: 0.5,
-                      blurRadius: 1,
-                      offset: const Offset(1, 1),
-                    ),
-                  ],
-                ),
-                margin: const EdgeInsets.fromLTRB(15, 15, 15, 15),
-                child: AFwidget.circularProgress()),
           );
         }
       },

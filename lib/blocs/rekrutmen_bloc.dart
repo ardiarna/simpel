@@ -76,4 +76,16 @@ class RekrutmenBloc {
     );
     return a;
   }
+
+  Future<Map<String, dynamic>> editResume({
+    required String kode,
+    required String resume,
+  }) async {
+    var a = await DBHelper.setData(
+      rute: 'rekrutmen',
+      mode: 'editresume',
+      body: {'kode': kode, 'resume': resume},
+    );
+    return a;
+  }
 }

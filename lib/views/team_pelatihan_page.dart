@@ -1,13 +1,11 @@
+import 'package:basic_utils/basic_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:simpel/blocs/pelatihan_bloc.dart';
-import 'package:simpel/chat/views/profil_image.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
-import 'package:simpel/models/resume_model.dart';
 import 'package:simpel/models/saran_model.dart';
 import 'package:simpel/utils/af_sliver_subheader.dart';
 import 'package:simpel/utils/af_widget.dart';
-import 'package:simpel/views/resume_page.dart';
 import 'package:simpel/views/rtl_real_page.dart';
 import 'package:simpel/views/saran_page.dart';
 
@@ -89,7 +87,7 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
   }
 
   Widget tabPeserta(List<PersonPesertaModel> el) {
-    double lebarA = 55;
+    double lebarA = 70;
     List<PersonPesertaModel> _listPeserta = [];
     List<PersonPesertaModel> _listFilterPeserta = [];
     final TextEditingController _txtPeserta = TextEditingController();
@@ -116,6 +114,7 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
             },
           ),
         ),
+        SliverPadding(padding: EdgeInsets.only(bottom: 10)),
         StreamBuilder<List<PersonPesertaModel>>(
           stream: _pelatihanBloc.streamPeserta,
           builder: (context, snapPeserta) {
@@ -123,238 +122,254 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
               if (snapPeserta.data!.isNotEmpty) {
                 return SliverList(
                   delegate: SliverChildBuilderDelegate((context, i) {
-                    return Container(
-                      margin: const EdgeInsets.fromLTRB(10, 5, 10, 7),
-                      padding: const EdgeInsets.fromLTRB(10, 20, 10, 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.5),
-                            spreadRadius: 0.5,
-                            blurRadius: 1,
-                            offset: const Offset(1, 1),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                '${i + 1}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Padding(padding: EdgeInsets.only(top: 15)),
-                              ProfilImage(
-                                imageUrl: snapPeserta.data![i].foto != ''
-                                    ? _pelatihanBloc.dirImageMember +
-                                        snapPeserta.data![i].foto
-                                    : '',
-                                online: false,
-                                isUseImage: true,
+                    return Stack(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                          padding: const EdgeInsets.fromLTRB(10, 20, 10, 15),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                spreadRadius: 0.5,
+                                blurRadius: 1,
+                                offset: const Offset(1, 1),
                               ),
                             ],
                           ),
-                          const Padding(padding: EdgeInsets.only(left: 10)),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: lebarA,
-                                      child: const Text('Nama'),
-                                    ),
-                                    const Text(' : '),
-                                    Expanded(
-                                      child: Text(
-                                        '${snapPeserta.data![i].nama}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: lebarA,
+                                    child: const Text('Nama'),
+                                  ),
+                                  const Text(' : '),
+                                  Expanded(
+                                    child: Text(
+                                      '${snapPeserta.data![i].nama}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 15)),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: lebarA,
-                                      child: const Text('Bumdes'),
-                                    ),
-                                    const Text(' : '),
-                                    Text(
+                                  ),
+                                ],
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 15)),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: lebarA,
+                                    child: const Text('Bumdes'),
+                                  ),
+                                  const Text(' : '),
+                                  Expanded(
+                                    child: Text(
                                       snapPeserta.data![i].bumdes,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 10)),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: lebarA,
-                                      child: const Text('Alamat'),
-                                    ),
-                                    const Text(' : '),
-                                  ],
-                                ),
-                                Container(
-                                  margin:
-                                      const EdgeInsets.fromLTRB(5, 5, 0, 10),
-                                  child: Text(
-                                    '${snapPeserta.data![i].dusun} KEL/DESA : ${snapPeserta.data![i].kelLabel}, KEC : ${snapPeserta.data![i].kecLabel}, KAB : ${snapPeserta.data![i].kabLabel}, PROV : ${snapPeserta.data![i].provLabel}.',
-                                    maxLines: 4,
-                                    overflow: TextOverflow.ellipsis,
                                   ),
+                                ],
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 10)),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: lebarA,
+                                    child: const Text('Alamat'),
+                                  ),
+                                  const Text(' : '),
+                                ],
+                              ),
+                              Container(
+                                margin: const EdgeInsets.fromLTRB(5, 5, 0, 10),
+                                child: Text(
+                                  StringUtils.capitalize(
+                                      '${snapPeserta.data![i].dusun} KEL / DESA : ${snapPeserta.data![i].kelLabel}.',
+                                      allWords: true),
+                                  maxLines: 4,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 15)),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: lebarA,
-                                      child: const Text('Saran'),
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 15)),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: lebarA,
+                                    child: const Text('Saran Aksi'),
+                                  ),
+                                  const Text(' : '),
+                                  Expanded(
+                                    child: FutureBuilder<SaranModel>(
+                                      future: _pelatihanBloc.getSaranId(
+                                          kode: widget.pelatihan.kode,
+                                          nik: snapPeserta.data![i].nik,
+                                          psmNik: widget.team.nik),
+                                      builder: (context, snapSaran) {
+                                        if (snapSaran.hasData) {
+                                          return Text(
+                                            snapSaran.data!.psmSaran,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          );
+                                        } else {
+                                          return Text('');
+                                        }
+                                      },
                                     ),
-                                    const Text(' : '),
-                                    Expanded(
-                                      child: FutureBuilder<SaranModel>(
-                                        future: _pelatihanBloc.getSaranId(
-                                            kode: widget.pelatihan.kode,
-                                            nik: snapPeserta.data![i].nik,
-                                            psmNik: widget.team.nik),
-                                        builder: (context, snapSaran) {
-                                          if (snapSaran.hasData) {
-                                            return Text(
-                                              snapSaran.data!.psmSaran,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.normal,
+                                  ),
+                                ],
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 15)),
+                              // Row(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //     SizedBox(
+                              //       width: lebarA,
+                              //       child: const Text('Resume'),
+                              //     ),
+                              //     const Text(' : '),
+                              //     Expanded(
+                              //       child: FutureBuilder<ResumeModel>(
+                              //         future: _pelatihanBloc.getResumeId(
+                              //             kode: widget.pelatihan.kode,
+                              //             nik: snapPeserta.data![i].nik,
+                              //             psmNik: widget.team.nik),
+                              //         builder: (context, snapResume) {
+                              //           if (snapResume.hasData) {
+                              //             return Text(
+                              //               snapResume.data!.psmResume,
+                              //               style: const TextStyle(
+                              //                 fontWeight: FontWeight.normal,
+                              //               ),
+                              //             );
+                              //           } else {
+                              //             return Text('');
+                              //           }
+                              //         },
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              // const Padding(
+                              //     padding: EdgeInsets.only(bottom: 15)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    child: Text('Lihat Foto'),
+                                    onPressed: () {
+                                      AFwidget.modalBottom(
+                                        context: context,
+                                        konten: snapPeserta.data![i].foto != ''
+                                            ? AFwidget.cachedNetworkImage(
+                                                _pelatihanBloc.dirImageMember +
+                                                    snapPeserta.data![i].foto,
+                                              )
+                                            : Icon(
+                                                Icons.person,
+                                                size: 50,
+                                                color: Colors.green,
                                               ),
-                                            );
-                                          } else {
-                                            return Text('');
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 15)),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: lebarA,
-                                      child: const Text('Resume'),
-                                    ),
-                                    const Text(' : '),
-                                    Expanded(
-                                      child: FutureBuilder<ResumeModel>(
-                                        future: _pelatihanBloc.getResumeId(
-                                            kode: widget.pelatihan.kode,
-                                            nik: snapPeserta.data![i].nik,
-                                            psmNik: widget.team.nik),
-                                        builder: (context, snapResume) {
-                                          if (snapResume.hasData) {
-                                            return Text(
-                                              snapResume.data!.psmResume,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.normal,
-                                              ),
-                                            );
-                                          } else {
-                                            return Text('');
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 15)),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ElevatedButton(
-                                      child: Text('RTL'),
-                                      onPressed: () {
-                                        MemberModel member =
-                                            MemberModel.dariMap(
-                                                snapPeserta.data![i].keMap());
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => RTLrealPage(
-                                              member: member,
-                                              pelatihan: widget.pelatihan,
-                                              team: widget.team,
-                                            ),
+                                      );
+                                    },
+                                  ),
+                                  Spacer(),
+                                  ElevatedButton(
+                                    child: Text('RTL'),
+                                    onPressed: () {
+                                      MemberModel member = MemberModel.dariMap(
+                                          snapPeserta.data![i].keMap());
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => RTLrealPage(
+                                            member: member,
+                                            pelatihan: widget.pelatihan,
+                                            team: widget.team,
                                           ),
-                                        );
-                                      },
-                                    ),
-                                    const Padding(
-                                        padding: EdgeInsets.only(left: 5)),
-                                    ElevatedButton(
-                                      child: Text('Saran'),
-                                      onPressed: () async {
-                                        MemberModel member =
-                                            MemberModel.dariMap(
-                                                snapPeserta.data![i].keMap());
-                                        await Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => SaranPage(
-                                              team: widget.team,
-                                              member: member,
-                                              pelatihan: widget.pelatihan,
-                                            ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  const Padding(
+                                      padding: EdgeInsets.only(left: 5)),
+                                  ElevatedButton(
+                                    child: Text('Saran Aksi'),
+                                    onPressed: () async {
+                                      MemberModel member = MemberModel.dariMap(
+                                          snapPeserta.data![i].keMap());
+                                      await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => SaranPage(
+                                            team: widget.team,
+                                            member: member,
+                                            pelatihan: widget.pelatihan,
                                           ),
-                                        );
-                                        setState(() {});
-                                      },
-                                    ),
-                                    const Padding(
-                                        padding: EdgeInsets.only(left: 5)),
-                                    ElevatedButton(
-                                      child: Text('Resume'),
-                                      onPressed: () async {
-                                        MemberModel member =
-                                            MemberModel.dariMap(
-                                                snapPeserta.data![i].keMap());
-                                        await Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => ResumePage(
-                                              team: widget.team,
-                                              member: member,
-                                              pelatihan: widget.pelatihan,
-                                            ),
-                                          ),
-                                        );
-                                        setState(() {});
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                        ),
+                                      );
+                                      setState(() {});
+                                    },
+                                  ),
+                                  // const Padding(
+                                  //     padding: EdgeInsets.only(left: 5)),
+                                  // ElevatedButton(
+                                  //   child: Text('Resume'),
+                                  //   onPressed: () async {
+                                  //     MemberModel member =
+                                  //         MemberModel.dariMap(
+                                  //             snapPeserta.data![i].keMap());
+                                  //     await Navigator.of(context).push(
+                                  //       MaterialPageRoute(
+                                  //         builder: (context) => ResumePage(
+                                  //           team: widget.team,
+                                  //           member: member,
+                                  //           pelatihan: widget.pelatihan,
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //     setState(() {});
+                                  //   },
+                                  // ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: 50,
+                          height: 20,
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade700,
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
                             ),
                           ),
-                        ],
-                      ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            (i + 1).toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   }, childCount: snapPeserta.data!.length),
                 );

@@ -25,6 +25,7 @@ class RekrutmenModel {
   String modifiedBy;
   DateTime? createdOn;
   DateTime? modifiedOn;
+  String resume;
 
   RekrutmenModel({
     this.id = 0,
@@ -51,6 +52,7 @@ class RekrutmenModel {
     this.modifiedBy = '',
     DateTime? createdOn,
     DateTime? modifiedOn,
+    this.resume = '',
   });
 
   factory RekrutmenModel.dariMap(Map<String, dynamic> map) {
@@ -79,6 +81,7 @@ class RekrutmenModel {
       modifiedBy: AFconvert.keString(map['modified_by']),
       createdOn: AFconvert.keTanggal(map['created_on']),
       modifiedOn: AFconvert.keTanggal(map['modified_on']),
+      resume: AFconvert.keString(map['resume']),
     );
   }
 
@@ -104,6 +107,7 @@ class RekrutmenModel {
       'modified_by': modifiedBy,
       'created_on': AFconvert.keString(createdOn),
       'modified_on': AFconvert.keString(modifiedOn),
+      'resume': resume,
     };
     return map;
   }

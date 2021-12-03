@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:simpel/models/giat_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
+import 'package:simpel/models/rekrutmen_model.dart';
 import 'package:simpel/models/slide_model.dart';
 import 'package:simpel/utils/db_helper.dart';
 
@@ -65,8 +66,26 @@ class BerandaBloc {
     return list;
   }
 
+  final _strPelatihanTeam = StreamController<List<PelatihanModel>>.broadcast();
+  Stream<List<PelatihanModel>> get streamPelatihanTeam =>
+      _strPelatihanTeam.stream;
+  void fetchPelatihanTeam(List<PelatihanModel> list) async {
+    _strPelatihanTeam.sink.add(list);
+  }
+
+  Future<RekrutmenModel> getRekrutmenId(String kode) async {
+    var a = await DBHelper.getData(
+      methodeRequest: MethodeRequest.post,
+      rute: 'rekrutmen',
+      mode: 'get',
+      body: {'kode': kode},
+    );
+    return a != null ? RekrutmenModel.dariMap(a) : RekrutmenModel();
+  }
+
   void dispose() {
     _strShowSlid.close();
     _strCurrentSlid.close();
+    _strPelatihanTeam.close();
   }
 }
