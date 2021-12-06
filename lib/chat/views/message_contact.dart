@@ -68,9 +68,11 @@ class _ContactPSMState extends State<ContactPSM> {
     for (var latih in listLatih) {
       var listPerson = await _messageContactBloc.getPSM(latih.kode);
       for (var person in listPerson) {
-        person.posisi =
-            '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
-        list.add(person);
+        if (person.nik != widget.member.nik) {
+          person.posisi =
+              '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
+          list.add(person);
+        }
       }
     }
     return list;
@@ -212,9 +214,11 @@ class _ContactPesertaState extends State<ContactPeserta> {
     for (var latih in listLatih) {
       var listPerson = await _messageContactBloc.getPeserta(latih.kode);
       for (var person in listPerson) {
-        person.posisi =
-            '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
-        list.add(person);
+        if (person.nik != widget.member.nik) {
+          person.posisi =
+              '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
+          list.add(person);
+        }
       }
     }
     return list;

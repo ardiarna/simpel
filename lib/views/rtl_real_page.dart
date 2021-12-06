@@ -173,23 +173,6 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                   ),
                                   Padding(
                                     padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 3),
-                                    child: Text(
-                                      'Kendala',
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                    child: Text(
-                                      snapReal.data![i].kendala,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 5),
                                     child: Text(
                                       'Capaian',
@@ -222,6 +205,23 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 15, 0, 3),
+                                    child: Text(
+                                      'Kendala',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                    child: Text(
+                                      snapReal.data![i].kendala,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 3),
                                     child: Text(
                                       'Solusi PSM',
                                       style: TextStyle(

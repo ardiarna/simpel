@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:simpel/blocs/bumdes_bloc.dart';
 import 'package:simpel/blocs/rekrutmen_bloc.dart';
-import 'package:simpel/chat/data/datasource_contract.dart';
-import 'package:simpel/chat/data/sqflite_datasource.dart';
-import 'package:simpel/chat/models/chat_model.dart';
-import 'package:simpel/chat/models/message_group_model.dart';
-import 'package:simpel/chat/services/group_service.dart';
-import 'package:simpel/chat/services/user_service.dart';
-import 'package:simpel/chat/services/user_service_contract.dart';
-import 'package:simpel/chat/viewmodels/chats_view_model.dart';
-import 'package:simpel/chat/views/color_generator.dart';
 import 'package:simpel/models/bumdes_model.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/models/rekrutmen_model.dart';
 import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_widget.dart';
-import 'package:simpel/utils/db_factory.dart';
 import 'package:simpel/views/bumdes_page.dart';
 import 'package:simpel/views/home_page.dart';
-import 'package:sqflite/sqflite.dart';
 
 class RekrutmenPage extends StatefulWidget {
   final MemberModel member;
@@ -650,40 +639,11 @@ class _RekrutmenFormState extends State<RekrutmenForm> {
             rekrutmen: widget.rekrutmen,
           );
           Navigator.of(context).pop();
-
           if (a['status'].toString() == '1') {
-            MessageGroup messageGroup = MessageGroup(
-              name:
-                  '${widget.rekrutmen.singkatangiat} ${widget.rekrutmen.angkatan}-${widget.rekrutmen.tahun}',
-              createdBy: widget.member.nik,
-              members: [widget.member.nik],
-              photoUrl: widget.rekrutmen.imagegiat,
-            );
-            Database _db = await LocalDatabaseFactory().createDatabase();
-            IDataSource _dataSource = SqfLiteDataSource(_db);
-            IUserService _userService = UserService();
-            MessageGroupService messageGroupService = MessageGroupService();
-            ChatsViewModel chatsViewModel =
-                ChatsViewModel(_dataSource, _userService);
-            MessageGroup msgrupFromServer =
-                await messageGroupService.create(messageGroup);
-            final membersId = msgrupFromServer.members
-                .map((e) =>
-                    {e: RandomColorGenerator.getColor().value.toString()})
-                .toList();
-            Chat chat = Chat(
-              msgrupFromServer.id,
-              ChatType.group,
-              membersId: membersId,
-              name: msgrupFromServer.name,
-              photoUrl: msgrupFromServer.photoUrl,
-            );
-            await chatsViewModel.createNewChat(chat);
             await AFwidget.alertDialog(
               context,
               const Text('Terima kasih, anda berhasil melakukan pendaftaran!.'),
             );
-
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => HomePage(

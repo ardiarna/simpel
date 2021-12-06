@@ -120,7 +120,7 @@ class _RTLtargetPageState extends State<RTLtargetPage> {
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 3),
                                     child: Text(
-                                      'Pelaksana/Koordinasi',
+                                      'Keterangan',
                                       style: TextStyle(
                                         color: Colors.grey,
                                       ),
@@ -437,7 +437,7 @@ class _TargetFormState extends State<TargetForm> {
                         return;
                       }
                       if (_txtKeterangan.text.isEmpty) {
-                        AFwidget.snack(context, 'Pelaksana/Koordinasi.');
+                        AFwidget.snack(context, 'Keterangan harus diisi.');
                         _focKeterangan.requestFocus();
                         return;
                       }

@@ -21,6 +21,7 @@ import 'package:simpel/utils/af_page_transisi.dart';
 import 'package:simpel/utils/af_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simpel/utils/db_factory.dart';
+import 'package:simpel/utils/db_helper.dart';
 import 'package:simpel/views/home_page.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -383,14 +384,24 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                                 ElevatedButton(
                                   child: const Text('Kirim'),
-                                  onPressed: () {
+                                  onPressed: () async {
                                     if (_txtLupa.text.isEmpty) {
                                       AFwidget.snack(
                                           context, 'NIK harus diisi.');
                                       _focLupa.requestFocus();
                                       return;
                                     }
+                                    AFwidget.circularDialog(context);
+                                    var a = await DBHelper.recoveryPassword(
+                                        nik: _txtLupa.text);
                                     Navigator.of(context).pop();
+                                    if (a['status'].toString() == '1') {
+                                      Navigator.of(context).pop();
+                                    }
+                                    AFwidget.alertDialog(
+                                      context,
+                                      Text(a['message'].toString()),
+                                    );
                                   },
                                 ),
                               ],
