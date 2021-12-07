@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/utils/af_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:http/http.dart' as http;
 
@@ -51,7 +52,6 @@ class _ReportPsmPageState extends State<ReportPsmPage> {
                       Builder(builder: (BuildContext context) {
                         return WebView(
                           initialUrl: _url,
-
                           javascriptMode: JavascriptMode.unrestricted,
                           onWebViewCreated:
                               (WebViewController webViewController) {
@@ -72,6 +72,14 @@ class _ReportPsmPageState extends State<ReportPsmPage> {
                               position = 2;
                               errDeskripsi = err.description;
                             });
+                          },
+                          navigationDelegate: (navReq) {
+                            var b = navReq.url.contains('mode=export');
+                            if (b) {
+                              launch(navReq.url);
+                              return NavigationDecision.prevent;
+                            }
+                            return NavigationDecision.navigate;
                           },
                           gestureNavigationEnabled: true,
                         );

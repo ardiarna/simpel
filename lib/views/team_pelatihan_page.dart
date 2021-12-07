@@ -272,7 +272,7 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  TextButton(
+                                  ElevatedButton(
                                     child: Text('Lihat Foto'),
                                     onPressed: () {
                                       AFwidget.modalBottom(
