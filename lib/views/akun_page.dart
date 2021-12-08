@@ -10,7 +10,6 @@ import 'package:simpel/views/biodata_page.dart';
 import 'package:simpel/views/biofoto_page.dart';
 import 'package:simpel/views/biopassword_page.dart';
 import 'package:simpel/views/bumdes_page.dart';
-import 'package:simpel/views/pelatihan_page.dart';
 
 class AkunPage extends StatefulWidget {
   final MemberModel member;
