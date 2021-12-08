@@ -80,7 +80,7 @@ class _SaranPageState extends State<SaranPage> {
         slivers: [
           SliverPadding(padding: EdgeInsets.only(top: 1)),
           FutureBuilder<List<SaranModel>>(
-            future: _pelatihanBloc.getSarans(
+            future: _pelatihanBloc.getSaransPsm(
                 kode: widget.pelatihan.kode, nik: widget.member.nik),
             builder: (context, snap) {
               if (snap.hasData) {
@@ -173,7 +173,7 @@ class _SaranPageState extends State<SaranPage> {
           ),
           SliverPadding(padding: EdgeInsets.all(5)),
           FutureBuilder<SaranModel>(
-            future: _pelatihanBloc.getSaranId(
+            future: _pelatihanBloc.getSaranIdPsm(
                 kode: widget.pelatihan.kode,
                 nik: widget.member.nik,
                 psmNik: widget.team.nik),

@@ -191,26 +191,41 @@ abstract class AFwidget {
                 Navigator.of(context).pop();
               },
             ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(15, 15, 15, 10),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
+            judul != ''
+                ? Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 10),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        judul,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+                : Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      width: double.infinity,
+                      height: 10,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                child: Text(
-                  judul,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
             Expanded(
               child: Container(
                 width: double.infinity,

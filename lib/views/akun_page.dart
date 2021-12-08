@@ -98,21 +98,6 @@ class _AkunPageState extends State<AkunPage> {
         ),
         widget.member.kategori == 'member'
             ? kontener(
-                ikon: FontAwesome5.tasks,
-                label: 'Pelatihan',
-                aksi: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PelatihanPage(
-                        member: widget.member,
-                      ),
-                    ),
-                  );
-                },
-              )
-            : Container(),
-        widget.member.kategori == 'member'
-            ? kontener(
                 ikon: FontAwesome5.storeAlt,
                 label: 'Bumdes / Kedudukan',
                 aksi: () {

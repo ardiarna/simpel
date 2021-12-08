@@ -71,7 +71,7 @@ class _ReportPsmTigaState extends State<ReportPsmTiga> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           FutureBuilder<SaranModel>(
-              future: _pelatihanBloc.getSaranId(
+              future: _pelatihanBloc.getSaranIdPsm(
                 kode: widget.pelatihanKode,
                 nik: widget.memberNik,
                 psmNik: widget.team.nik,

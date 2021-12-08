@@ -215,8 +215,8 @@ class _ContactPesertaState extends State<ContactPeserta> {
       var listPerson = await _messageContactBloc.getPeserta(latih.kode);
       for (var person in listPerson) {
         if (person.nik != widget.member.nik) {
-          person.posisi =
-              '${person.posisi} ${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
+          person.kedudukan =
+              '${latih.singkatan} ${latih.angkatan} - ${latih.tahun}';
           list.add(person);
         }
       }
@@ -289,7 +289,7 @@ class _ContactPesertaState extends State<ContactPeserta> {
                         online: false,
                       ),
                       title: Text(snapPeserta.data![i].nama),
-                      subtitle: Text(snapPeserta.data![i].posisi),
+                      subtitle: Text(snapPeserta.data![i].kedudukan),
                       onTap: () async {
                         var a = await _userService
                             .fetch([snapPeserta.data![i].nik]);

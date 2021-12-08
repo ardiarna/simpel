@@ -34,7 +34,7 @@ class _ReportPsmDuaState extends State<ReportPsmDua> {
       a.add(item.bumdes);
       a.add(
           '${item.dusun} KEL/DESA : ${item.kelLabel}, KEC : ${item.kecLabel}, KAB : ${item.kabLabel}, PROV : ${item.provLabel}.');
-      var b = await _pelatihanBloc.getSaranId(
+      var b = await _pelatihanBloc.getSaranIdPsm(
         kode: widget.pelatihanKode,
         nik: item.nik,
         psmNik: widget.team.nik,

@@ -98,7 +98,7 @@ class PersonPesertaModel {
   String nik;
   String nama;
   String foto;
-  String posisi;
+  String kedudukan;
   String bumdes;
   String provId;
   String provLabel;
@@ -114,7 +114,7 @@ class PersonPesertaModel {
     this.nik = '',
     this.nama = '',
     this.foto = '',
-    this.posisi = '',
+    this.kedudukan = '',
     this.bumdes = '',
     this.provId = '',
     this.provLabel = '',
@@ -132,7 +132,7 @@ class PersonPesertaModel {
       nik: AFconvert.keString(map['nik']),
       nama: AFconvert.keString(map['nama']),
       foto: AFconvert.keString(map['pas_foto']),
-      posisi: AFconvert.keString(map['posisi']),
+      kedudukan: AFconvert.keString(map['kedudukan']),
       bumdes: AFconvert.keString(map['bumdes']),
       provId: AFconvert.keString(map['kd_prov']),
       kabId: AFconvert.keString(map['kd_kab']),
@@ -151,7 +151,7 @@ class PersonPesertaModel {
       'nik': nik,
       'nama': nama,
       'pas_foto': foto,
-      'posisi': posisi,
+      'kedudukan': kedudukan,
       'bumdes': bumdes,
       'kd_prov': provId,
       'kd_kab': kabId,

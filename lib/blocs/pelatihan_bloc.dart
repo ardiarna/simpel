@@ -259,7 +259,7 @@ class PelatihanBloc {
     return list;
   }
 
-  Future<List<SaranModel>> getSarans({
+  Future<List<SaranModel>> getSaransPsm({
     required String kode,
     required String nik,
   }) async {
@@ -267,7 +267,7 @@ class PelatihanBloc {
     var a = await DBHelper.getDaftar(
       methodeRequest: MethodeRequest.post,
       rute: 'pelatihan',
-      mode: 'saran',
+      mode: 'saranpsm',
       body: {'kode': kode, 'nik': nik},
     );
     for (var el in a) {
@@ -277,7 +277,7 @@ class PelatihanBloc {
     return list;
   }
 
-  Future<SaranModel> getSaranId({
+  Future<SaranModel> getSaranIdPsm({
     required String kode,
     required String nik,
     required String psmNik,
@@ -285,7 +285,7 @@ class PelatihanBloc {
     var a = await DBHelper.getData(
       methodeRequest: MethodeRequest.post,
       rute: 'pelatihan',
-      mode: 'saran',
+      mode: 'saranpsm',
       body: {'kode': kode, 'nik': nik, 'psm_nik': psmNik},
     );
     return a != null ? SaranModel.dariMap(a) : SaranModel();
@@ -302,7 +302,7 @@ class PelatihanBloc {
     var map = model.keMap();
     var a = await DBHelper.setData(
       rute: 'pelatihan',
-      mode: 'addsaran',
+      mode: 'addsaranpsm',
       body: map,
     );
     return a;
@@ -355,6 +355,48 @@ class PelatihanBloc {
       body: map,
     );
     return a;
+  }
+
+  Future<List<SaranModel>> getSaransDinas({
+    required String kode,
+    required String nik,
+  }) async {
+    List<SaranModel> list = [];
+    var a = await DBHelper.getDaftar(
+      methodeRequest: MethodeRequest.post,
+      rute: 'pelatihan',
+      mode: 'sarandinas',
+      body: {'kode': kode, 'nik': nik},
+    );
+    for (var el in a) {
+      var b = SaranModel.dariMap(el);
+      list.add(b);
+    }
+    return list;
+  }
+
+  Future<SaranModel> getSaranIdDinas({
+    required String kode,
+    required String nik,
+    required String dinasId,
+  }) async {
+    var a = await DBHelper.getData(
+      methodeRequest: MethodeRequest.post,
+      rute: 'pelatihan',
+      mode: 'sarandinas',
+      body: {'kode': kode, 'nik': nik, 'dinas_id': dinasId},
+    );
+    return a != null ? SaranModel.dariMap(a) : SaranModel();
+  }
+
+  Future<String> getIdentity(String code) async {
+    var a = await DBHelper.getData(
+      methodeRequest: MethodeRequest.post,
+      rute: 'identity',
+      mode: 'get',
+      body: {'code': code},
+    );
+    return a != null ? a['value'] : '';
   }
 
   void dispose() {

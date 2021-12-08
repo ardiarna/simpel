@@ -10,6 +10,7 @@ import 'package:simpel/models/slide_model.dart';
 import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_sliver_subheader.dart';
 import 'package:simpel/utils/af_widget.dart';
+import 'package:simpel/views/pelatihan_page.dart';
 import 'package:simpel/views/resume_rekrutmen.dart';
 import 'package:simpel/views/team_pelatihan_page.dart';
 import 'package:basic_utils/basic_utils.dart';
@@ -62,6 +63,7 @@ class _BerandaPageState extends State<BerandaPage> {
   @override
   Widget build(BuildContext context) {
     double _lebarMedia = MediaQuery.of(context).size.width;
+    double _tinggiA = widget.member.kategori == 'team' ? 50 : 40;
     return Container(
       // color: Colors.white,
       constraints: const BoxConstraints.expand(),
@@ -78,11 +80,12 @@ class _BerandaPageState extends State<BerandaPage> {
                 ),
               ),
               AFsliverSubHeader(
-                maxHeight: 50,
-                minHeight: 50,
+                maxHeight: _tinggiA,
+                minHeight: _tinggiA,
                 color: Colors.transparent,
                 child: Container(
-                  height: 50,
+                  height: _tinggiA,
+                  alignment: Alignment.centerLeft,
                   margin: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   padding:
                       EdgeInsets.all(widget.member.kategori == 'team' ? 0 : 10),
@@ -139,7 +142,27 @@ class _BerandaPageState extends State<BerandaPage> {
                                 .fetchPelatihanTeam(_listFilterPelatihan);
                           },
                         )
-                      : Text('Selamat Datang ${widget.member.nama},'),
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Halo, ',
+                              style: const TextStyle(
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            Text(
+                              StringUtils.capitalize(
+                                widget.member.nama,
+                                allWords: true,
+                              ),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                        ),
                 ),
               ),
               widget.member.kategori == 'team'
@@ -172,7 +195,7 @@ class _BerandaPageState extends State<BerandaPage> {
                           );
                         }
                       })
-                  : kontenKegiatan(_lebarMedia),
+                  : PelatihanPage(member: widget.member),
             ],
           ),
         ],
@@ -422,12 +445,27 @@ class _BerandaPageState extends State<BerandaPage> {
                               '${snapLatih.data![i].singkatan} ${snapLatih.data![i].angkatan}-${snapLatih.data![i].tahun}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const Padding(padding: EdgeInsets.only(bottom: 15)),
+                      const Padding(padding: EdgeInsets.only(bottom: 5)),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${snapLatih.data![i].nama}',
+                              style: const TextStyle(
+                                fontSize: 11,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Padding(padding: EdgeInsets.only(bottom: 20)),
                       FutureBuilder<RekrutmenModel>(
                         future: _berandaBloc
                             .getRekrutmenId(snapLatih.data![i].kode),
@@ -465,7 +503,7 @@ class _BerandaPageState extends State<BerandaPage> {
                                     Expanded(
                                       child: Text(
                                         StringUtils.capitalize(
-                                          '${snapRek.data!.dusun}. KEL / DESA : ${snapRek.data!.kelLabel}, KEC : ${snapRek.data!.kecLabel}, KAB : ${snapRek.data!.kabLabel}, PROV : ${snapRek.data!.provLabel}.',
+                                          '${snapRek.data!.provLabel}, ${snapRek.data!.kabLabel}, ${snapRek.data!.kecLabel}, ${snapRek.data!.kelLabel}.',
                                           allWords: true,
                                         ),
                                         style: const TextStyle(
@@ -501,6 +539,26 @@ class _BerandaPageState extends State<BerandaPage> {
                                 const Padding(
                                     padding: EdgeInsets.only(bottom: 15)),
                                 Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: lebarA,
+                                      child: const Text('Oleh'),
+                                    ),
+                                    const Text(' : '),
+                                    Expanded(
+                                      child: Text(
+                                        '${snapRek.data!.resumeNama}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Padding(
+                                    padding: EdgeInsets.only(bottom: 15)),
+                                Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     const Padding(
@@ -512,9 +570,11 @@ class _BerandaPageState extends State<BerandaPage> {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 ResumeRekrutmen(
-                                                    rekrutmen: snapRek.data!,
-                                                    pelatihanKode: snapLatih
-                                                        .data![i].kode),
+                                              team: widget.member,
+                                              rekrutmen: snapRek.data!,
+                                              pelatihanKode:
+                                                  snapLatih.data![i].kode,
+                                            ),
                                           ),
                                         );
                                         setState(() {});

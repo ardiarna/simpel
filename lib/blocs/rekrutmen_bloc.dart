@@ -80,11 +80,16 @@ class RekrutmenBloc {
   Future<Map<String, dynamic>> editResume({
     required String kode,
     required String resume,
+    required String resumeNik,
   }) async {
     var a = await DBHelper.setData(
       rute: 'rekrutmen',
       mode: 'editresume',
-      body: {'kode': kode, 'resume': resume},
+      body: {
+        'kode': kode,
+        'resume': resume,
+        'resume_nik': resumeNik,
+      },
     );
     return a;
   }

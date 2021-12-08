@@ -87,7 +87,7 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
   }
 
   Widget tabPeserta(List<PersonPesertaModel> el) {
-    double lebarA = 70;
+    double lebarA = 100;
     List<PersonPesertaModel> _listPeserta = [];
     List<PersonPesertaModel> _listFilterPeserta = [];
     final TextEditingController _txtPeserta = TextEditingController();
@@ -168,12 +168,19 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                                 children: [
                                   SizedBox(
                                     width: lebarA,
-                                    child: const Text('Bumdes'),
+                                    child: Text(widget.pelatihan.giatKode ==
+                                                '001' ||
+                                            widget.pelatihan.giatKode == '01'
+                                        ? 'Nama Bumdes'
+                                        : 'Jabatan Didesa'),
                                   ),
                                   const Text(' : '),
                                   Expanded(
                                     child: Text(
-                                      snapPeserta.data![i].bumdes,
+                                      widget.pelatihan.giatKode == '001' ||
+                                              widget.pelatihan.giatKode == '01'
+                                          ? snapPeserta.data![i].bumdes
+                                          : snapPeserta.data![i].kedudukan,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -191,18 +198,18 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                                     child: const Text('Alamat'),
                                   ),
                                   const Text(' : '),
+                                  Expanded(
+                                    child: Text(
+                                      StringUtils.capitalize(
+                                          '${snapPeserta.data![i].kecLabel}, ${snapPeserta.data![i].kelLabel}',
+                                          allWords: true),
+                                      maxLines: 4,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ],
                               ),
-                              Container(
-                                margin: const EdgeInsets.fromLTRB(5, 5, 0, 10),
-                                child: Text(
-                                  StringUtils.capitalize(
-                                      '${snapPeserta.data![i].dusun} KEL / DESA : ${snapPeserta.data![i].kelLabel}.',
-                                      allWords: true),
-                                  maxLines: 4,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
+
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 15)),
                               Row(
@@ -210,12 +217,12 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                                 children: [
                                   SizedBox(
                                     width: lebarA,
-                                    child: const Text('Saran Aksi'),
+                                    child: const Text('Saran Psm'),
                                   ),
                                   const Text(' : '),
                                   Expanded(
                                     child: FutureBuilder<SaranModel>(
-                                      future: _pelatihanBloc.getSaranId(
+                                      future: _pelatihanBloc.getSaranIdPsm(
                                           kode: widget.pelatihan.kode,
                                           nik: snapPeserta.data![i].nik,
                                           psmNik: widget.team.nik),
@@ -237,6 +244,38 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                               ),
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 15)),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: lebarA,
+                                    child: const Text('Nama Psm'),
+                                  ),
+                                  const Text(' : '),
+                                  Expanded(
+                                    child: FutureBuilder<SaranModel>(
+                                      future: _pelatihanBloc.getSaranIdPsm(
+                                          kode: widget.pelatihan.kode,
+                                          nik: snapPeserta.data![i].nik,
+                                          psmNik: widget.team.nik),
+                                      builder: (context, snapSaran) {
+                                        if (snapSaran.hasData) {
+                                          return Text(
+                                            snapSaran.data!.psmNama,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          );
+                                        } else {
+                                          return Text('');
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 20)),
                               // Row(
                               //   crossAxisAlignment: CrossAxisAlignment.start,
                               //   children: [
@@ -270,47 +309,95 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                               // const Padding(
                               //     padding: EdgeInsets.only(bottom: 15)),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  ElevatedButton(
-                                    child: Text('Lihat Foto'),
-                                    onPressed: () {
-                                      AFwidget.modalBottom(
-                                        context: context,
-                                        konten: snapPeserta.data![i].foto != ''
-                                            ? AFwidget.cachedNetworkImage(
-                                                _pelatihanBloc.dirImageMember +
-                                                    snapPeserta.data![i].foto,
-                                              )
-                                            : Icon(
-                                                Icons.person,
-                                                size: 50,
-                                                color: Colors.green,
-                                              ),
-                                      );
-                                    },
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 5),
+                                    child: ElevatedButton(
+                                      child: Text('Foto'),
+                                      style: TextButton.styleFrom(
+                                        minimumSize: Size.zero,
+                                        padding:
+                                            EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      onPressed: () {
+                                        AFwidget.modalBottom(
+                                          context: context,
+                                          konten: snapPeserta.data![i].foto !=
+                                                  ''
+                                              ? AFwidget.cachedNetworkImage(
+                                                  _pelatihanBloc
+                                                          .dirImageMember +
+                                                      snapPeserta.data![i].foto,
+                                                )
+                                              : Icon(
+                                                  Icons.person,
+                                                  size: 50,
+                                                  color: Colors.green,
+                                                ),
+                                        );
+                                      },
+                                    ),
                                   ),
-                                  Spacer(),
-                                  ElevatedButton(
-                                    child: Text('RTL'),
-                                    onPressed: () {
-                                      MemberModel member = MemberModel.dariMap(
-                                          snapPeserta.data![i].keMap());
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => RTLrealPage(
-                                            member: member,
-                                            pelatihan: widget.pelatihan,
-                                            team: widget.team,
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 5),
+                                    child: ElevatedButton(
+                                      child: Text('Saran Dinas'),
+                                      style: TextButton.styleFrom(
+                                        minimumSize: Size.zero,
+                                        padding: EdgeInsets.all(10),
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      onPressed: () {
+                                        AFwidget.modalBottom(
+                                          context: context,
+                                          konten: kontenSaranDinas(
+                                            snapPeserta.data![i].nik,
                                           ),
-                                        ),
-                                      );
-                                    },
+                                        );
+                                      },
+                                    ),
                                   ),
-                                  const Padding(
-                                      padding: EdgeInsets.only(left: 5)),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 5),
+                                    child: ElevatedButton(
+                                      child: Text('RTL'),
+                                      style: TextButton.styleFrom(
+                                        minimumSize: Size.zero,
+                                        padding:
+                                            EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                        tapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                      ),
+                                      onPressed: () {
+                                        MemberModel member =
+                                            MemberModel.dariMap(
+                                                snapPeserta.data![i].keMap());
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => RTLrealPage(
+                                              member: member,
+                                              pelatihan: widget.pelatihan,
+                                              team: widget.team,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+
                                   ElevatedButton(
-                                    child: Text('Saran Aksi'),
+                                    child: Text('Saran Psm'),
+                                    style: TextButton.styleFrom(
+                                      minimumSize: Size.zero,
+                                      padding: EdgeInsets.all(10),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
                                     onPressed: () async {
                                       MemberModel member = MemberModel.dariMap(
                                           snapPeserta.data![i].keMap());
@@ -393,6 +480,100 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
           },
         ),
       ],
+    );
+  }
+
+  Widget kontenSaranDinas(String nikPeserta) {
+    return FutureBuilder<List<SaranModel>>(
+      future: _pelatihanBloc.getSaransDinas(
+        kode: widget.pelatihan.kode,
+        nik: nikPeserta,
+      ),
+      builder: (context, snap) {
+        if (snap.hasData) {
+          if (snap.data!.length > 0) {
+            return ListView.builder(
+              itemCount: snap.data!.length,
+              itemBuilder: (context, i) {
+                return Container(
+                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 7),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        spreadRadius: 0.5,
+                        blurRadius: 1,
+                        offset: const Offset(1, 1),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        margin: EdgeInsets.only(bottom: 10),
+                        decoration: BoxDecoration(
+                          color: Colors.red.shade700,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          (i + 1).toString(),
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: Text(
+                          '- Nama Dinas :',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: Text(snap.data![i].psmNama),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: Text(
+                          '- Saran Dinas :',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 5),
+                        child: Text(snap.data![i].psmSaran),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          } else {
+            return Center(
+              child: Text(
+                'Belum ada saran dinas',
+              ),
+            );
+          }
+        } else {
+          return AFwidget.circularProgress();
+        }
+      },
     );
   }
 }
