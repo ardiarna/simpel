@@ -38,7 +38,8 @@ class _ReportPsmPageState extends State<ReportPsmPage> {
   @override
   Widget build(BuildContext context) {
     String _url =
-        'http://salamdesa.bbplm-jakarta.kemendesa.go.id/reportsimpel?niktim=${widget.team.nik}';
+        'http://salamdesa.bbplm-jakarta.kemendesa.go.id/reportsimpel?niktim=${widget.team.nikMD5}';
+    print(_url);
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder<bool>(

@@ -236,9 +236,8 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
                                 child: ElevatedButton(
                                   child: Text(label),
                                   style: TextButton.styleFrom(
-                                    backgroundColor: disable
-                                        ? Colors.white
-                                        : Colors.tealAccent.shade400,
+                                    backgroundColor:
+                                        disable ? Colors.white : Colors.green,
                                   ),
                                   onPressed: disable
                                       ? null

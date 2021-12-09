@@ -14,6 +14,7 @@ class RTLrealModel {
   int jml;
   String psmSaran;
   String psmNik;
+  String psmNama;
 
   RTLrealModel({
     this.id = 0,
@@ -29,6 +30,7 @@ class RTLrealModel {
     this.jml = 0,
     this.psmSaran = '',
     this.psmNik = '',
+    this.psmNama = '',
   });
 
   factory RTLrealModel.dariMap(Map<String, dynamic> map) {
@@ -46,6 +48,7 @@ class RTLrealModel {
       jml: AFconvert.keInt(map['jml']),
       psmSaran: AFconvert.keString(map['real_psm_saran']),
       psmNik: AFconvert.keString(map['real_psm_nik']),
+      psmNama: AFconvert.keString(map['real_psm_nama']),
     );
   }
 
@@ -62,6 +65,7 @@ class RTLrealModel {
       'jml': AFconvert.keString(jml),
       'real_psm_saran': psmSaran,
       'real_psm_nik': psmNik,
+      'real_psm_nama': psmNama,
     };
     return map;
   }

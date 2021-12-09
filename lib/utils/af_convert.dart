@@ -16,7 +16,7 @@ abstract class AFconvert {
   static int keInt(dynamic nilai) {
     if (nilai is int) {
       return nilai;
-    } else if (nilai != null) {
+    } else if (nilai != null && nilai != '') {
       return int.parse(nilai);
     } else {
       return 0;

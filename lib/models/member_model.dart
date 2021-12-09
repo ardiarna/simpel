@@ -44,6 +44,7 @@ class MemberModel {
   String posisi;
   String posisiLabel;
   String inteks;
+  String nikMD5;
 
   MemberModel({
     this.kategori = '',
@@ -89,6 +90,7 @@ class MemberModel {
     this.posisi = '',
     this.posisiLabel = '',
     this.inteks = '',
+    this.nikMD5 = '',
   });
 
   factory MemberModel.dariMap(Map<String, dynamic> map) {
@@ -136,6 +138,7 @@ class MemberModel {
       inteks: AFconvert.keString(map['int_eks']),
       instansiLabel: AFconvert.keString(map['kd_ins_label']),
       posisiLabel: AFconvert.keString(map['posisi_label']),
+      nikMD5: AFconvert.keString(map['nik_md5']),
     );
   }
 
@@ -173,6 +176,7 @@ class MemberModel {
       'kd_ins': instansi,
       'posisi': posisi,
       'int_eks': inteks,
+      'nik_md5': nikMD5,
     };
     return map;
   }

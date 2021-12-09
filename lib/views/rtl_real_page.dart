@@ -167,9 +167,16 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                    child: Text(
-                                      snapReal.data![i].keterangan,
-                                    ),
+                                    child: snapReal.data![i].jml > 0
+                                        ? Text(
+                                            snapReal.data![i].keterangan,
+                                          )
+                                        : Text(
+                                            'Belum Realisasi',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
                                   ),
                                   Padding(
                                     padding:
@@ -223,7 +230,7 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 0, 0, 3),
                                     child: Text(
-                                      'Solusi PSM',
+                                      'Solusi Psm',
                                       style: TextStyle(
                                         color: Colors.grey,
                                       ),
@@ -236,137 +243,168 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                       snapReal.data![i].psmSaran,
                                     ),
                                   ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 3),
+                                    child: Text(
+                                      'Nama Psm',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                    child: Text(
+                                      snapReal.data![i].psmNama,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                            Column(
-                              children: [
-                                widget.team != null
-                                    ? GestureDetector(
-                                        child: Container(
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: Colors.green,
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Icon(
-                                            Icons.comment,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        onTap: () async {
-                                          await Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => RealSaran(
-                                                teamNik: widget.team!.nik,
-                                                real: snapReal.data![i],
-                                                member: widget.member,
-                                                pelatihan: widget.pelatihan,
+                            snapReal.data![i].jml > 0
+                                ? Column(
+                                    children: [
+                                      widget.team != null
+                                          ? GestureDetector(
+                                              child: Container(
+                                                padding: EdgeInsets.all(5),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.green,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: Icon(
+                                                  Icons.comment,
+                                                  color: Colors.green,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                          refresh();
-                                        },
-                                      )
-                                    : GestureDetector(
-                                        child: Container(
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: Colors.green,
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Icon(
-                                            Icons.edit,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        onTap: () async {
-                                          await Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => RealForm(
-                                                member: widget.member,
-                                                pelatihan: widget.pelatihan,
-                                                real: snapReal.data![i],
+                                              onTap: () async {
+                                                await Navigator.of(context)
+                                                    .push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        RealSaran(
+                                                      teamNik: widget.team!.nik,
+                                                      real: snapReal.data![i],
+                                                      member: widget.member,
+                                                      pelatihan:
+                                                          widget.pelatihan,
+                                                    ),
+                                                  ),
+                                                );
+                                                refresh();
+                                              },
+                                            )
+                                          : GestureDetector(
+                                              child: Container(
+                                                padding: EdgeInsets.all(5),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.green,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: Icon(
+                                                  Icons.edit,
+                                                  color: Colors.green,
+                                                ),
                                               ),
+                                              onTap: () async {
+                                                await Navigator.of(context)
+                                                    .push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        RealForm(
+                                                      member: widget.member,
+                                                      pelatihan:
+                                                          widget.pelatihan,
+                                                      real: snapReal.data![i],
+                                                    ),
+                                                  ),
+                                                );
+                                                refresh();
+                                              },
                                             ),
-                                          );
-                                          refresh();
-                                        },
-                                      ),
-                                snapReal.data![i].file != ''
-                                    ? GestureDetector(
-                                        child: Container(
-                                          margin: EdgeInsets.only(top: 15),
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: Colors.green,
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Icon(
-                                            Icons.download_outlined,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        onTap: () async {
-                                          String url = _rtlBloc.dirRTL +
-                                              snapReal.data![i].file;
-                                          var a = await canLaunch(url);
+                                      snapReal.data![i].file != ''
+                                          ? GestureDetector(
+                                              child: Container(
+                                                margin:
+                                                    EdgeInsets.only(top: 15),
+                                                padding: EdgeInsets.all(5),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.green,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: Icon(
+                                                  Icons.download_outlined,
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                              onTap: () async {
+                                                String url = _rtlBloc.dirRTL +
+                                                    snapReal.data![i].file;
+                                                var a = await canLaunch(url);
 
-                                          if (a) {
-                                            launch(url);
-                                          } else {
-                                            AFwidget.alertDialog(
-                                              context,
-                                              Text('Lampiran tidak ditemukan'),
-                                            );
-                                          }
-                                        },
-                                      )
-                                    : Container(),
-                                snapReal.data![i].jml > 1
-                                    ? GestureDetector(
-                                        child: Container(
-                                          margin: EdgeInsets.only(top: 15),
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: Colors.green,
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Icon(
-                                            Icons.timeline_outlined,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        onTap: () async {
-                                          var a = await _rtlBloc.getRealHistory(
-                                              snapReal.data![i].targetId
-                                                  .toString());
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => RealHistory(
-                                                targetRencana: snapReal
-                                                    .data![i].targetRencana,
-                                                listReal: a,
+                                                if (a) {
+                                                  launch(url);
+                                                } else {
+                                                  AFwidget.alertDialog(
+                                                    context,
+                                                    Text(
+                                                        'Lampiran tidak ditemukan'),
+                                                  );
+                                                }
+                                              },
+                                            )
+                                          : Container(),
+                                      snapReal.data![i].jml > 1
+                                          ? GestureDetector(
+                                              child: Container(
+                                                margin:
+                                                    EdgeInsets.only(top: 15),
+                                                padding: EdgeInsets.all(5),
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.green,
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                child: Icon(
+                                                  Icons.timeline_outlined,
+                                                  color: Colors.green,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      )
-                                    : Container(),
-                              ],
-                            ),
+                                              onTap: () async {
+                                                var a = await _rtlBloc
+                                                    .getRealHistory(snapReal
+                                                        .data![i].targetId
+                                                        .toString());
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        RealHistory(
+                                                      targetRencana: snapReal
+                                                          .data![i]
+                                                          .targetRencana,
+                                                      listReal: a,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            )
+                                          : Container(),
+                                    ],
+                                  )
+                                : Container(),
                           ],
                         ),
                       );
@@ -1010,7 +1048,7 @@ class _RealHistoryState extends State<RealHistory> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),
                               child: Text(
-                                'Solusi PSM',
+                                'Solusi Psm',
                                 style: TextStyle(
                                   color: Colors.grey,
                                 ),
@@ -1020,6 +1058,21 @@ class _RealHistoryState extends State<RealHistory> {
                               padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                               child: Text(
                                 widget.listReal[i].psmSaran,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 3),
+                              child: Text(
+                                'Nama Psm',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                              child: Text(
+                                widget.listReal[i].psmNama,
                               ),
                             ),
                           ],
@@ -1246,7 +1299,7 @@ class _RealSaranState extends State<RealSaran> {
                 context: context,
                 kontroler: _txtSaran,
                 focusNode: _focSaran,
-                label: 'Solusi PSM',
+                label: 'Solusi Psm',
                 maxLines: 2,
                 padding: EdgeInsets.all(10),
                 border:
