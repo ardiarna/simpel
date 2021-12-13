@@ -51,36 +51,23 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
         child: Column(
           children: [
             const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Image(
-                  image: AssetImage('images/logo.png'),
-                ),
-                Padding(padding: EdgeInsets.all(3)),
-                Text(
-                  'Simpel',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 27,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            Image(
+              image: AssetImage('images/logo.png'),
+              fit: BoxFit.fitWidth,
             ),
             const Spacer(),
-            AFwidget.circularProgress(warna: Colors.white),
+            AFwidget.circularProgress(),
             const Padding(padding: EdgeInsets.all(8)),
             const Text(
               'Copyright © Simpel 2021 . All Rights Reserved',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.green,
               ),
             ),
           ],

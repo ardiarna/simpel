@@ -32,25 +32,9 @@ List<Opsi> _listOpsiPendidikan = [];
 List<Opsi> _listOpsiProvinsi = [];
 
 Widget logo() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: const [
-      Padding(padding: EdgeInsets.all(15)),
-      Image(
-        image: AssetImage('images/logo.png'),
-      ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(15, 0, 15, 30),
-        child: Text(
-          'Simpel',
-          style: TextStyle(
-            color: Colors.green,
-            fontSize: 27,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    ],
+  return Image(
+    image: AssetImage('images/logo.png'),
+    fit: BoxFit.fitWidth,
   );
 }
 
@@ -269,6 +253,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Stack(
           alignment: AlignmentDirectional.topEnd,
@@ -277,6 +262,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Padding(padding: EdgeInsets.fromLTRB(15, 15, 15, 20)),
                   logo(),
                   AFwidget.textField(
                     context: context,
@@ -521,6 +507,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       style: TextButton.styleFrom(
                         side: BorderSide(color: Colors.green),
+                        backgroundColor: Colors.white,
                       ),
                       onPressed: () async {
                         var a = await AFcombobox.modalBottom(

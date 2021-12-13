@@ -30,12 +30,13 @@ class _AboutPageState extends State<AboutPage> {
         child: SingleChildScrollView(
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(15, 0, 15, 25),
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 25),
             color: Colors.white,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 logo(),
+                Padding(padding: EdgeInsets.all(10)),
                 FutureBuilder<String>(
                   future: getAbout(),
                   builder: (context, snap) {
@@ -55,25 +56,9 @@ class _AboutPageState extends State<AboutPage> {
   }
 
   Widget logo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: const [
-        Padding(padding: EdgeInsets.all(15)),
-        Image(
-          image: AssetImage('images/logo.png'),
-        ),
-        Padding(
-          padding: EdgeInsets.fromLTRB(15, 0, 15, 30),
-          child: Text(
-            'Simpel',
-            style: TextStyle(
-              color: Colors.green,
-              fontSize: 27,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
+    return Image(
+      image: AssetImage('images/logo.png'),
+      fit: BoxFit.fitWidth,
     );
   }
 }
