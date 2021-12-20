@@ -7,12 +7,12 @@ import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_widget.dart';
 
 class SaranPage extends StatefulWidget {
-  final MemberModel team;
+  final MemberModel? team;
   final MemberModel member;
   final PelatihanModel pelatihan;
 
   const SaranPage({
-    required this.team,
+    this.team,
     required this.member,
     required this.pelatihan,
     Key? key,
@@ -172,69 +172,74 @@ class _SaranPageState extends State<SaranPage> {
             },
           ),
           SliverPadding(padding: EdgeInsets.all(5)),
-          FutureBuilder<SaranModel>(
-            future: _pelatihanBloc.getSaranIdPsm(
-                kode: widget.pelatihan.kode,
-                nik: widget.member.nik,
-                psmNik: widget.team.nik),
-            builder: (context, snapSaran) {
-              if (snapSaran.hasData) _txtSaran.text = snapSaran.data!.psmSaran;
-              return SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
-                  child: Column(
-                    children: [
-                      AFwidget.textField(
-                        context: context,
-                        kontroler: _txtSaran,
-                        focusNode: _focSaran,
-                        label: 'Saran',
-                        maxLines: 2,
-                        padding: EdgeInsets.all(10),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 35, 15, 10),
-                        child: ElevatedButton(
-                          child: Text('Simpan Saran'),
-                          onPressed: () async {
-                            if (_txtSaran.text.isEmpty) {
-                              AFwidget.snack(context, 'Saran harus diisi.');
-                              _focSaran.requestFocus();
-                              return;
-                            }
+          widget.team != null
+              ? FutureBuilder<SaranModel>(
+                  future: _pelatihanBloc.getSaranIdPsm(
+                      kode: widget.pelatihan.kode,
+                      nik: widget.member.nik,
+                      psmNik: widget.team!.nik),
+                  builder: (context, snapSaran) {
+                    if (snapSaran.hasData)
+                      _txtSaran.text = snapSaran.data!.psmSaran;
+                    return SliverToBoxAdapter(
+                      child: Container(
+                        color: Colors.white,
+                        padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                        child: Column(
+                          children: [
+                            AFwidget.textField(
+                              context: context,
+                              kontroler: _txtSaran,
+                              focusNode: _focSaran,
+                              label: 'Saran',
+                              maxLines: 2,
+                              padding: EdgeInsets.all(10),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(7)),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(15, 35, 15, 10),
+                              child: ElevatedButton(
+                                child: Text('Simpan Saran'),
+                                onPressed: () async {
+                                  if (_txtSaran.text.isEmpty) {
+                                    AFwidget.snack(
+                                        context, 'Saran harus diisi.');
+                                    _focSaran.requestFocus();
+                                    return;
+                                  }
 
-                            var hasil = SaranModel(
-                              kdroot:
-                                  '${widget.pelatihan.giatKode}${widget.pelatihan.tahun}${widget.pelatihan.angkatan}',
-                              nik: widget.member.nik,
-                              psmNik: widget.team.nik,
-                              psmSaran: _txtSaran.text,
-                              psmTanggal: DateTime.now(),
-                            );
+                                  var hasil = SaranModel(
+                                    kdroot:
+                                        '${widget.pelatihan.giatKode}${widget.pelatihan.tahun}${widget.pelatihan.angkatan}',
+                                    nik: widget.member.nik,
+                                    psmNik: widget.team!.nik,
+                                    psmSaran: _txtSaran.text,
+                                    psmTanggal: DateTime.now(),
+                                  );
 
-                            AFwidget.circularDialog(context);
-                            var a = await _pelatihanBloc.addSaran(hasil);
-                            Navigator.of(context).pop();
-                            if (a['status'].toString() == '1') {
-                              await AFwidget.alertDialog(context,
-                                  const Text('Saran berhasil disimpan.'));
-                              Navigator.of(context).pop(hasil);
-                            } else {
-                              AFwidget.alertDialog(
-                                  context, Text(a['message'].toString()));
-                            }
-                          },
+                                  AFwidget.circularDialog(context);
+                                  var a = await _pelatihanBloc.addSaran(hasil);
+                                  Navigator.of(context).pop();
+                                  if (a['status'].toString() == '1') {
+                                    await AFwidget.alertDialog(context,
+                                        const Text('Saran berhasil disimpan.'));
+                                    Navigator.of(context).pop(hasil);
+                                  } else {
+                                    AFwidget.alertDialog(
+                                        context, Text(a['message'].toString()));
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+                    );
+                  },
+                )
+              : SliverPadding(padding: EdgeInsets.all(1)),
         ],
       ),
     );

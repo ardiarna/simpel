@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: splashRoute,
       routes: afRoutes,
-      title: 'Simpel',
+      title: 'Simpel Mas',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),

@@ -7,10 +7,15 @@ import 'package:simpel/models/rekrutmen_model.dart';
 import 'package:simpel/utils/af_convert.dart';
 import 'package:simpel/utils/af_widget.dart';
 import 'package:simpel/views/pelatihan_form.dart';
+import 'package:simpel/views/saran_dinas_page.dart';
+import 'package:simpel/views/saran_psm_page.dart';
 
 class PelatihanPage extends StatefulWidget {
   final MemberModel member;
-  const PelatihanPage({required this.member, Key? key}) : super(key: key);
+  const PelatihanPage({
+    required this.member,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _PelatihanPageState createState() => _PelatihanPageState();
@@ -161,101 +166,151 @@ class _PelatihanPageState extends State<PelatihanPage> {
                       //   ],
                       // ),
                       FutureBuilder<RekrutmenModel>(
-                          future:
-                              _pelatihanBloc.getRekrutmen(snap.data![i].kode),
-                          builder: (context, snapRek) {
-                            RekrutmenModel rekrutmen = snapRek.hasData
-                                ? snapRek.data!
-                                : RekrutmenModel();
-                            return Column(
-                              children: [
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 15)),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 5),
-                                      child: Icon(
-                                        Icons.calendar_today_outlined,
-                                        size: 20,
-                                        color: Colors.green,
+                        future: _pelatihanBloc.getRekrutmen(snap.data![i].kode),
+                        builder: (context, snapRek) {
+                          RekrutmenModel rekrutmen = snapRek.hasData
+                              ? snapRek.data!
+                              : RekrutmenModel();
+                          return Column(
+                            children: [
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 15)),
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 5),
+                                    child: Icon(
+                                      Icons.calendar_today_outlined,
+                                      size: 20,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: lebarA,
+                                    child: const Text('Tanggal'),
+                                  ),
+                                  const Text(' : '),
+                                  Expanded(
+                                    child: Text(
+                                      '${AFconvert.matDate(rekrutmen.tglMulai)} s/d ${AFconvert.matDate(rekrutmen.tglSelesai)}',
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: lebarA,
-                                      child: const Text('Tanggal'),
+                                  ),
+                                ],
+                              ),
+                              const Padding(
+                                  padding: EdgeInsets.only(bottom: 10)),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 5),
+                                    child: Icon(
+                                      Icons.location_on_outlined,
+                                      size: 20,
+                                      color: Colors.green,
                                     ),
-                                    const Text(' : '),
-                                    Expanded(
-                                      child: Text(
-                                        '${AFconvert.matDate(rekrutmen.tglMulai)} s/d ${AFconvert.matDate(rekrutmen.tglSelesai)}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                  ),
+                                  SizedBox(
+                                    width: lebarA,
+                                    child: const Text('Lokasi'),
+                                  ),
+                                  const Text(' : '),
+                                  Expanded(
+                                    child: Text(
+                                      StringUtils.capitalize(
+                                        '${rekrutmen.provLabel}, ${rekrutmen.kabLabel},  ${rekrutmen.kecLabel}, ${rekrutmen.kelLabel}.',
+                                        allWords: true,
+                                      ),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      const Padding(padding: EdgeInsets.only(bottom: 20)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          statusYa
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 5),
+                                  child: ElevatedButton(
+                                    child: Text('Saran Dinas'),
+                                    style: TextButton.styleFrom(
+                                      minimumSize: Size.zero,
+                                      padding: EdgeInsets.all(10),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                    onPressed: () {
+                                      AFwidget.modalBottom(
+                                        context: context,
+                                        konten: SaranDinasPage(
+                                          nikPeserta: widget.member.nik,
+                                          pelatihan: snap.data![i],
                                         ),
-                                      ),
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          statusYa
+                              ? Padding(
+                                  padding: const EdgeInsets.only(right: 5),
+                                  child: ElevatedButton(
+                                    child: Text('Saran Psm'),
+                                    style: TextButton.styleFrom(
+                                      minimumSize: Size.zero,
+                                      padding: EdgeInsets.all(10),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
                                     ),
-                                  ],
-                                ),
-                                const Padding(
-                                    padding: EdgeInsets.only(bottom: 10)),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 5),
-                                      child: Icon(
-                                        Icons.location_on_outlined,
-                                        size: 20,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: lebarA,
-                                      child: const Text('Lokasi'),
-                                    ),
-                                    const Text(' : '),
-                                    Expanded(
-                                      child: Text(
-                                        StringUtils.capitalize(
-                                          '${rekrutmen.provLabel}, ${rekrutmen.kabLabel},  ${rekrutmen.kecLabel}, ${rekrutmen.kelLabel}.',
-                                          allWords: true,
+                                    onPressed: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => SaranPage(
+                                            member: widget.member,
+                                            pelatihan: snap.data![i],
+                                          ),
                                         ),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            );
-                          }),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: ElevatedButton(
-                          child: Text(
-                            labelStatus,
-                            style: TextStyle(
-                              color: statusYa ? Colors.white : Colors.red,
+                                      );
+                                    },
+                                  ),
+                                )
+                              : Container(),
+                          ElevatedButton(
+                            child: Text(
+                              labelStatus,
+                              style: TextStyle(
+                                color: statusYa ? Colors.white : Colors.red,
+                              ),
                             ),
-                          ),
-                          style: TextButton.styleFrom(
-                            backgroundColor:
-                                statusYa ? Colors.green : Colors.white,
-                          ),
-                          onPressed: statusYa
-                              ? () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => PelatihanForm(
-                                        member: widget.member,
-                                        pelatihan: snap.data![i],
+                            style: TextButton.styleFrom(
+                              backgroundColor:
+                                  statusYa ? Colors.green : Colors.white,
+                            ),
+                            onPressed: statusYa
+                                ? () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => PelatihanForm(
+                                          member: widget.member,
+                                          pelatihan: snap.data![i],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                }
-                              : null,
-                        ),
+                                    );
+                                  }
+                                : null,
+                          ),
+                        ],
                       )
                     ],
                   ),

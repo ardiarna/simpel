@@ -93,7 +93,7 @@ class _ContactPSMState extends State<ContactPSM> {
           }
         } else {
           return Center(
-            child: AFwidget.circularProgress(warna: Colors.red),
+            child: AFwidget.circularProgress(),
           );
         }
       },
@@ -239,7 +239,7 @@ class _ContactPesertaState extends State<ContactPeserta> {
           }
         } else {
           return Center(
-            child: AFwidget.circularProgress(warna: Colors.red),
+            child: AFwidget.circularProgress(),
           );
         }
       },

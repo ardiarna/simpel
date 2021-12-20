@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:simpel/blocs/pelatihan_bloc.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/models/pelatihan_model.dart';
-import 'package:simpel/models/saran_model.dart';
 import 'package:simpel/utils/af_sliver_subheader.dart';
 import 'package:simpel/utils/af_widget.dart';
 import 'package:simpel/views/rtl_real_page.dart';
-import 'package:simpel/views/saran_page.dart';
+import 'package:simpel/views/saran_dinas_page.dart';
+import 'package:simpel/views/saran_psm_page.dart';
 
 class TeamPelatihanPage extends StatefulWidget {
   final MemberModel team;
@@ -209,71 +209,70 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                                   ),
                                 ],
                               ),
-
-                              const Padding(
-                                  padding: EdgeInsets.only(bottom: 15)),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: lebarA,
-                                    child: const Text('Saran Psm'),
-                                  ),
-                                  const Text(' : '),
-                                  Expanded(
-                                    child: FutureBuilder<SaranModel>(
-                                      future: _pelatihanBloc.getSaranIdPsm(
-                                          kode: widget.pelatihan.kode,
-                                          nik: snapPeserta.data![i].nik,
-                                          psmNik: widget.team.nik),
-                                      builder: (context, snapSaran) {
-                                        if (snapSaran.hasData) {
-                                          return Text(
-                                            snapSaran.data!.psmSaran,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          );
-                                        } else {
-                                          return Text('');
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Padding(
-                                  padding: EdgeInsets.only(bottom: 15)),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: lebarA,
-                                    child: const Text('Nama Psm'),
-                                  ),
-                                  const Text(' : '),
-                                  Expanded(
-                                    child: FutureBuilder<SaranModel>(
-                                      future: _pelatihanBloc.getSaranIdPsm(
-                                          kode: widget.pelatihan.kode,
-                                          nik: snapPeserta.data![i].nik,
-                                          psmNik: widget.team.nik),
-                                      builder: (context, snapSaran) {
-                                        if (snapSaran.hasData) {
-                                          return Text(
-                                            snapSaran.data!.psmNama,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          );
-                                        } else {
-                                          return Text('');
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              // const Padding(
+                              //     padding: EdgeInsets.only(bottom: 15)),
+                              // Row(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //     SizedBox(
+                              //       width: lebarA,
+                              //       child: const Text('Saran Psm'),
+                              //     ),
+                              //     const Text(' : '),
+                              //     Expanded(
+                              //       child: FutureBuilder<SaranModel>(
+                              //         future: _pelatihanBloc.getSaranIdPsm(
+                              //             kode: widget.pelatihan.kode,
+                              //             nik: snapPeserta.data![i].nik,
+                              //             psmNik: widget.team.nik),
+                              //         builder: (context, snapSaran) {
+                              //           if (snapSaran.hasData) {
+                              //             return Text(
+                              //               snapSaran.data!.psmSaran,
+                              //               style: const TextStyle(
+                              //                 fontWeight: FontWeight.normal,
+                              //               ),
+                              //             );
+                              //           } else {
+                              //             return Text('');
+                              //           }
+                              //         },
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
+                              // const Padding(
+                              //     padding: EdgeInsets.only(bottom: 15)),
+                              // Row(
+                              //   crossAxisAlignment: CrossAxisAlignment.start,
+                              //   children: [
+                              //     SizedBox(
+                              //       width: lebarA,
+                              //       child: const Text('Nama Psm'),
+                              //     ),
+                              //     const Text(' : '),
+                              //     Expanded(
+                              //       child: FutureBuilder<SaranModel>(
+                              //         future: _pelatihanBloc.getSaranIdPsm(
+                              //             kode: widget.pelatihan.kode,
+                              //             nik: snapPeserta.data![i].nik,
+                              //             psmNik: widget.team.nik),
+                              //         builder: (context, snapSaran) {
+                              //           if (snapSaran.hasData) {
+                              //             return Text(
+                              //               snapSaran.data!.psmNama,
+                              //               style: const TextStyle(
+                              //                 fontWeight: FontWeight.normal,
+                              //               ),
+                              //             );
+                              //           } else {
+                              //             return Text('');
+                              //           }
+                              //         },
+                              //       ),
+                              //     ),
+                              //   ],
+                              // ),
                               const Padding(
                                   padding: EdgeInsets.only(bottom: 20)),
                               // Row(
@@ -309,8 +308,7 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                               // const Padding(
                               //     padding: EdgeInsets.only(bottom: 15)),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(right: 5),
@@ -355,8 +353,10 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                                       onPressed: () {
                                         AFwidget.modalBottom(
                                           context: context,
-                                          konten: kontenSaranDinas(
-                                            snapPeserta.data![i].nik,
+                                          konten: SaranDinasPage(
+                                            nikPeserta:
+                                                snapPeserta.data![i].nik,
+                                            pelatihan: widget.pelatihan,
                                           ),
                                         );
                                       },
@@ -389,7 +389,6 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
                                       },
                                     ),
                                   ),
-
                                   ElevatedButton(
                                     child: Text('Saran Psm'),
                                     style: TextButton.styleFrom(
@@ -480,100 +479,6 @@ class _TeamPelatihanPageState extends State<TeamPelatihanPage> {
           },
         ),
       ],
-    );
-  }
-
-  Widget kontenSaranDinas(String nikPeserta) {
-    return FutureBuilder<List<SaranModel>>(
-      future: _pelatihanBloc.getSaransDinas(
-        kode: widget.pelatihan.kode,
-        nik: nikPeserta,
-      ),
-      builder: (context, snap) {
-        if (snap.hasData) {
-          if (snap.data!.length > 0) {
-            return ListView.builder(
-              itemCount: snap.data!.length,
-              itemBuilder: (context, i) {
-                return Container(
-                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 7),
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 0.5,
-                        blurRadius: 1,
-                        offset: const Offset(1, 1),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.red.shade700,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          (i + 1).toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          '- Nama Dinas :',
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(snap.data![i].psmNama),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          '- Saran Dinas :',
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(snap.data![i].psmSaran),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          } else {
-            return Center(
-              child: Text(
-                'Belum ada saran dinas',
-              ),
-            );
-          }
-        } else {
-          return AFwidget.circularProgress();
-        }
-      },
     );
   }
 }

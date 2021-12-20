@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fiantoardi.simpel">
    <application
-        android:label="Simpel"
+        android:label="Simpel Mas"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity

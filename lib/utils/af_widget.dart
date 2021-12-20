@@ -391,7 +391,6 @@ abstract class AFwidget {
                 nilai: downloadProgress.progress,
                 tinggi: 25,
                 lebar: 25,
-                warna: Colors.red,
               ),
               errorWidget: (context, url, error) => Icon(Icons.error),
             );
@@ -402,7 +401,6 @@ abstract class AFwidget {
           return AFwidget.circularProgress(
             tinggi: 25,
             lebar: 25,
-            warna: Colors.green,
           );
         }
       },
@@ -425,7 +423,6 @@ abstract class AFwidget {
         nilai: downloadProgress.progress,
         tinggi: 25,
         lebar: 25,
-        warna: Colors.green,
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),
     );

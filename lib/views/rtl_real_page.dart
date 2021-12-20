@@ -922,7 +922,7 @@ class _RealHistoryState extends State<RealHistory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('History RTL Real'),
+        title: Text('History Realisasi'),
       ),
       body: CustomScrollView(
         slivers: [
