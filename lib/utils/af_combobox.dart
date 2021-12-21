@@ -92,17 +92,20 @@ class _DaftarOpsiState extends State<DaftarOpsi> {
                     (context, i) {
                       return GestureDetector(
                         child: Container(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-                          color: snap.data![i].id == widget.idSelected
-                              ? Colors.green
-                              : Colors.transparent,
-                          child: Text(
-                            snap.data![i].label,
-                            style: TextStyle(
-                              color: snap.data![i].id == widget.idSelected
-                                  ? Colors.white
-                                  : Colors.black,
-                            ),
+                          padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                          child: Row(
+                            children: [
+                              Radio<String>(
+                                value: snap.data![i].id,
+                                groupValue: widget.idSelected,
+                                onChanged: (value) {
+                                  Navigator.pop(context, snap.data![i]);
+                                },
+                              ),
+                              Text(
+                                snap.data![i].label,
+                              ),
+                            ],
                           ),
                         ),
                         onTap: () {
