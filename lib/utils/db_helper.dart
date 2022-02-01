@@ -15,16 +15,6 @@ abstract class DBHelper {
   static const String dirImage = dirBase + 'image/';
   static const String api = dirBase + 'api/';
 
-  static Future<Map<String, dynamic>> recoveryPassword({
-    required String nik,
-  }) async {
-    Response resp = await http.post(
-      Uri.parse(dirBase + 'login/mobilerecovery'),
-      body: {'rc_nik': nik},
-    );
-    return jsonDecode(resp.body);
-  }
-
   static Future<Map<String, dynamic>?> getData({
     MethodeRequest methodeRequest = MethodeRequest.get,
     required String rute,

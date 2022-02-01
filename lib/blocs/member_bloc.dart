@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:simpel/models/member_model.dart';
 import 'package:simpel/utils/af_combobox.dart';
 import 'package:simpel/utils/db_helper.dart';
@@ -116,6 +117,68 @@ class MemberBloc {
       mode: 'changepwd',
       body: {
         'nik': member.nik,
+        'password_lama': pwdLama,
+        'password_baru': pwdBaru,
+      },
+    );
+    return a;
+  }
+
+  Future<Map<String, dynamic>> resetPassword({
+    required String kategori,
+    required String nik,
+  }) async {
+    var a = await DBHelper.setData(
+      rute: kategori,
+      mode: 'resetpwd',
+      body: {'step': '1', 'nik': nik},
+    );
+    if (a['status'].toString() == '1') {
+      var _member = MemberModel.dariMap(a['data']);
+      FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
+      final DynamicLinkParameters parameters = DynamicLinkParameters(
+        uriPrefix: 'https://simpelmas.page.link',
+        link: Uri.parse(
+            'http://salamdesa.bbplm-jakarta.kemendesa.go.id/recpwd?kategori=$kategori&nik=$nik&pwd=${_member.password}'),
+        androidParameters: const AndroidParameters(
+          packageName: 'com.fiantoardi.simpel',
+          minimumVersion: 1,
+        ),
+      );
+
+      // long URI :
+      final Uri uri = await dynamicLinks.buildLink(parameters);
+      // short URI :
+      // final ShortDynamicLink shortDynamicLink = await dynamicLinks.buildShortLink(parameters);
+      // final Uri uri = shortDynamicLink.shortUrl;
+      var b = await DBHelper.setData(
+        rute: kategori,
+        mode: 'resetpwd',
+        body: {
+          'step': '2',
+          'nik': _member.nik,
+          'nama': _member.nama,
+          'email': _member.email,
+          'link': uri.toString(),
+        },
+      );
+      return b;
+    } else {
+      return a;
+    }
+  }
+
+  Future<Map<String, dynamic>> recoveryPassword({
+    required String kategori,
+    required String nik,
+    required String pwdLama,
+    required String pwdBaru,
+  }) async {
+    var a = await DBHelper.setData(
+      rute: kategori,
+      mode: 'recoverypwd',
+      body: {
+        'nik': nik,
         'password_lama': pwdLama,
         'password_baru': pwdBaru,
       },

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:simpel/blocs/beranda_bloc.dart';
 import 'package:simpel/blocs/member_bloc.dart';
@@ -23,6 +24,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:simpel/utils/db_factory.dart';
 import 'package:simpel/utils/db_helper.dart';
 import 'package:simpel/views/home_page.dart';
+import 'package:simpel/views/recpassword_page.dart';
 import 'package:sqflite/sqflite.dart';
 
 List<Opsi> _listOpsiAgama = [];
@@ -207,7 +209,6 @@ class _LoginPageState extends State<LoginPage> {
     'member': 'Peserta',
     'team': 'Tim',
     // 'dinas': 'Dinas',
-    '': '',
   };
 
   void fetchKategori(String nilai) {
@@ -215,9 +216,34 @@ class _LoginPageState extends State<LoginPage> {
     _memberBloc.fetchKategori(nilai);
   }
 
+  Future<void> initDynamicLinks() async {
+    FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
+      if (dynamicLinkData.link.pathSegments[0] == 'recpwd') {
+        String? _kategori = dynamicLinkData.link.queryParameters['kategori'];
+        String? _nik = dynamicLinkData.link.queryParameters['nik'];
+        String? _pwd = dynamicLinkData.link.queryParameters['pwd'];
+        if (_kategori != null && _nik != null && _pwd != null) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => RecpasswordPage(
+                kategori: _kategori,
+                nik: _nik,
+                pwdLama: _pwd,
+              ),
+            ),
+          );
+        }
+      }
+    }).onError((error) {
+      print('onLink error');
+      print(error.message);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    initDynamicLinks();
     _aFcache.cekUserId().then((value) {
       if (value != null) {
         _aFcache.getUser().then((member) async {
@@ -378,8 +404,10 @@ class _LoginPageState extends State<LoginPage> {
                                       return;
                                     }
                                     AFwidget.circularDialog(context);
-                                    var a = await DBHelper.recoveryPassword(
-                                        nik: _txtLupa.text);
+                                    var a = await _memberBloc.resetPassword(
+                                      kategori: _kategori,
+                                      nik: _txtLupa.text,
+                                    );
                                     Navigator.of(context).pop();
                                     if (a['status'].toString() == '1') {
                                       Navigator.of(context).pop();
