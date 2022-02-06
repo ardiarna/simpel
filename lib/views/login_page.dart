@@ -22,7 +22,6 @@ import 'package:simpel/utils/af_page_transisi.dart';
 import 'package:simpel/utils/af_widget.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:simpel/utils/db_factory.dart';
-import 'package:simpel/utils/db_helper.dart';
 import 'package:simpel/views/home_page.dart';
 import 'package:simpel/views/recpassword_page.dart';
 import 'package:sqflite/sqflite.dart';
