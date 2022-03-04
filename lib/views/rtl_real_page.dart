@@ -211,6 +211,30 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                   ),
                                   Padding(
                                     padding:
+                                        const EdgeInsets.fromLTRB(0, 10, 0, 3),
+                                    child: Text(
+                                      'Status Validasi',
+                                      style: TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                    child: snapReal.data![i].validasi == 'Y'
+                                        ? Text(
+                                            'Sudah Validasi',
+                                          )
+                                        : Text(
+                                            'Belum Validasi',
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                  ),
+                                  Padding(
+                                    padding:
                                         const EdgeInsets.fromLTRB(0, 15, 0, 3),
                                     child: Text(
                                       'Kendala',
@@ -1044,6 +1068,28 @@ class _RealHistoryState extends State<RealHistory> {
                                   ),
                                 ),
                               ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),
+                              child: Text(
+                                'Status Validasi',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                              child: widget.listReal[i].validasi == 'Y'
+                                  ? Text(
+                                      'Sudah Validasi',
+                                    )
+                                  : Text(
+                                      'Belum Validasi',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                      ),
+                                    ),
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),

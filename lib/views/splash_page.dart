@@ -65,7 +65,7 @@ class _SplashPageState extends State<SplashPage> {
             AFwidget.circularProgress(),
             const Padding(padding: EdgeInsets.all(8)),
             const Text(
-              'Copyright © Simpel Mas 2021 . All Rights Reserved',
+              'Copyright © Simpel Mas 2021',
               style: TextStyle(
                 color: Colors.green,
               ),

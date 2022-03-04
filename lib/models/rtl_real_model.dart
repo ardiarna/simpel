@@ -8,6 +8,7 @@ class RTLrealModel {
   String keterangan;
   String kendala;
   String file;
+  String validasi;
   String targetRencana;
   DateTime? targetTglAwal;
   DateTime? targetTglAkhir;
@@ -24,6 +25,7 @@ class RTLrealModel {
     this.keterangan = '',
     this.kendala = '',
     this.file = '',
+    this.validasi = '',
     this.targetRencana = '',
     this.targetTglAwal,
     this.targetTglAkhir,
@@ -42,6 +44,7 @@ class RTLrealModel {
       keterangan: AFconvert.keString(map['real_keterangan']),
       kendala: AFconvert.keString(map['real_kendala']),
       file: AFconvert.keString(map['real_file']),
+      validasi: AFconvert.keString(map['real_validasi']),
       targetRencana: AFconvert.keString(map['target_rencana']),
       targetTglAwal: AFconvert.keTanggal(map['target_tgl_awal']),
       targetTglAkhir: AFconvert.keTanggal(map['target_tgl_akhir']),
@@ -61,6 +64,7 @@ class RTLrealModel {
       'real_keterangan': keterangan,
       'real_kendala': kendala,
       'real_file': file,
+      'real_validasi': validasi,
       'target_rencana': targetRencana,
       'jml': AFconvert.keString(jml),
       'real_psm_saran': psmSaran,

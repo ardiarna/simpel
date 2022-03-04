@@ -8,10 +8,12 @@ import 'package:simpel/utils/af_widget.dart';
 class Opsi {
   String id;
   String label;
+  Map<String, dynamic>? data;
 
   Opsi({
     this.id = '',
     this.label = '',
+    data,
   });
 
   factory Opsi.dariMap(Map<String, dynamic> map) {
