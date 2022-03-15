@@ -178,37 +178,37 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                             ),
                                           ),
                                   ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                    child: Text(
-                                      'Capaian',
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width -
-                                                130,
-                                        child: AFwidget.linearProgress(
-                                          value: (snapReal.data![i].capaian
-                                                  .toDouble() /
-                                              100),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            10, 0, 0, 0),
-                                        child: Text(
-                                          '${snapReal.data![i].capaian} %',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  // Padding(
+                                  //   padding:
+                                  //       const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                  //   child: Text(
+                                  //     'Capaian',
+                                  //     style: TextStyle(
+                                  //       color: Colors.grey,
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // Row(
+                                  //   children: [
+                                  //     Container(
+                                  //       width:
+                                  //           MediaQuery.of(context).size.width -
+                                  //               130,
+                                  //       child: AFwidget.linearProgress(
+                                  //         value: (snapReal.data![i].capaian
+                                  //                 .toDouble() /
+                                  //             100),
+                                  //       ),
+                                  //     ),
+                                  //     Padding(
+                                  //       padding: const EdgeInsets.fromLTRB(
+                                  //           10, 0, 0, 0),
+                                  //       child: Text(
+                                  //         '${snapReal.data![i].capaian} %',
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 10, 0, 3),
@@ -323,37 +323,40 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                                 refresh();
                                               },
                                             )
-                                          : GestureDetector(
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: Colors.green,
-                                                    width: 1,
-                                                  ),
-                                                ),
-                                                child: Icon(
-                                                  Icons.edit,
-                                                  color: Colors.green,
-                                                ),
-                                              ),
-                                              onTap: () async {
-                                                await Navigator.of(context)
-                                                    .push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        RealForm(
-                                                      member: widget.member,
-                                                      pelatihan:
-                                                          widget.pelatihan,
-                                                      real: snapReal.data![i],
+                                          : snapReal.data![i].validasi == 'Y'
+                                              ? Container()
+                                              : GestureDetector(
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: Colors.green,
+                                                        width: 1,
+                                                      ),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.edit,
+                                                      color: Colors.green,
                                                     ),
                                                   ),
-                                                );
-                                                refresh();
-                                              },
-                                            ),
+                                                  onTap: () async {
+                                                    await Navigator.of(context)
+                                                        .push(
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            RealForm(
+                                                          member: widget.member,
+                                                          pelatihan:
+                                                              widget.pelatihan,
+                                                          real:
+                                                              snapReal.data![i],
+                                                        ),
+                                                      ),
+                                                    );
+                                                    refresh();
+                                                  },
+                                                ),
                                       snapReal.data![i].file != ''
                                           ? GestureDetector(
                                               child: Container(
@@ -647,48 +650,48 @@ class _RealFormState extends State<RealForm> {
               label: 'Kendala',
               maxLines: 2,
             ),
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 15, 15, 0),
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Capaian',
-                style: TextStyle(
-                  fontSize: 15,
-                ),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
-              child: StreamBuilder<double>(
-                stream: _rtlBloc.streamCapaian,
-                builder: (context, snap) {
-                  double nilai = 0;
-                  if (snap.hasData) {
-                    nilai = snap.data!;
-                  } else {
-                    if (widget.real != null) {
-                      fetchCapaian(widget.real!.capaian.toDouble());
-                    }
-                  }
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: Slider(
-                          value: nilai,
-                          min: 0,
-                          max: 100,
-                          label: nilai.round().toString(),
-                          onChanged: (value) {
-                            fetchCapaian(value);
-                          },
-                        ),
-                      ),
-                      Text('${nilai.round()} %'),
-                    ],
-                  );
-                },
-              ),
-            ),
+            // Container(
+            //   padding: EdgeInsets.fromLTRB(10, 15, 15, 0),
+            //   alignment: Alignment.topLeft,
+            //   child: Text(
+            //     'Capaian',
+            //     style: TextStyle(
+            //       fontSize: 15,
+            //     ),
+            //   ),
+            // ),
+            // Container(
+            //   padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
+            //   child: StreamBuilder<double>(
+            //     stream: _rtlBloc.streamCapaian,
+            //     builder: (context, snap) {
+            //       double nilai = 0;
+            //       if (snap.hasData) {
+            //         nilai = snap.data!;
+            //       } else {
+            //         if (widget.real != null) {
+            //           fetchCapaian(widget.real!.capaian.toDouble());
+            //         }
+            //       }
+            //       return Row(
+            //         children: [
+            //           Expanded(
+            //             child: Slider(
+            //               value: nilai,
+            //               min: 0,
+            //               max: 100,
+            //               label: nilai.round().toString(),
+            //               onChanged: (value) {
+            //                 fetchCapaian(value);
+            //               },
+            //             ),
+            //           ),
+            //           Text('${nilai.round()} %'),
+            //         ],
+            //       );
+            //     },
+            //   ),
+            // ),
             StreamBuilder<String>(
               stream: _rtlBloc.streamFile,
               builder: (context, snap) {
@@ -868,15 +871,15 @@ class _RealFormState extends State<RealForm> {
                         _focKeterangan.requestFocus();
                         return;
                       }
-                      if (_capaian == 0) {
-                        AFwidget.snack(context, 'Capaian harus diisi.');
-                        return;
-                      }
-                      if (_capaian > 100) {
-                        AFwidget.snack(context,
-                            'Nilai Capaian tidak boleh lebih dari 100');
-                        return;
-                      }
+                      // if (_capaian == 0) {
+                      //   AFwidget.snack(context, 'Capaian harus diisi.');
+                      //   return;
+                      // }
+                      // if (_capaian > 100) {
+                      //   AFwidget.snack(context,
+                      //       'Nilai Capaian tidak boleh lebih dari 100');
+                      //   return;
+                      // }
 
                       RTLrealModel hasil = RTLrealModel(
                         id: widget.real != null ? widget.real!.id : 0,
@@ -1041,34 +1044,34 @@ class _RealHistoryState extends State<RealHistory> {
                                 widget.listReal[i].kendala,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                              child: Text(
-                                'Capaian',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width - 130,
-                                  child: AFwidget.linearProgress(
-                                      value: widget.listReal[i].capaian
-                                              .toDouble() /
-                                          100),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                  child: Text(
-                                    '${widget.listReal[i].capaian} %',
-                                  ),
-                                ),
-                              ],
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                            //   child: Text(
+                            //     'Capaian',
+                            //     style: TextStyle(
+                            //       color: Colors.grey,
+                            //     ),
+                            //   ),
+                            // ),
+                            // Row(
+                            //   children: [
+                            //     Container(
+                            //       width:
+                            //           MediaQuery.of(context).size.width - 130,
+                            //       child: AFwidget.linearProgress(
+                            //           value: widget.listReal[i].capaian
+                            //                   .toDouble() /
+                            //               100),
+                            //     ),
+                            //     Padding(
+                            //       padding:
+                            //           const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            //       child: Text(
+                            //         '${widget.listReal[i].capaian} %',
+                            //       ),
+                            //     ),
+                            //   ],
+                            // ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),
                               child: Text(
@@ -1316,31 +1319,31 @@ class _RealSaranState extends State<RealSaran> {
                   widget.real.kendala,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                child: Text(
-                  'Capaian',
-                  style: TextStyle(
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width - 130,
-                    child: AFwidget.linearProgress(
-                      value: (widget.real.capaian.toDouble() / 100),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 0, 20),
-                    child: Text(
-                      '${widget.real.capaian} %',
-                    ),
-                  ),
-                ],
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+              //   child: Text(
+              //     'Capaian',
+              //     style: TextStyle(
+              //       color: Colors.grey,
+              //     ),
+              //   ),
+              // ),
+              // Row(
+              //   children: [
+              //     Container(
+              //       width: MediaQuery.of(context).size.width - 130,
+              //       child: AFwidget.linearProgress(
+              //         value: (widget.real.capaian.toDouble() / 100),
+              //       ),
+              //     ),
+              //     Padding(
+              //       padding: const EdgeInsets.fromLTRB(10, 0, 0, 20),
+              //       child: Text(
+              //         '${widget.real.capaian} %',
+              //       ),
+              //     ),
+              //   ],
+              // ),
               AFwidget.textField(
                 context: context,
                 kontroler: _txtSaran,
