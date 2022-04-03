@@ -409,7 +409,7 @@ class _BerandaPageState extends State<BerandaPage> {
   }
 
   Widget kontenPelatihan(double _lebarMedia, List<PelatihanModel> el) {
-    double lebarA = 55;
+    double lebarA = 65;
     return StreamBuilder<List<PelatihanModel>>(
       stream: _berandaBloc.streamPelatihanTeam,
       builder: (context, snapLatih) {

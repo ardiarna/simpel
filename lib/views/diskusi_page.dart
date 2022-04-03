@@ -104,7 +104,10 @@ class _DiskusiPageState extends State<DiskusiPage> {
       ),
       body: BlocBuilder<ChatsCubit, List<Chat>>(builder: (_, chats) {
         this.chats = chats;
-        if (this.chats.isEmpty) return Container();
+        if (this.chats.isEmpty)
+          return Center(
+            child: Text('Sedang memuat pesan...'),
+          );
         return _buildList();
       }),
       floatingActionButton: FloatingActionButton(

@@ -27,7 +27,7 @@ class _PelatihanPageState extends State<PelatihanPage> {
   @override
   Widget build(BuildContext context) {
     double _lebarMedia = MediaQuery.of(context).size.width;
-    double lebarA = 50;
+    double lebarA = 65;
     return FutureBuilder<List<PelatihanModel>>(
       future: _pelatihanBloc.getPelatihans(widget.member.nik),
       builder: (context, snap) {
@@ -251,11 +251,12 @@ class _PelatihanPageState extends State<PelatihanPage> {
                                           MaterialTapTargetSize.shrinkWrap,
                                     ),
                                     onPressed: () {
-                                      AFwidget.modalBottom(
-                                        context: context,
-                                        konten: SaranDinasPage(
-                                          nikPeserta: widget.member.nik,
-                                          pelatihan: snap.data![i],
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => SaranDinasPage(
+                                            nikPeserta: widget.member.nik,
+                                            pelatihan: snap.data![i],
+                                          ),
                                         ),
                                       );
                                     },

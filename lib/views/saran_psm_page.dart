@@ -45,36 +45,10 @@ class _SaranPageState extends State<SaranPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0.5,
-        flexibleSpace: Container(
-          padding: EdgeInsets.fromLTRB(50, 19, 10, 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Saran ${widget.pelatihan.singkatan} ${widget.pelatihan.angkatan}-${widget.pelatihan.tahun}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 25),
-                child: Text(
-                  '${widget.member.nama}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-        ),
+        leadingWidth: 30,
+        title: Text(widget.team != null
+            ? '${widget.member.nama}'
+            : '${widget.pelatihan.singkatan} ${widget.pelatihan.angkatan}-${widget.pelatihan.tahun}'),
       ),
       body: CustomScrollView(
         slivers: [
@@ -134,20 +108,20 @@ class _SaranPageState extends State<SaranPage> {
                                 ),
                               ],
                             ),
-                            const Padding(padding: EdgeInsets.only(top: 5)),
+                            const Padding(padding: EdgeInsets.only(top: 10)),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
                                   width: lebarA,
-                                  child: const Text(''),
+                                  child: const Text('Tanggal'),
                                 ),
-                                const Text('    '),
+                                const Text(' : '),
                                 Expanded(
                                   child: Text(
                                     AFconvert.matDate(snap.data![i].psmTanggal),
                                     style: const TextStyle(
-                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
                                       fontStyle: FontStyle.italic,
                                     ),
                                   ),

@@ -57,7 +57,7 @@ class _BumdesPageState extends State<BumdesPage> {
 
   @override
   Widget build(BuildContext context) {
-    double lebarA = 100;
+    double lebarA = 120;
     return SafeArea(
       child: SingleChildScrollView(
         child: Container(
@@ -65,136 +65,152 @@ class _BumdesPageState extends State<BumdesPage> {
           padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
           color: Colors.white,
           child: FutureBuilder<BumdesModel>(
-              future: bumdesBloc.get(widget.nik),
-              builder: (context, snap) {
-                if (snap.hasData) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
+            future: bumdesBloc.get(widget.nik),
+            builder: (context, snapFut) {
+              if (snapFut.hasData) {
+                return StreamBuilder<BumdesModel>(
+                  stream: bumdesBloc.stream,
+                  builder: (context, snap) {
+                    if (snap.hasData) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          SizedBox(
-                              width: lebarA, child: const Text('Nama Bumdes')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.nama,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 15)),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width: lebarA,
-                              child: const Text('Tahun Berdiri')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.tahun.toString(),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 15)),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width: lebarA, child: const Text('Unit Usaha')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.unitusaha,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 15)),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width: lebarA,
-                              child: const Text('Omzet per tahun')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.omset,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 15)),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width: lebarA,
-                              child: const Text('Jabatan dalam Bumdes')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.jabatan,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 15)),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width: lebarA,
-                              child: const Text('Periode Jabatan')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.jabperiode,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 15)),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width: lebarA,
-                              child: const Text('Kendala / Permasalahan')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.kendala,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                        child: ElevatedButton(
-                          child: const Text('Edit'),
-                          onPressed: () async {
-                            await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => BumdesForm(
-                                  nik: snap.data!.nik,
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Nama Bumdes')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.nama,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            );
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return AFwidget.circularProgress();
-                }
-              }),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Tahun Berdiri')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.tahun.toString(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Unit Usaha')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.unitusaha,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Omzet per tahun')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.omset,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Jabatan dalam Bumdes')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.jabatan,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Periode Jabatan')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.jabperiode,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Kendala / Permasalahan')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.kendala,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                            child: ElevatedButton(
+                              child: Text("Edit"),
+                              onPressed: () async {
+                                var a = await Navigator.of(context)
+                                    .push<BumdesModel>(
+                                  MaterialPageRoute(
+                                    builder: (context) => BumdesForm(
+                                      nik: widget.nik,
+                                    ),
+                                  ),
+                                );
+                                if (a != null) {
+                                  bumdesBloc.fetch(a);
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      bumdesBloc.fetch(snapFut.data!);
+                      return AFwidget.circularProgress();
+                    }
+                  },
+                );
+              } else {
+                return AFwidget.circularProgress();
+              }
+            },
+          ),
         ),
       ),
     );
@@ -429,7 +445,8 @@ class _BumdesFormState extends State<BumdesForm> {
                                   context,
                                   const Text('Data Bumdes berhasil disimpan.'),
                                 );
-                                Navigator.of(context).pop();
+                                Navigator.of(context)
+                                    .pop<BumdesModel>(hasilBumdes);
                               } else {
                                 AFwidget.alertDialog(
                                     context, Text(a['message'].toString()));
@@ -467,7 +484,7 @@ class _KedudukanPageState extends State<KedudukanPage> {
 
   @override
   Widget build(BuildContext context) {
-    double lebarA = 120;
+    double lebarA = 130;
     return SafeArea(
       child: SingleChildScrollView(
         child: Container(
@@ -475,61 +492,76 @@ class _KedudukanPageState extends State<KedudukanPage> {
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
           color: Colors.white,
           child: FutureBuilder<KedudukanModel>(
-              future: bumdesBloc.getKedudukan(widget.nik),
-              builder: (context, snap) {
-                if (snap.hasData) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
+            future: bumdesBloc.getKedudukan(widget.nik),
+            builder: (context, snapFut) {
+              if (snapFut.hasData) {
+                return StreamBuilder<KedudukanModel>(
+                  stream: bumdesBloc.streamKedudukan,
+                  builder: (context, snap) {
+                    if (snap.hasData) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          SizedBox(
-                              width: lebarA,
-                              child: const Text('Jabatan / Kedudukan di Desa')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.jabatan,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Padding(padding: EdgeInsets.only(bottom: 15)),
-                      Row(
-                        children: [
-                          SizedBox(width: lebarA, child: const Text('Periode')),
-                          const Text(' : '),
-                          Text(
-                            snap.data!.periode,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                        child: ElevatedButton(
-                          child: const Text('Edit'),
-                          onPressed: () async {
-                            await Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => KedudukanForm(
-                                  nik: snap.data!.nik,
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA,
+                                  child: const Text('Kedudukan di Desa')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.jabatan,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                            );
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return AFwidget.circularProgress();
-                }
-              }),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsets.only(bottom: 15)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                  width: lebarA, child: const Text('Periode')),
+                              const Text(' : '),
+                              Text(
+                                snap.data!.periode,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                            child: ElevatedButton(
+                              child: const Text('Edit'),
+                              onPressed: () async {
+                                var a = await Navigator.of(context)
+                                    .push<KedudukanModel>(
+                                  MaterialPageRoute(
+                                    builder: (context) => KedudukanForm(
+                                      nik: widget.nik,
+                                    ),
+                                  ),
+                                );
+                                if (a != null) {
+                                  bumdesBloc.fetchKedudukan(a);
+                                }
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      bumdesBloc.fetchKedudukan(snapFut.data!);
+                      return AFwidget.circularProgress();
+                    }
+                  },
+                );
+              } else {
+                return AFwidget.circularProgress();
+              }
+            },
+          ),
         ),
       ),
     );
@@ -594,7 +626,7 @@ class _KedudukanFormState extends State<KedudukanForm> {
                           context: context,
                           kontroler: _txtJabatan,
                           focusNode: _focJabatan,
-                          label: 'Jabatan / Kedudukan di Desa',
+                          label: 'Kedudukan di Desa',
                           suffix: const Icon(
                             Icons.person,
                             size: 20,
@@ -648,7 +680,8 @@ class _KedudukanFormState extends State<KedudukanForm> {
                                   const Text(
                                       'Data Kedudukan berhasil disimpan.'),
                                 );
-                                Navigator.of(context).pop();
+                                Navigator.of(context)
+                                    .pop<KedudukanModel>(hasilKedudukan);
                               } else {
                                 AFwidget.alertDialog(
                                     context, Text(a['message'].toString()));

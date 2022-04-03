@@ -23,96 +23,103 @@ class _SaranDinasPageState extends State<SaranDinasPage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<SaranModel>>(
-      future: _pelatihanBloc.getSaransDinas(
-        kode: widget.pelatihan.kode,
-        nik: widget.nikPeserta,
+    return Scaffold(
+      appBar: AppBar(
+        leadingWidth: 30,
+        title: Text(
+            '${widget.pelatihan.singkatan} ${widget.pelatihan.angkatan}-${widget.pelatihan.tahun}'),
       ),
-      builder: (context, snap) {
-        if (snap.hasData) {
-          if (snap.data!.length > 0) {
-            return ListView.builder(
-              itemCount: snap.data!.length,
-              itemBuilder: (context, i) {
-                return Container(
-                  margin: const EdgeInsets.fromLTRB(10, 5, 10, 7),
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(10),
+      body: FutureBuilder<List<SaranModel>>(
+        future: _pelatihanBloc.getSaransDinas(
+          kode: widget.pelatihan.kode,
+          nik: widget.nikPeserta,
+        ),
+        builder: (context, snap) {
+          if (snap.hasData) {
+            if (snap.data!.length > 0) {
+              return ListView.builder(
+                itemCount: snap.data!.length,
+                itemBuilder: (context, i) {
+                  return Container(
+                    margin: const EdgeInsets.fromLTRB(10, 5, 10, 7),
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 15),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          spreadRadius: 0.5,
+                          blurRadius: 1,
+                          offset: const Offset(1, 1),
+                        ),
+                      ],
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        spreadRadius: 0.5,
-                        blurRadius: 1,
-                        offset: const Offset(1, 1),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 30,
-                        height: 30,
-                        margin: EdgeInsets.only(bottom: 10),
-                        decoration: BoxDecoration(
-                          color: Colors.green.shade700,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(10)),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          (i + 1).toString(),
-                          style: TextStyle(
-                            color: Colors.white,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          margin: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade700,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            (i + 1).toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          '- Nama Dinas :',
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            '- Nama Dinas :',
+                            style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(snap.data![i].psmNama),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          '- Saran Dinas :',
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text(snap.data![i].psmNama),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            '- Saran Dinas :',
+                            style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 5),
-                        child: Text(snap.data![i].psmSaran),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 5),
+                          child: Text(snap.data![i].psmSaran),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            } else {
+              return Center(
+                child: Text(
+                  'Belum ada saran dinas',
+                ),
+              );
+            }
           } else {
-            return Center(
-              child: Text(
-                'Belum ada saran dinas',
-              ),
-            );
+            return AFwidget.circularProgress();
           }
-        } else {
-          return AFwidget.circularProgress();
-        }
-      },
+        },
+      ),
     );
   }
 }

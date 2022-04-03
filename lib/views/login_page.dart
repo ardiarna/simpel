@@ -217,11 +217,15 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> initDynamicLinks() async {
     FirebaseDynamicLinks.instance.onLink.listen((dynamicLinkData) {
-      if (dynamicLinkData.link.pathSegments[0] == 'recpwd') {
-        String? _kategori = dynamicLinkData.link.queryParameters['kategori'];
+      print('ardi');
+      print(dynamicLinkData.link.pathSegments);
+      if (dynamicLinkData.link.pathSegments[1] == 'recovery') {
+        String _kategori = dynamicLinkData.link.pathSegments[2];
+        if (dynamicLinkData.link.pathSegments[2] == 'peserta')
+          _kategori = 'member';
         String? _nik = dynamicLinkData.link.queryParameters['nik'];
         String? _pwd = dynamicLinkData.link.queryParameters['pwd'];
-        if (_kategori != null && _nik != null && _pwd != null) {
+        if (_kategori != '' && _nik != null && _pwd != null) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => RecpasswordPage(

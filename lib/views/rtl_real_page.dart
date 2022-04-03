@@ -80,22 +80,6 @@ class _RTLrealPageState extends State<RTLrealPage> {
               ),
             )
           : null,
-      floatingActionButton: widget.team != null
-          ? null
-          : FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () async {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => RealForm(
-                      member: widget.member,
-                      pelatihan: widget.pelatihan,
-                    ),
-                  ),
-                );
-                refresh();
-              },
-            ),
       body: CustomScrollView(
         slivers: [
           SliverPadding(padding: EdgeInsets.only(top: 1)),
@@ -209,30 +193,30 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                   //     ),
                                   //   ],
                                   // ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 10, 0, 3),
-                                    child: Text(
-                                      'Status Validasi',
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                    child: snapReal.data![i].validasi == 'Y'
-                                        ? Text(
-                                            'Sudah Validasi',
-                                          )
-                                        : Text(
-                                            'Belum Validasi',
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                  ),
+                                  // Padding(
+                                  //   padding:
+                                  //       const EdgeInsets.fromLTRB(0, 10, 0, 3),
+                                  //   child: Text(
+                                  //     'Status Validasi',
+                                  //     style: TextStyle(
+                                  //       color: Colors.grey,
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // Padding(
+                                  //   padding:
+                                  //       const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  //   child: snapReal.data![i].validasi == 'Y'
+                                  //       ? Text(
+                                  //           'Sudah Validasi',
+                                  //         )
+                                  //       : Text(
+                                  //           'Belum Validasi',
+                                  //           style: TextStyle(
+                                  //             color: Colors.red,
+                                  //           ),
+                                  //         ),
+                                  // ),
                                   Padding(
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 15, 0, 3),
@@ -287,151 +271,171 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                 ],
                               ),
                             ),
-                            snapReal.data![i].jml > 0
-                                ? Column(
-                                    children: [
-                                      widget.team != null
-                                          ? GestureDetector(
-                                              child: Container(
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: Colors.green,
-                                                    width: 1,
-                                                  ),
-                                                ),
-                                                child: Icon(
-                                                  Icons.comment,
-                                                  color: Colors.green,
-                                                ),
+                            Column(
+                              children: [
+                                widget.team != null
+                                    ? GestureDetector(
+                                        child: Container(
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.green,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.comment,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => RealSaran(
+                                                teamNik: widget.team!.nik,
+                                                real: snapReal.data![i],
+                                                member: widget.member,
+                                                pelatihan: widget.pelatihan,
                                               ),
-                                              onTap: () async {
-                                                await Navigator.of(context)
-                                                    .push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        RealSaran(
-                                                      teamNik: widget.team!.nik,
-                                                      real: snapReal.data![i],
-                                                      member: widget.member,
-                                                      pelatihan:
-                                                          widget.pelatihan,
-                                                    ),
-                                                  ),
-                                                );
-                                                refresh();
-                                              },
-                                            )
-                                          : snapReal.data![i].validasi == 'Y'
-                                              ? Container()
-                                              : GestureDetector(
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(5),
-                                                    decoration: BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                        color: Colors.green,
-                                                        width: 1,
-                                                      ),
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.edit,
-                                                      color: Colors.green,
-                                                    ),
-                                                  ),
-                                                  onTap: () async {
-                                                    await Navigator.of(context)
-                                                        .push(
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            RealForm(
-                                                          member: widget.member,
-                                                          pelatihan:
-                                                              widget.pelatihan,
-                                                          real:
-                                                              snapReal.data![i],
-                                                        ),
-                                                      ),
-                                                    );
-                                                    refresh();
-                                                  },
-                                                ),
-                                      snapReal.data![i].file != ''
-                                          ? GestureDetector(
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 15),
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: Colors.green,
-                                                    width: 1,
-                                                  ),
-                                                ),
-                                                child: Icon(
-                                                  Icons.download_outlined,
-                                                  color: Colors.green,
-                                                ),
+                                            ),
+                                          );
+                                          refresh();
+                                        },
+                                      )
+                                    : GestureDetector(
+                                        child: Container(
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.green,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.add,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => RealForm(
+                                                member: widget.member,
+                                                pelatihan: widget.pelatihan,
+                                                isEdit: false,
+                                                real: snapReal.data![i],
                                               ),
-                                              onTap: () async {
-                                                String url = _rtlBloc.dirRTL +
-                                                    snapReal.data![i].file;
-                                                var a = await canLaunch(url);
+                                            ),
+                                          );
+                                          refresh();
+                                        },
+                                      ),
+                                widget.team == null &&
+                                        snapReal.data![i].jml > 1 &&
+                                        snapReal.data![i].validasi != 'Y'
+                                    ? GestureDetector(
+                                        child: Container(
+                                          margin: EdgeInsets.only(top: 15),
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.green,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.edit,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          await Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => RealForm(
+                                                member: widget.member,
+                                                pelatihan: widget.pelatihan,
+                                                isEdit: true,
+                                                real: snapReal.data![i],
+                                              ),
+                                            ),
+                                          );
+                                          refresh();
+                                        },
+                                      )
+                                    : Container(),
+                                snapReal.data![i].file != ''
+                                    ? GestureDetector(
+                                        child: Container(
+                                          margin: EdgeInsets.only(top: 15),
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.green,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.download_outlined,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          String url = _rtlBloc.dirRTL +
+                                              snapReal.data![i].file;
+                                          var a = await canLaunch(url);
 
-                                                if (a) {
-                                                  launch(url);
-                                                } else {
-                                                  AFwidget.alertDialog(
-                                                    context,
-                                                    Text(
-                                                        'Lampiran tidak ditemukan'),
-                                                  );
-                                                }
-                                              },
-                                            )
-                                          : Container(),
-                                      snapReal.data![i].jml > 1
-                                          ? GestureDetector(
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 15),
-                                                padding: EdgeInsets.all(5),
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: Colors.green,
-                                                    width: 1,
-                                                  ),
-                                                ),
-                                                child: Icon(
-                                                  Icons.timeline_outlined,
-                                                  color: Colors.green,
-                                                ),
+                                          if (a) {
+                                            launch(url);
+                                          } else {
+                                            AFwidget.alertDialog(
+                                              context,
+                                              Text('Lampiran tidak ditemukan'),
+                                            );
+                                          }
+                                        },
+                                      )
+                                    : Container(),
+                                snapReal.data![i].jml > 1
+                                    ? GestureDetector(
+                                        child: Container(
+                                          margin: EdgeInsets.only(top: 15),
+                                          padding: EdgeInsets.all(5),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.green,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.timeline_outlined,
+                                            color: Colors.green,
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          AFwidget.circularDialog(context);
+                                          var a = await _rtlBloc.getRealHistory(
+                                              snapReal.data![i].targetId
+                                                  .toString());
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => RealHistory(
+                                                targetRencana: snapReal
+                                                    .data![i].targetRencana,
+                                                listReal: a,
                                               ),
-                                              onTap: () async {
-                                                var a = await _rtlBloc
-                                                    .getRealHistory(snapReal
-                                                        .data![i].targetId
-                                                        .toString());
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        RealHistory(
-                                                      targetRencana: snapReal
-                                                          .data![i]
-                                                          .targetRencana,
-                                                      listReal: a,
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            )
-                                          : Container(),
-                                    ],
-                                  )
-                                : Container(),
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    : Container(),
+                              ],
+                            ),
                           ],
                         ),
                       );
@@ -449,7 +453,7 @@ class _RTLrealPageState extends State<RTLrealPage> {
               }
             },
           ),
-          SliverPadding(padding: EdgeInsets.all(25)),
+          SliverPadding(padding: EdgeInsets.only(bottom: 15)),
         ],
       ),
     );
@@ -459,11 +463,13 @@ class _RTLrealPageState extends State<RTLrealPage> {
 class RealForm extends StatefulWidget {
   final MemberModel member;
   final PelatihanModel pelatihan;
+  final bool isEdit;
   final RTLrealModel? real;
 
   const RealForm({
     required this.member,
     required this.pelatihan,
+    required this.isEdit,
     this.real,
     Key? key,
   }) : super(key: key);
@@ -514,13 +520,16 @@ class _RealFormState extends State<RealForm> {
   @override
   void initState() {
     super.initState();
-    if (widget.real != null) {
+    if (widget.isEdit) {
       _targetId = widget.real!.targetId;
       _txtTarget.text = widget.real!.targetRencana;
       fetchTanggal(widget.real!.tanggal!);
       _txtKendala.text = widget.real!.kendala;
       _txtKeterangan.text = widget.real!.keterangan;
       fetchCapaian(widget.real!.capaian.toDouble());
+    } else {
+      _targetId = widget.real!.targetId;
+      _txtTarget.text = widget.real!.targetRencana;
     }
     _focTarget = FocusNode();
     _focTanggal = FocusNode();
@@ -557,9 +566,8 @@ class _RealFormState extends State<RealForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.real != null
-            ? 'Ubah RTL Realisasi'
-            : 'Tambah RTL Realisasi'),
+        title:
+            Text(widget.isEdit ? 'Ubah RTL Realisasi' : 'Tambah RTL Realisasi'),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -582,17 +590,17 @@ class _RealFormState extends State<RealForm> {
                     size: 20,
                   ),
                   ontap: () async {
-                    if (widget.real == null) {
-                      var a = await AFcombobox.modalBottom(
-                        context: context,
-                        listOpsi: _listOpsiTarget,
-                        idSelected: _targetId.toString(),
-                        judul: 'Rencana Aksi',
-                      );
-                      if (a != null) {
-                        fetchRencanaLabel(int.parse(a.id), a.label);
-                      }
-                    }
+                    // if (widget.real == null) {
+                    //   var a = await AFcombobox.modalBottom(
+                    //     context: context,
+                    //     listOpsi: _listOpsiTarget,
+                    //     idSelected: _targetId.toString(),
+                    //     judul: 'Rencana Aksi',
+                    //   );
+                    //   if (a != null) {
+                    //     fetchRencanaLabel(int.parse(a.id), a.label);
+                    //   }
+                    // }
                   },
                 );
               },
@@ -606,7 +614,7 @@ class _RealFormState extends State<RealForm> {
                   _txtTanggal.text = AFconvert.matDate(snap.data);
                 } else {
                   nilai = DateTime.now();
-                  if (widget.real != null) {
+                  if (widget.isEdit) {
                     if (widget.real!.tanggal != null) {
                       fetchTanggal(widget.real!.tanggal!);
                     }
@@ -669,7 +677,7 @@ class _RealFormState extends State<RealForm> {
             //       if (snap.hasData) {
             //         nilai = snap.data!;
             //       } else {
-            //         if (widget.real != null) {
+            //         if (widget.isEdit) {
             //           fetchCapaian(widget.real!.capaian.toDouble());
             //         }
             //       }
@@ -698,7 +706,7 @@ class _RealFormState extends State<RealForm> {
                 if (snap.hasData) {
                   _txtFile.text = snap.data!;
                 } else {
-                  if (widget.real != null) {
+                  if (widget.isEdit) {
                     fetchFile('', widget.real!.file);
                   }
                 }
@@ -793,7 +801,7 @@ class _RealFormState extends State<RealForm> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  widget.real != null
+                  widget.isEdit
                       ? ElevatedButton(
                           child: Text('Hapus'),
                           style: TextButton.styleFrom(
@@ -882,7 +890,7 @@ class _RealFormState extends State<RealForm> {
                       // }
 
                       RTLrealModel hasil = RTLrealModel(
-                        id: widget.real != null ? widget.real!.id : 0,
+                        id: widget.isEdit ? widget.real!.id : 0,
                         targetId: _targetId,
                         targetRencana: _txtTarget.text,
                         tanggal: _tanggal,
@@ -894,7 +902,7 @@ class _RealFormState extends State<RealForm> {
 
                       AFwidget.circularDialog(context);
                       Map<String, dynamic> a = {};
-                      if (widget.real != null) {
+                      if (widget.isEdit) {
                         a = await _rtlBloc.ediReal(hasil);
                       } else {
                         a = await _rtlBloc.addReal(hasil);
@@ -1072,28 +1080,28 @@ class _RealHistoryState extends State<RealHistory> {
                             //     ),
                             //   ],
                             // ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),
-                              child: Text(
-                                'Status Validasi',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                              child: widget.listReal[i].validasi == 'Y'
-                                  ? Text(
-                                      'Sudah Validasi',
-                                    )
-                                  : Text(
-                                      'Belum Validasi',
-                                      style: TextStyle(
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                            ),
+                            // Padding(
+                            //   padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),
+                            //   child: Text(
+                            //     'Status Validasi',
+                            //     style: TextStyle(
+                            //       color: Colors.grey,
+                            //     ),
+                            //   ),
+                            // ),
+                            // Padding(
+                            //   padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                            //   child: widget.listReal[i].validasi == 'Y'
+                            //       ? Text(
+                            //           'Sudah Validasi',
+                            //         )
+                            //       : Text(
+                            //           'Belum Validasi',
+                            //           style: TextStyle(
+                            //             color: Colors.red,
+                            //           ),
+                            //         ),
+                            // ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 15, 0, 3),
                               child: Text(

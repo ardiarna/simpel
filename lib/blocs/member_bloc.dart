@@ -135,11 +135,13 @@ class MemberBloc {
     );
     if (a['status'].toString() == '1') {
       var _member = MemberModel.dariMap(a['data']);
+      String _rcpage = kategori;
+      if (kategori == 'member') _rcpage = 'peserta';
       FirebaseDynamicLinks dynamicLinks = FirebaseDynamicLinks.instance;
       final DynamicLinkParameters parameters = DynamicLinkParameters(
         uriPrefix: 'https://simpelmas.page.link',
         link: Uri.parse(
-            'http://salamdesa.bbplm-jakarta.kemendesa.go.id/recpwd?kategori=$kategori&nik=$nik&pwd=${_member.password}'),
+            'http://salamdesa.bbplm-jakarta.kemendesa.go.id/login/recovery/$_rcpage?nik=$nik&pwd=${_member.password}'),
         androidParameters: const AndroidParameters(
           packageName: 'com.fiantoardi.simpel',
           minimumVersion: 1,
