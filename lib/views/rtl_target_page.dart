@@ -225,6 +225,8 @@ class _RTLtargetPageState extends State<RTLtargetPage> {
                                                         .delTarget(snapTarget
                                                             .data![i]);
                                                     Navigator.of(context).pop();
+                                                    print('hapusya');
+                                                    print(a['data'].toString());
                                                     String pesan = a['status']
                                                                 .toString() ==
                                                             '1'
@@ -236,14 +238,13 @@ class _RTLtargetPageState extends State<RTLtargetPage> {
                                                       Text(pesan),
                                                     );
                                                     Navigator.of(context).pop();
-                                                    Navigator.of(context).pop();
+                                                    refresh();
                                                   },
                                                 ),
                                               ],
                                             ),
                                           ],
-                                          judul: Text(
-                                              'Konfirmasi Hapus RTL Target'),
+                                          judul: Text('Konfirmasi!'),
                                         );
                                         refresh();
                                       },

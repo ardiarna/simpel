@@ -45,6 +45,7 @@ class _RTLrealPageState extends State<RTLrealPage> {
   @override
   Widget build(BuildContext context) {
     refresh();
+    print(widget.pelatihan.kode);
     return Scaffold(
       appBar: widget.team != null
           ? AppBar(
@@ -221,7 +222,7 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                     padding:
                                         const EdgeInsets.fromLTRB(0, 15, 0, 3),
                                     child: Text(
-                                      'Kendala',
+                                      'Keterangan',
                                       style: TextStyle(
                                         color: Colors.grey,
                                       ),
@@ -333,7 +334,7 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                         },
                                       ),
                                 widget.team == null &&
-                                        snapReal.data![i].jml > 1 &&
+                                        snapReal.data![i].jml > 0 &&
                                         snapReal.data![i].validasi != 'Y'
                                     ? GestureDetector(
                                         child: Container(
@@ -422,15 +423,15 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                               snapReal.data![i].targetId
                                                   .toString());
                                           Navigator.of(context).pop();
-                                          Navigator.of(context).push(
+                                          await Navigator.of(context).push(
                                             MaterialPageRoute(
                                               builder: (context) => RealHistory(
-                                                targetRencana: snapReal
-                                                    .data![i].targetRencana,
+                                                selectedReal: snapReal.data![i],
                                                 listReal: a,
                                               ),
                                             ),
                                           );
+                                          refresh();
                                         },
                                       )
                                     : Container(),
@@ -655,7 +656,7 @@ class _RealFormState extends State<RealForm> {
               context: context,
               kontroler: _txtKendala,
               focusNode: _focKendala,
-              label: 'Kendala',
+              label: 'Keterangan',
               maxLines: 2,
             ),
             // Container(
@@ -798,129 +799,62 @@ class _RealFormState extends State<RealForm> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 35, 15, 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  widget.isEdit
-                      ? ElevatedButton(
-                          child: Text('Hapus'),
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.red.shade400,
-                          ),
-                          onPressed: () {
-                            AFwidget.simpleDialog(
-                              context,
-                              [
-                                Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Text(
-                                    'Yakin ingin menghapus data RTL real ini?',
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    ElevatedButton(
-                                      child: const Text('Batal'),
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.orange.shade500,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    ElevatedButton.icon(
-                                      icon: Icon(Icons.delete_forever_outlined),
-                                      label: const Text('Ya, Hapus'),
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.red.shade500,
-                                      ),
-                                      onPressed: () async {
-                                        AFwidget.circularDialog(context);
-                                        var a = await _rtlBloc
-                                            .delReal(widget.real!);
-                                        Navigator.of(context).pop();
-                                        String pesan = a['status'].toString() ==
-                                                '1'
-                                            ? 'Data RTL Realisasi berhasil dihapus.'
-                                            : a['message'].toString();
-                                        await AFwidget.alertDialog(
-                                          context,
-                                          Text(pesan),
-                                        );
-                                        Navigator.of(context).pop();
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                              judul: Text('Konfirmasi Hapus RTL Realisasi'),
-                            );
-                          },
-                        )
-                      : Spacer(),
-                  ElevatedButton(
-                    child: Text('Simpan'),
-                    onPressed: () async {
-                      if (_targetId == 0) {
-                        AFwidget.snack(context, 'Rencana Aksi harus diisi.');
-                        _focTarget.requestFocus();
-                        return;
-                      }
-                      if (_tanggal == null) {
-                        AFwidget.snack(context, 'Tanggal harus diisi.');
-                        _focTanggal.requestFocus();
-                        return;
-                      }
-                      if (_txtKeterangan.text.isEmpty) {
-                        AFwidget.snack(context, 'Realisasi Aksi harus diisi.');
-                        _focKeterangan.requestFocus();
-                        return;
-                      }
-                      // if (_capaian == 0) {
-                      //   AFwidget.snack(context, 'Capaian harus diisi.');
-                      //   return;
-                      // }
-                      // if (_capaian > 100) {
-                      //   AFwidget.snack(context,
-                      //       'Nilai Capaian tidak boleh lebih dari 100');
-                      //   return;
-                      // }
+              child: ElevatedButton(
+                child: Text('Simpan'),
+                onPressed: () async {
+                  if (_targetId == 0) {
+                    AFwidget.snack(context, 'Rencana Aksi harus diisi.');
+                    _focTarget.requestFocus();
+                    return;
+                  }
+                  if (_tanggal == null) {
+                    AFwidget.snack(context, 'Tanggal harus diisi.');
+                    _focTanggal.requestFocus();
+                    return;
+                  }
+                  if (_txtKeterangan.text.isEmpty) {
+                    AFwidget.snack(context, 'Realisasi Aksi harus diisi.');
+                    _focKeterangan.requestFocus();
+                    return;
+                  }
+                  // if (_capaian == 0) {
+                  //   AFwidget.snack(context, 'Capaian harus diisi.');
+                  //   return;
+                  // }
+                  // if (_capaian > 100) {
+                  //   AFwidget.snack(context,
+                  //       'Nilai Capaian tidak boleh lebih dari 100');
+                  //   return;
+                  // }
 
-                      RTLrealModel hasil = RTLrealModel(
-                        id: widget.isEdit ? widget.real!.id : 0,
-                        targetId: _targetId,
-                        targetRencana: _txtTarget.text,
-                        tanggal: _tanggal,
-                        keterangan: _txtKeterangan.text,
-                        kendala: _txtKendala.text,
-                        capaian: _capaian.round(),
-                        file: _pathFile,
-                      );
+                  RTLrealModel hasil = RTLrealModel(
+                    id: widget.isEdit ? widget.real!.id : 0,
+                    targetId: _targetId,
+                    targetRencana: _txtTarget.text,
+                    tanggal: _tanggal,
+                    keterangan: _txtKeterangan.text,
+                    kendala: _txtKendala.text,
+                    capaian: _capaian.round(),
+                    file: _pathFile,
+                  );
 
-                      AFwidget.circularDialog(context);
-                      Map<String, dynamic> a = {};
-                      if (widget.isEdit) {
-                        a = await _rtlBloc.ediReal(hasil);
-                      } else {
-                        a = await _rtlBloc.addReal(hasil);
-                      }
-                      Navigator.of(context).pop();
-                      if (a['status'].toString() == '1') {
-                        await AFwidget.alertDialog(
-                            context,
-                            const Text(
-                                'Data RTL Realisasi berhasil disimpan.'));
-                        Navigator.of(context).pop(hasil);
-                      } else {
-                        AFwidget.alertDialog(
-                            context, Text(a['message'].toString()));
-                      }
-                    },
-                  ),
-                ],
+                  AFwidget.circularDialog(context);
+                  Map<String, dynamic> a = {};
+                  if (widget.isEdit) {
+                    a = await _rtlBloc.ediReal(hasil);
+                  } else {
+                    a = await _rtlBloc.addReal(hasil);
+                  }
+                  Navigator.of(context).pop();
+                  if (a['status'].toString() == '1') {
+                    await AFwidget.alertDialog(context,
+                        const Text('Data RTL Realisasi berhasil disimpan.'));
+                    Navigator.of(context).pop(hasil);
+                  } else {
+                    AFwidget.alertDialog(
+                        context, Text(a['message'].toString()));
+                  }
+                },
               ),
             )
           ],
@@ -931,11 +865,11 @@ class _RealFormState extends State<RealForm> {
 }
 
 class RealHistory extends StatefulWidget {
-  final String targetRencana;
+  final RTLrealModel selectedReal;
   final List<RTLrealModel> listReal;
 
   const RealHistory({
-    required this.targetRencana,
+    required this.selectedReal,
     required this.listReal,
     Key? key,
   }) : super(key: key);
@@ -981,7 +915,7 @@ class _RealHistoryState extends State<RealHistory> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: Text(
-                      widget.targetRencana,
+                      widget.selectedReal.targetRencana,
                     ),
                   ),
                 ],
@@ -1040,7 +974,7 @@ class _RealHistoryState extends State<RealHistory> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(0, 0, 0, 3),
                               child: Text(
-                                'Kendala',
+                                'Keterangan',
                                 style: TextStyle(
                                   color: Colors.grey,
                                 ),
@@ -1135,39 +1069,119 @@ class _RealHistoryState extends State<RealHistory> {
                           ],
                         ),
                       ),
-                      widget.listReal[i].file != ''
-                          ? GestureDetector(
-                              child: Container(
-                                margin: EdgeInsets.only(top: 15),
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: Colors.green,
-                                    width: 1,
+                      Column(
+                        children: [
+                          widget.listReal[i].file != ''
+                              ? GestureDetector(
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 15),
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.green,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.download_outlined,
+                                      color: Colors.green,
+                                    ),
                                   ),
-                                ),
-                                child: Icon(
-                                  Icons.download_outlined,
-                                  color: Colors.green,
-                                ),
-                              ),
-                              onTap: () async {
-                                String url =
-                                    _rtlBloc.dirRTL + widget.listReal[i].file;
-                                var a = await canLaunch(url);
+                                  onTap: () async {
+                                    String url = _rtlBloc.dirRTL +
+                                        widget.listReal[i].file;
+                                    var a = await canLaunch(url);
 
-                                if (a) {
-                                  launch(url);
-                                } else {
-                                  AFwidget.alertDialog(
-                                    context,
-                                    Text('Lampiran tidak ditemukan'),
-                                  );
-                                }
-                              },
-                            )
-                          : Container(),
+                                    if (a) {
+                                      launch(url);
+                                    } else {
+                                      AFwidget.alertDialog(
+                                        context,
+                                        Text('Lampiran tidak ditemukan'),
+                                      );
+                                    }
+                                  },
+                                )
+                              : Container(),
+                          widget.listReal[i].id == widget.selectedReal.id
+                              ? GestureDetector(
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 15),
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.red,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.delete_forever,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                  onTap: () async {
+                                    AFwidget.simpleDialog(
+                                      context,
+                                      [
+                                        Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Text(
+                                            'Yakin ingin menghapus data RTL realisasi ini?',
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ElevatedButton(
+                                              child: const Text('Batal'),
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.orange.shade500,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            ElevatedButton.icon(
+                                              icon: Icon(Icons
+                                                  .delete_forever_outlined),
+                                              label: const Text('Ya, Hapus'),
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.red.shade500,
+                                              ),
+                                              onPressed: () async {
+                                                AFwidget.circularDialog(
+                                                    context);
+                                                var a = await _rtlBloc.delReal(
+                                                    widget.listReal[i]);
+                                                Navigator.of(context).pop();
+                                                String pesan = a['status']
+                                                            .toString() ==
+                                                        '1'
+                                                    ? 'Data RTL Realisasi berhasil dihapus.'
+                                                    : a['message'].toString();
+                                                await AFwidget.alertDialog(
+                                                  context,
+                                                  Text(pesan),
+                                                );
+                                                Navigator.of(context).pop();
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                      judul: Text('Konfirmasi!'),
+                                    );
+                                  },
+                                )
+                              : Container(),
+                        ],
+                      ),
                     ],
                   ),
                 );
@@ -1315,7 +1329,7 @@ class _RealSaranState extends State<RealSaran> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 0, 3),
                 child: Text(
-                  'Kendala',
+                  'Keterangan',
                   style: TextStyle(
                     color: Colors.grey,
                   ),
