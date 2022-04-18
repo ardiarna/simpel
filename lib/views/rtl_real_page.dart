@@ -400,41 +400,38 @@ class _RTLrealPageState extends State<RTLrealPage> {
                                         },
                                       )
                                     : Container(),
-                                snapReal.data![i].jml > 1
-                                    ? GestureDetector(
-                                        child: Container(
-                                          margin: EdgeInsets.only(top: 15),
-                                          padding: EdgeInsets.all(5),
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: Colors.green,
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Icon(
-                                            Icons.timeline_outlined,
-                                            color: Colors.green,
-                                          ),
+                                GestureDetector(
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 15),
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.green,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.timeline_outlined,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                  onTap: () async {
+                                    AFwidget.circularDialog(context);
+                                    var a = await _rtlBloc.getRealHistory(
+                                        snapReal.data![i].targetId.toString());
+                                    Navigator.of(context).pop();
+                                    await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => RealHistory(
+                                          selectedReal: snapReal.data![i],
+                                          listReal: a,
                                         ),
-                                        onTap: () async {
-                                          AFwidget.circularDialog(context);
-                                          var a = await _rtlBloc.getRealHistory(
-                                              snapReal.data![i].targetId
-                                                  .toString());
-                                          Navigator.of(context).pop();
-                                          await Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => RealHistory(
-                                                selectedReal: snapReal.data![i],
-                                                listReal: a,
-                                              ),
-                                            ),
-                                          );
-                                          refresh();
-                                        },
-                                      )
-                                    : Container(),
+                                      ),
+                                    );
+                                    refresh();
+                                  },
+                                ),
                               ],
                             ),
                           ],
