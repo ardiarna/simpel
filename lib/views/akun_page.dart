@@ -27,23 +27,23 @@ class _AkunPageState extends State<AkunPage> {
     return ListView(
       children: [
         Container(
+          padding: const EdgeInsets.symmetric(vertical: 15),
           color: Colors.white,
           child: Center(
             child: GestureDetector(
-              child: Container(
-                width: 150,
-                height: 150,
-                margin: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade500,
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(55),
-                  ),
-                ),
-                child: Stack(
-                  alignment: AlignmentDirectional.bottomEnd,
-                  children: [
-                    widget.member.foto != ''
+              child: Stack(
+                alignment: AlignmentDirectional.bottomEnd,
+                children: [
+                  Container(
+                    width: 150,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade500,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(55),
+                      ),
+                    ),
+                    child: widget.member.foto != ''
                         ? ClipRRect(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(55),
@@ -59,17 +59,17 @@ class _AkunPageState extends State<AkunPage> {
                             Icons.person,
                             size: 100,
                           ),
-                    Container(
-                      height: 30,
-                      width: 30,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.camera_alt),
+                  ),
+                  Container(
+                    height: 30,
+                    width: 30,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
                     ),
-                  ],
-                ),
+                    child: const Icon(Icons.camera_alt),
+                  ),
+                ],
               ),
               onTap: () {
                 Navigator.of(context).push(
@@ -97,12 +97,27 @@ class _AkunPageState extends State<AkunPage> {
         ),
         widget.member.kategori == 'member'
             ? kontener(
-                ikon: FontAwesome5.storeAlt,
-                label: 'Bumdes / Kedudukan',
+          ikon: FontAwesome5.storeAlt,
+          label: 'Data Bumdes',
+          aksi: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BumdesPage(
+                  nik: widget.member.nik,
+                ),
+              ),
+            );
+          },
+        )
+            : Container(),
+        widget.member.kategori == 'member'
+            ? kontener(
+                ikon: FontAwesome5.userTie,
+                label: 'Kedudukan di Desa',
                 aksi: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => BumdesTab(
+                      builder: (context) => KedudukanPage(
                         nik: widget.member.nik,
                       ),
                     ),

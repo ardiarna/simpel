@@ -10,8 +10,7 @@ enum MethodeRequest {
 
 abstract class DBHelper {
   // static const String dirBase = 'http://10.0.2.2/salamdesa/';
-  static const String dirBase =
-      'https://salamdesa.kemendesa.go.id/';
+  static const String dirBase = 'https://salamdesa.kemendesa.go.id/';
   static const String dirImage = dirBase + 'image/';
   static const String api = dirBase + 'api/';
 

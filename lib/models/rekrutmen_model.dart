@@ -6,6 +6,7 @@ class RekrutmenModel {
   String nmgiat;
   String singkatangiat;
   String imagegiat;
+  bool bumdesgiat;
   int tahun;
   int angkatan;
   DateTime? tglMulai;
@@ -35,6 +36,7 @@ class RekrutmenModel {
     this.nmgiat = '',
     this.singkatangiat = '',
     this.imagegiat = '',
+    this.bumdesgiat = false,
     this.tahun = 0,
     this.angkatan = 0,
     this.tglMulai,
@@ -66,6 +68,7 @@ class RekrutmenModel {
       nmgiat: AFconvert.keString(map['nm_giat']),
       singkatangiat: AFconvert.keString(map['singkatan_giat']),
       imagegiat: AFconvert.keString(map['image_giat']),
+      bumdesgiat: AFconvert.keBool(map['bumdes_giat']),
       tahun: AFconvert.keInt(map['tahun']),
       angkatan: AFconvert.keInt(map['angkatan']),
       tglMulai: AFconvert.keTanggal(map['tgl_mulai']),
@@ -98,6 +101,7 @@ class RekrutmenModel {
       'nm_giat': nmgiat,
       'singkatan_giat': singkatangiat,
       'image_giat': singkatangiat,
+      'bumdes_giat': bumdesgiat ? 'Y' : 'N',
       'tahun': AFconvert.keString(tahun),
       'angkatan': AFconvert.keString(angkatan),
       'tgl_mulai': AFconvert.keString(tglMulai),

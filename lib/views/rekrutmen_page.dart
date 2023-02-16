@@ -20,11 +20,12 @@ class RekrutmenPage extends StatefulWidget {
 class _RekrutmenPageState extends State<RekrutmenPage> {
   final RekrutmenBloc _rekrutmenBloc = RekrutmenBloc();
   final BumdesBloc _bumdesBloc = BumdesBloc();
-  late BumdesModel _bumdesModel;
-  late KedudukanModel _kedudukanModel;
+  // late BumdesModel _bumdesModel;
+  // late KedudukanModel _kedudukanModel;
 
-  cekBumdes() {
-    _bumdesBloc.get(widget.member.nik).then((bumdes) {
+  Future<void> cekBumdes(RekrutmenModel rekrutmen) async {
+    if(rekrutmen.bumdesgiat) {
+      var bumdes = await _bumdesBloc.get(widget.member.nik);
       if (bumdes.nama == '') {
         showDialog(
           barrierDismissible: false,
@@ -47,15 +48,7 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
                     backgroundColor: Colors.orange.shade400,
                   ),
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => HomePage(
-                          menu: 0,
-                          page: 'beranda',
-                          member: widget.member,
-                        ),
-                      ),
-                    );
+                    Navigator.of(context).pop();
                   },
                 ),
                 ElevatedButton(
@@ -63,13 +56,13 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
                   onPressed: () async {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => BumdesTab(
+                        builder: (context) => BumdesPage(
                           nik: widget.member.nik,
                         ),
                       ),
                     );
                     Navigator.of(context).pop();
-                    cekBumdes();
+                    cekBumdes(rekrutmen);
                   },
                 ),
               ],
@@ -77,18 +70,84 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
           },
         );
       } else {
-        _bumdesModel = bumdes;
-        _bumdesBloc
-            .getKedudukan(widget.member.nik)
-            .then((value) => _kedudukanModel = value);
+        // _bumdesModel = bumdes;
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                RekrutmenForm(
+                  member: widget.member,
+                  bumdes: bumdes,
+                  kedudukan: KedudukanModel(),
+                  rekrutmen: rekrutmen,
+                ),
+          ),
+        );
       }
-    });
+    } else {
+      var kedudukan = await _bumdesBloc.getKedudukan(widget.member.nik);
+      if(kedudukan.jabatan == '') {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (_) {
+            return AlertDialog(
+              elevation: 0,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text('Anda belum mengisi Data Kedudukan di Desa,'),
+                  Text('silakan isi data Kedudukan di Desa terlebih dahulu.'),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  child: const Text('Batal'),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.orange.shade400,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ElevatedButton(
+                  child: const Text('Isi Data Kedudukan'),
+                  onPressed: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => KedudukanPage(
+                          nik: widget.member.nik,
+                        ),
+                      ),
+                    );
+                    Navigator.of(context).pop();
+                    cekBumdes(rekrutmen);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        // _kedudukanModel = kedudukan;
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                RekrutmenForm(
+                  member: widget.member,
+                  bumdes: BumdesModel(),
+                  kedudukan: kedudukan,
+                  rekrutmen: rekrutmen,
+                ),
+          ),
+        );
+      }
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    cekBumdes();
   }
 
   @override
@@ -100,9 +159,18 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
           future: _rekrutmenBloc.getRekrutmens(),
           builder: (context, snap) {
             if (snap.hasData) {
+              if(snap.data!.isEmpty) {
+                return SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text('Belum ada pelatihan yang dibuka'),
+                  ),
+                );
+              }
               return SliverList(
-                delegate: SliverChildBuilderDelegate((context, i) {
-                  return Container(
+                delegate: SliverChildBuilderDelegate(
+                      (context, i) {
+                    return Container(
                     margin: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                     decoration: BoxDecoration(
@@ -242,17 +310,7 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
                                   onPressed: disable
                                       ? null
                                       : () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  RekrutmenForm(
-                                                member: widget.member,
-                                                bumdes: _bumdesModel,
-                                                kedudukan: _kedudukanModel,
-                                                rekrutmen: snap.data![i],
-                                              ),
-                                            ),
-                                          );
+                                          cekBumdes(snap.data![i]);
                                         },
                                 ),
                               );
@@ -264,7 +322,9 @@ class _RekrutmenPageState extends State<RekrutmenPage> {
                       ],
                     ),
                   );
-                }, childCount: snap.data!.length),
+                  },
+                  childCount: snap.data!.length,
+                ),
               );
             } else {
               return SliverToBoxAdapter(child: AFwidget.circularProgress());
@@ -450,8 +510,7 @@ class _RekrutmenFormState extends State<RekrutmenForm> {
                   ],
                 ),
               ),
-              (widget.rekrutmen.kdgiat == '001' ||
-                      widget.rekrutmen.kdgiat == '01')
+              (widget.rekrutmen.bumdesgiat)
                   ? Container(
                       margin: const EdgeInsets.fromLTRB(5, 3, 5, 0),
                       padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
